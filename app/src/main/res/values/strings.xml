@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">Stralom</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string-array name="tab_titles">
+        <item>Carrinho</item>
+        <item>Produtos</item>
+        <item>Receitas</item>
+        <item>Estoque</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="save">Salvar</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Product -->
+    <string name="productPrice">Preço</string>
+    <string name="productName">Nome</string>
+    <string name="productExpirationDate">Prazo de Validade</string>
+    <string name="productCategory">Categoria</string>
+    <string name="btnProductRegistration">Registrar Produto</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Deletar</string>
+    <string name="recipeName">Nome</string>
+    <string name="formName">Nome</string>
+    <string name="formPrice">Preço</string>
+    <string name="formDescription">Descrição</string>
+    <string name="form_title_ItemRecipeRegistration">Adicionar Ingrediente</string>
+    <string name="title_RecipeRegistration">Nova Receita</string>
+    <string-array name="categories">
+        <item>Carnes</item>
+        <item>Congelados</item>
+        <item>Doces</item>
+        <item>Frutas</item>
+        <item>Legumes</item>
+        <item>Higiene</item>
+    </string-array>
+
+
+    <string name="title_ItemStockRegistration">Adicionar ao Estoque</string>
+    <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
+    <string name="dialog_simpleProduct_amount">Quantidade ( Opcional) </string>
+</resources>
