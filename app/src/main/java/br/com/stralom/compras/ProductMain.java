@@ -2,35 +2,27 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.sqlite.SQLiteConstraintException;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.ContextMenu;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
+import br.com.stralom.adapters.ProductAdapter;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.entities.Product;
 import br.com.stralom.helper.ProductForm;
+import br.com.stralom.helper.SwipeToDeleteCallback;
 
 
 public class ProductMain extends Fragment {
@@ -38,7 +30,7 @@ public class ProductMain extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ListView productListView;
+    private RecyclerView productListView;
     private Button buttonView;
 
 
@@ -90,30 +82,16 @@ public class ProductMain extends Fragment {
         List<Product> productList;
         productList = productDAO.getAll();
         registerForContextMenu(productListView);
-        ArrayAdapter<Product> adapter = new ArrayAdapter<Product>(getContext() , android.R.layout.simple_list_item_1, productList);
+
+        // Recycler View
+        ProductAdapter adapter = new ProductAdapter(productList,getActivity());
         productListView.setAdapter(adapter);
+        productListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        productListView.setHasFixedSize(true);
+        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
+        ItemTouchHelper itemTouch = new ItemTouchHelper(callback);
+        itemTouch.attachToRecyclerView(productListView);
 
-
-
-        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> list, View item, int position, long id) {
-                Product product = (Product) list.getItemAtPosition(position);
-                Toast.makeText(getContext(),product.getName(),Toast.LENGTH_LONG).show();
-            }
-        });
-
-        productListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(view);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    view.startDragAndDrop(null,dragShadowBuilder,view,0);
-
-                }
-                return true;
-            }
-        });
 
         buttonView.setOnClickListener(new View.OnClickListener() {
             @Override

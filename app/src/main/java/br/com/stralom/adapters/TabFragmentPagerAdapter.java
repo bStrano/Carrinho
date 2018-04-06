@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import br.com.stralom.compras.CartMain;
 import br.com.stralom.compras.ProductMain;
 import br.com.stralom.compras.RecipeMain;
-import br.com.stralom.compras.RecipeRegistration;
 import br.com.stralom.compras.StockMain;
 
 /**

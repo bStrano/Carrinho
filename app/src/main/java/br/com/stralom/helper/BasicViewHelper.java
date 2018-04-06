@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
 
 import java.util.List;
@@ -24,9 +23,10 @@ public class BasicViewHelper {
         this.context = context;
     }
 
-    public AlertDialog createDialog(View view, DialogInterface.OnClickListener listenerPositive, DialogInterface.OnClickListener listenerNegative){
+    public AlertDialog createDialog(View view, DialogInterface.OnClickListener listenerPositive, DialogInterface.OnClickListener listenerNegative, int titleId){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
+        builder.setTitle(titleId);
         builder.setPositiveButton(R.string.save,  listenerPositive);
         builder.setNegativeButton(R.string.cancel, listenerNegative);
         return builder.create();

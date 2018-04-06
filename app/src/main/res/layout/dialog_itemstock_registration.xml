@@ -7,19 +7,19 @@
     <Spinner
         android:id="@+id/list_productsStock"
         android:layout_width="match_parent"
-        android:layout_height="61dp"></Spinner>
-
-
-    <EditText
-        android:id="@+id/form_itemStock_maxAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Quantidade Maxima"/>
+        android:layout_height="61dp"/>
 
     <EditText
         android:id="@+id/form_itemStock_actualAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Quantidade Atual"
+        android:hint="@string/itemStock_actualAmount"
         android:inputType="number"/>
+    <EditText
+        android:id="@+id/form_itemStock_maxAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/itemStock_maxAmount"/>
+
+
 </LinearLayout>

@@ -15,9 +15,11 @@ import br.com.stralom.entities.Recipe;
 
 public class RecipeDAO extends GenericDAO {
     private static final String TAG = "RecipeDAO";
+    public ItemRecipeDAO itemRecipeDAO;
 
     public RecipeDAO(Context context) {
         super(context, DBHelper.TABLE_RECIPE);
+        itemRecipeDAO = new ItemRecipeDAO(context);
     }
 
     public ContentValues getContentValues(Recipe recipe){
@@ -30,6 +32,11 @@ public class RecipeDAO extends GenericDAO {
         return contentValues;
     }
 
+    @Override
+    public void remove(Long id) {
+        itemRecipeDAO.deleteAllFromRecipe(id);
+        super.remove(id);
+    }
 
     public ArrayList<Recipe> getAll() {
         db = dbHelper.getReadableDatabase();

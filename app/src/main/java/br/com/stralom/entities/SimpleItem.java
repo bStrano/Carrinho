@@ -65,6 +65,8 @@ public class SimpleItem {
     public ItemCart convertToItemCart(){
         Product product = new Product();
         product.setName(name);
-        return new ItemCart(product,amount,cart);
+        ItemCart itemCart = new ItemCart(product,amount,cart);
+        itemCart.setConvertedId(id);
+        return itemCart;
     }
 }

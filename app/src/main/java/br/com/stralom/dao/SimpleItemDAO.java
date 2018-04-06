@@ -32,6 +32,7 @@ public class SimpleItemDAO extends GenericDAO {
                 SimpleItem simpleItem = new SimpleItem(name,amount);
                 items.add(simpleItem);
             }
+            c.close();
         }
         return items;
 

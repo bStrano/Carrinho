@@ -3,23 +3,21 @@ package br.com.stralom.compras;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import br.com.stralom.adapters.RecipeAdapter;
-import br.com.stralom.dao.DBHelper;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.entities.Recipe;
+import br.com.stralom.helper.SwipeToDeleteCallback;
 
 
 /**
@@ -27,6 +25,7 @@ import br.com.stralom.entities.Recipe;
  */
 public class RecipeMain extends Fragment {
     private RecipeDAO recipeDAO;
+    private RecyclerView recyclerView;
 
     public RecipeMain() {
         // Required empty public constructor
@@ -38,14 +37,19 @@ public class RecipeMain extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recipe_main, container, false);
-        ListView list_recipe = view.findViewById(R.id.list_recipe);
+        recyclerView = view.findViewById(R.id.list_recipe);
         recipeDAO = new RecipeDAO(getContext());
 
         ArrayList<Recipe> recipes = recipeDAO.getAll();
 
-        RecipeAdapter adapter = new RecipeAdapter(getContext(),recipes);
-        list_recipe.setAdapter(adapter);
+        RecipeAdapter adapter = new RecipeAdapter(recipes,getActivity());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
 
+        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
 //        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         Button btn_newRecipe = view.findViewById(R.id.btn_newRecipe);

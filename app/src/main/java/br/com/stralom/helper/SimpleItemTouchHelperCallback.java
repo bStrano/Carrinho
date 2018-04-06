@@ -1,5 +1,6 @@
 package br.com.stralom.helper;
 
+import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
@@ -44,4 +45,14 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
     }
+
+    @Override
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+    }
+
+    public void removeItem(){
+
+    }
+
 }

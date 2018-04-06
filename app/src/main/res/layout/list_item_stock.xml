@@ -1,53 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/stock_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nome do Produto  "
-        android:textSize="25sp"
-        android:textColor="#25383C"
-
-        />
-
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/stock_itemList_mainView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/list_height">
 
-        <TextView
-            android:id="@+id/stock_maxAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1000 "
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_alignParentEnd="true"
-            android:paddingEnd="50dp"
-            android:layout_alignParentRight="true"
-            android:paddingRight="50dp" />
+        <RelativeLayout
+           android:id="@+id/stock_itemList_backgroundView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_swapDelete"
+            android:paddingVertical="@dimen/list_paddingVertical"
+            android:gravity="center|right">
 
-        <TextView
-            android:id="@+id/stock_actualAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="800"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimaryLight"
-            android:layout_alignParentRight="true"
-            android:paddingLeft="20dp"
-            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/list_textMediumSize"
+                android:text="@string/swipe_remove"
+                android:layout_toLeftOf="@+id/stock_icon_swapRemove"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/stock_icon_swapRemove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/stock_itemList_foregroundView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingVertical="@dimen/list_paddingVertical"
+            android:background="#FAFAFA"
+            android:layout_gravity="center|right"
+            >
+
+            <TextView
+                android:id="@+id/stock_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nome do Produto  "
+                android:textSize="@dimen/list_textMediumSize"
+                android:textColor="#25383C"
+                android:layout_marginLeft="@dimen/list_marginLeft"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/stock_actualAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="800"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="@dimen/list_textSmallSize"
+                android:layout_toLeftOf="@id/stock_maxAmount"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/stock_maxAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1000 "
+                android:textSize="@dimen/list_textSmallSize"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:layout_marginRight="@dimen/list_marginRight"
+                />
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
 
 
 
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/darker_gray"
+        />
 
 </LinearLayout>

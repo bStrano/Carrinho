@@ -1,6 +1,5 @@
 package br.com.stralom.helper;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -28,7 +27,6 @@ public class ItemCartForm {
 
      public ItemCart getItemCart(){
         Product product = (Product) this.product.getSelectedItem();
-        Log.e(TAG,product.toString());
         int amount = Integer.parseInt(amout.getText().toString());
 
         return new ItemCart(product,amount,cart);

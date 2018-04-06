@@ -3,36 +3,23 @@ package br.com.stralom.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import br.com.stralom.entities.Cart;
-import br.com.stralom.entities.ItemCart;
-import br.com.stralom.entities.Product;
-import br.com.stralom.util.Constants;
 
 /**
  * Created by Bruno Strano on 04/01/2018.
  */
 
-public class CartDAO  {
+public class CartDAO extends GenericDAO {
     private static final String TAG = "CartDAO";
     private ItemCartDAO itemDAO;
-    private DBHelper dbHelper;
-    private Context context;
-    private  SQLiteDatabase db;
+
 
 
     public CartDAO(Context context) {
-        dbHelper = new DBHelper(context);
-        this.context = context;
+        super(context, DBHelper.TABLE_ITEMCART);
     }
-
 
     public Cart findById(Long id){
         db = dbHelper.getReadableDatabase();

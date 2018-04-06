@@ -2,17 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="br.com.stralom.compras.StockMain"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/stock_view_main"
+   >
 
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
-        android:paddingBottom="-5dp"
+        android:paddingVertical="@dimen/list_paddingVertical"
+        android:layout_gravity="center|right"
         >
 
         <TextView
@@ -20,68 +22,89 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Produto  "
-            android:textSize="25sp"
+            android:textSize="@dimen/list_textLargeSize"
             android:textStyle="bold"
             android:textColor="#25383C"
+            android:layout_marginLeft="@dimen/list_marginLeft"
+            android:gravity="center"
             />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/stock_maxAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Atual"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="50dp"
-                android:layout_alignParentRight="true"
-                android:paddingRight="50dp"
-                android:textStyle="bold"
-                />
 
             <TextView
                 android:id="@+id/stock_actualAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Max"
-                android:textSize="20sp"
+                android:text="@string/itemStock_actualAmountShort"
+                android:textSize="@dimen/list_textMediumSize"
                 android:textColor="@color/colorPrimaryLight"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/stock_maxAmount"
                 android:textStyle="bold"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
                 />
+
+            <TextView
+                android:id="@+id/stock_maxAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/itemStock_maxAmountShort"
+                android:textSize="@dimen/list_textMediumSize"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_alignParentEnd="true"
+                android:textStyle="bold"
+                android:layout_marginRight="@dimen/list_marginRight"
+                android:gravity="center"/>
 
         </RelativeLayout>
 
 
-
-
-
-    </LinearLayout>
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list_itemStock"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
+            android:layout_height="match_parent"/>
 
-        <Button
-            android:id="@+id/btn_newItemStock"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_alignParentBottom="true"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_addRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_margin="16dp"
-            android:elevation="12dp"
-            android:background="@drawable/ic_add_normal"
+            android:src="@drawable/ic_recipe"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            app:backgroundTint="@color/colorTertiary"
+            app:fabSize="normal"
             />
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_addStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_add"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            app:backgroundTint="@color/colorSecundary"
+            app:fabSize="normal"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_stock"
+            android:src="@drawable/ic_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_add"
+            android:layout_alignParentBottom="true"
+            app:backgroundTint="@color/colorPrimary"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            app:fabSize="normal"
+            />
         <!--<android.support.design.widget.FloatingActionButton-->
             <!--android:id="@+id/btn_newItemStock"-->
             <!--android:layout_width="wrap_content"-->

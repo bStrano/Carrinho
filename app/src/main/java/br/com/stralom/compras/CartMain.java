@@ -2,6 +2,7 @@ package br.com.stralom.compras;
 
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stralom.adapters.CartAdapter;
+import br.com.stralom.adapters.ItemClickListener;
 import br.com.stralom.dao.CartDAO;
 import br.com.stralom.dao.ItemCartDAO;
 import br.com.stralom.dao.ItemRecipeDAO;
@@ -34,7 +36,8 @@ import br.com.stralom.entities.SimpleItem;
 import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ItemCartForm;
 import br.com.stralom.helper.SimpleItemForm;
-import br.com.stralom.helper.SimpleItemTouchHelperCallback;
+import br.com.stralom.helper.SwipeToDeleteCallback;
+import br.com.stralom.listeners.RecyclerTouchListener;
 
 
 /**
@@ -51,6 +54,7 @@ public class CartMain extends Fragment {
     private RecyclerView cartListView;
     private BasicViewHelper basicViewHelper;
     private SimpleItemDAO simpleItemDAO;
+    private List<ItemCart> itemCartList;
 
     private static final String TAG = "CartMainTAG";
 
@@ -80,22 +84,39 @@ public class CartMain extends Fragment {
         Button btn_addSimpleItem = view.findViewById(R.id.btn_newItemCart_simpleProduct);
         Button btn_newItemCart = view.findViewById(R.id.btn_newItemCart);
 
-
         cart = cartDAO.findById((long) 1);
-
-        ArrayList<ItemCart> itemCartList = (ArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
+        itemCartList = itemCartDAO.getAll(cart.getId());
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
+        addSimpleProducts(simpleItemList);
         cart.setListItemCart(itemCartList);
         cartListView.setHasFixedSize(true);
         cartListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        CartAdapter adapter = new CartAdapter(itemCartList,getContext());
+        CartAdapter adapter = new CartAdapter(itemCartList,getActivity());
         cartListView.setAdapter(adapter);
-        addSimpleProducts(simpleItemList);
 
 
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+        cartListView.addOnItemTouchListener(new RecyclerTouchListener(getContext(),cartListView, new ItemClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+                ItemCart item = itemCartList.get(position);
+                Toast.makeText(getContext(),item.getProduct().getName(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Log.e(TAG,"ONLONGCLICK");
+                ItemCart item = itemCartList.get(position);
+                Toast.makeText(getContext(),item.getProduct().getName(), Toast.LENGTH_LONG).show();
+            }
+        }));
+
+
+        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(cartListView);
+
+
 
         btn_newItemCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,13 +132,15 @@ public class CartMain extends Fragment {
         });
         btn_addSimpleItem.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                loadSimpleProductItemCartDialog();
+            public void onClick(View view) {loadSimpleProductItemCartDialog();
             }
         });
 
         return view;
     }
+
+
+
 
 
     private void loadRecipeItemCartDialog() {
@@ -147,7 +170,7 @@ public class CartMain extends Fragment {
             }
         };
 
-        basicViewHelper.createDialog(recipeItemCartView,confirmListener,cancelListener).show();
+        basicViewHelper.createDialog(recipeItemCartView,confirmListener,cancelListener,R.string.cart_dialogTitle_addRecipe).show();
 
 
 
@@ -169,7 +192,7 @@ public class CartMain extends Fragment {
             }
         };
 
-        basicViewHelper.createDialog(itemCartView,confirmListener,cancelListener).show();
+        basicViewHelper.createDialog(itemCartView,confirmListener,cancelListener,R.string.cart_dialogTitle_addProduct).show();
 
         Spinner productSpinner = itemCartView.findViewById(R.id.form_itemCart_product);
         List<Product> products = productDAO.getAll();
@@ -188,10 +211,26 @@ public class CartMain extends Fragment {
 
 
 
-        basicViewHelper.createDialog(view,confirmListener,null).show();
+        basicViewHelper.createDialog(view,confirmListener,null, R.string.cart_dialogTitle_addSimpleProduct).show();
     }
 
     private void addItem(ItemCart newItemCart){
+        try {
+            itemCartDAO.add(newItemCart);
+            Toast.makeText(getContext(),R.string.toast_product_add,Toast.LENGTH_LONG);
+        } catch (SQLiteConstraintException e){
+            ItemCart itemCart = itemCartDAO.getByProductId(newItemCart.getProduct().getId());
+            int updatedAmount = itemCart.getAmount() + newItemCart.getAmount();
+            itemCart.setTotal(updatedAmount, itemCart.getProduct().getPrice());
+            itemCart.setAmount(updatedAmount);
+            itemCartDAO.update(itemCart);
+            Toast.makeText(getContext(),R.string.toast_product_update,Toast.LENGTH_LONG);
+        } finally {
+            getActivity().recreate();
+        }
+    }
+
+    private void addItem2(ItemCart newItemCart){
         String productName = newItemCart.getProduct().getName();
         int position = cart.containsProductName(productName);
         ArrayList<ItemCart> itemCartList = (ArrayList<ItemCart>) cart.getListItemCart();
@@ -213,7 +252,7 @@ public class CartMain extends Fragment {
         getActivity().recreate();
     }
     private void addItemFromRecipe(ItemRecipe itemRecipe) {
-        ItemCart itemCart = new ItemCart(itemRecipe.getProduct(), itemRecipe.getAmount(), null);
+        ItemCart itemCart = new ItemCart(itemRecipe.getProduct(), itemRecipe.getAmount(), cart);
         addItem(itemCart);
     }
     private void addItemFromProduct(View itemCartView) {
@@ -224,9 +263,11 @@ public class CartMain extends Fragment {
     private void addItemFromSimpleProduct(View view){
         SimpleItemForm simpleItemForm = new SimpleItemForm(view,cart);
         SimpleItem simpleItem = simpleItemForm.getSimpleItem();
-        simpleItemDAO.add(simpleItemDAO.getContentValues(simpleItem));
+        Long id = simpleItemDAO.add(simpleItemDAO.getContentValues(simpleItem));
 
-        cart.getListItemCart().add(simpleItem.convertToItemCart());
+        ItemCart simpleItemConverted = simpleItem.convertToItemCart();
+        simpleItemConverted.setConvertedId(id);
+        cart.getListItemCart().add(simpleItemConverted);
         cartListView.getAdapter().notifyDataSetChanged();
 
     }
@@ -236,9 +277,10 @@ public class CartMain extends Fragment {
             for (SimpleItem simpleItem:simpleItemList) {
                 cart.getListItemCart().add(simpleItem.convertToItemCart());
             }
-            cartListView.getAdapter().notifyDataSetChanged();
         }
     }
+
+
 
 
 

@@ -8,7 +8,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemStock;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Stock;
@@ -33,7 +32,7 @@ public class ItemStockDAO extends GenericDAO {
 //        String sql = "SELECT * FROM " + DBHelper.TABLE_ITEMSTOCK + " INNER JOIN " + DBHelper.TABLE_PRODUCT +
 //                " ON " + DBHelper.TABLE_ITEMSTOCK.concat("."+ DBHelper.COLUMN_ITEMSTOCK_PRODUCT) + " = " + DBHelper.TABLE_PRODUCT.concat("." + DBHelper.COLUMN_PRODUCT_ID)
 //                +" WHERE " + DBHelper.TABLE_ITEMSTOCK.concat("."+ DBHelper.COLUMN_ITEMSTOCK_STOCK)+ " = ? ";
-        String sql = "SELECT s." + DBHelper.COLUMN_ITEMSTOCK_STOCK + ", s." + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + ", s." + DBHelper.COLUMN_ITEMSTOCK_ATUALAMOUNT + ", s." + DBHelper.COLUMN_ITEMSTOCK_STATUS
+        String sql = "SELECT s." + DBHelper.COLUMN_ITEMSTOCK_STOCK + ", s." + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + ", s." + DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT + ", s." + DBHelper.COLUMN_ITEMSTOCK_STATUS
                 + ", s." + DBHelper.COLUMN_ITEMSTOCK_STOCKPERCENTAGE + ", s." + DBHelper.COLUMN_ITEMSTOCK_TOTAL + ", s." + DBHelper.COLUMN_ITEMSTOCK_AMOUNT + ", s." + DBHelper.COLUMN_ITEMSTOCK_ID
                 + ", p." + DBHelper.COLUMN_PRODUCT_NAME +
                 " FROM " + DBHelper.TABLE_ITEMSTOCK + " s " +
@@ -50,7 +49,7 @@ public class ItemStockDAO extends GenericDAO {
                 double total = cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_TOTAL));
                 int stockPercentage = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCKPERCENTAGE));
                 ItemStock.Status status = ItemStock.Status.valueOf(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STATUS)));
-                int atualAmount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ATUALAMOUNT));
+                int atualAmount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT));
                 Long productId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_PRODUCT));
                 Long stockId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCK));
                 String productName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
@@ -79,7 +78,7 @@ public class ItemStockDAO extends GenericDAO {
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_TOTAL, itemStock.getTotal());
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_STOCKPERCENTAGE, itemStock.getStockPercentage());
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_STATUS,itemStock.getStatus().toString());
-        contentValues.put(DBHelper.COLUMN_ITEMSTOCK_ATUALAMOUNT, itemStock.getActualAmount());
+        contentValues.put(DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT, itemStock.getActualAmount());
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_PRODUCT, itemStock.getProduct().getId());
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_STOCK, itemStock.getStock().getId());
 

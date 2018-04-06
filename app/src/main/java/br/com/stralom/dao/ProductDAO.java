@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stralom.entities.Product;
-import br.com.stralom.entities.Recipe;
-import br.com.stralom.util.Constants;
 
 /**
  * Created by Bruno Strano on 30/12/2017.
@@ -67,6 +64,8 @@ public class ProductDAO {
 
         } catch (NullPointerException e){
             Log.e(TAG,"[NullPointException] Product not found.");
+        } finally {
+            cursor.close();
         }
         return product;
     }

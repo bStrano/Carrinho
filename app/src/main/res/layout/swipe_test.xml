@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_height"
+        android:background="@color/bg_swapDelete"
+        >
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_delete"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/delete_icon"
+            android:text="@string/swipe_remove"
+            android:textColor="#fff"
+            android:textSize="@dimen/list_textMediumSize"
+            android:textStyle="bold"
+            />
+
+
+    </RelativeLayout>

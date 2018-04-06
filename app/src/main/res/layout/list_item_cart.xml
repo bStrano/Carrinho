@@ -1,34 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:gravity="center|left"
-    android:orientation="horizontal"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?selectableItemBackground"
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_height"
+        >
 
-    >
+        <include layout="@layout/swipe_test"/>
+        <RelativeLayout
+            android:id="@+id/cart_view_foreground"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="#FAFAFA"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:paddingVertical="@dimen/list_paddingVertical"
+            >
+
+            <TextView
+                android:id="@+id/product_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" ( 2x )"
+                android:textSize="@dimen/list_textMediumSize"
+                />
+
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product Name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="@dimen/list_marginLeft"
+                android:textSize="@dimen/list_textMediumSize"
+                android:layout_toRightOf="@+id/product_amount"
+                />
+
+        </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/product_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Product Name"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+    </FrameLayout>
+
+    <View
+        android:background="@android:color/darker_gray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         />
-
-
-        <TextView
-            android:id="@+id/product_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" ( Quantidade )"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-
-            />
-
 
 
 

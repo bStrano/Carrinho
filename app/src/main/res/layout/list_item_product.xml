@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_height">
+
+        <include layout="@layout/swipe_test"/>
+
+        <RelativeLayout
+            android:background="#FAFAFA"
+            android:id="@+id/product_view_foreground"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_height"
+            android:paddingVertical="@dimen/list_paddingVertical">
+            <ImageView
+                android:id="@+id/product_itemList_categoryIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_recipe_image"
+                android:layout_marginLeft="@dimen/list_marginLeft"/>
+
+            <TextView
+                android:id="@+id/product_itemList_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/list_textMediumSize"
+                android:layout_toRightOf="@+id/product_itemList_categoryIcon"
+                android:textStyle="bold"
+                android:text="Product Name" />
+
+            <TextView
+                android:id="@+id/product_itemList_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/list_textMediumSize"
+                android:layout_marginLeft="@dimen/list_marginLeft"
+                android:layout_toRightOf="@+id/product_itemList_name"
+                android:text="400 R$"/>
+        </RelativeLayout>
+
+    </FrameLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>

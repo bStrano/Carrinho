@@ -5,10 +5,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Product;
-import br.com.stralom.entities.Recipe;
 
 /**
  * Created by Bruno Strano on 17/01/2018.

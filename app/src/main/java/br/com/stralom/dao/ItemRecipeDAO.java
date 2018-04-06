@@ -8,7 +8,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
@@ -32,6 +31,10 @@ public class ItemRecipeDAO extends GenericDAO {
         return super.add(contentValues);
     }
 
+    public void deleteAllFromRecipe(Long idRecipe){
+        db = dbHelper.getWritableDatabase();
+        db.delete(DBHelper.TABLE_ITEMRECIPE,DBHelper.COLUMN_ITEMRECIPE_RECIPE + " = ?" , new String[] {idRecipe.toString()});
+    }
 
     public List<ItemRecipe> getAll(Long recipeId){
         db = dbHelper.getReadableDatabase();

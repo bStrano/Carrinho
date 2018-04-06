@@ -1,42 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+
+<LinearLayout
+    android:id="@+id/recipe_view_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/recipe_image"
-        android:layout_width="67dp"
-        android:layout_height="67dp"
-        android:background="@drawable/ic_recipe_image"/>
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:gravity="center_vertical"
-        >
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/recipe_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nome da Receita"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/view_background"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            android:background="@color/bg_swapDelete"
+            >
 
-        <TextView
-            android:id="@+id/recipe_ingredientCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total de Ingredientes"
-            android:textSize="15sp"/>
-        <TextView
-            android:id="@+id/recipe_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Preço"
-            android:textSize="15sp"/>
+            <ImageView
+                android:id="@+id/delete_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_delete"
+                />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/delete_icon"
+                android:text="@string/swipe_remove"
+                android:textColor="#fff"
+                android:textSize="@dimen/list_textMediumSize"
+                android:textStyle="bold"
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/product_view_foreground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FAFAFA">
+
+            <ImageView
+                android:id="@+id/recipe_image"
+                android:layout_width="67dp"
+                android:layout_height="67dp"
+                android:background="@drawable/ic_recipe_image"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+
+                android:layout_toRightOf="@+id/recipe_image"
+                >
+
+                <TextView
+                    android:id="@+id/recipe_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nome da Receita"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/recipe_ingredientCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total de Ingredientes"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:id="@+id/recipe_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preço"
+                    android:textSize="15sp"/>
+
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+    </FrameLayout>
+
+    <View
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/darker_gray"
+        />
 </LinearLayout>

@@ -49,7 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_ITEMCART_AMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMCART_TOTAL + " REAL NOT NULL, " +
             COLUMN_ITEMCART_CART + " INTEGER NOT NULL, " +
-            COLUMN_ITEMCART_PRODUCT + " INTEGER NOT NULL, " +
+            COLUMN_ITEMCART_PRODUCT + " INTEGER UNIQUE NOT NULL, " +
             "FOREIGN KEY("+ COLUMN_ITEMCART_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + "), " +
             "FOREIGN KEY("+ COLUMN_ITEMCART_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ")" +
             ");";
@@ -99,7 +99,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ITEMSTOCK_TOTAL = "total";
     public static final String COLUMN_ITEMSTOCK_STOCKPERCENTAGE = "stockPercentage";
     public static final String COLUMN_ITEMSTOCK_STATUS = "status";
-    public static final String COLUMN_ITEMSTOCK_ATUALAMOUNT = "atualAmount";
+    public static final String COLUMN_ITEMSTOCK_ACTUALAMOUNT = "actualAmount";
     public static final String COLUMN_ITEMSTOCK_PRODUCT = "product_id";
     public static final String COLUMN_ITEMSTOCK_STOCK = "stock_id";
     public static final String SQL_CREATE_TABLE_ITEMSTOCK = "CREATE TABLE " + TABLE_ITEMSTOCK + " ( " +
@@ -108,7 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_ITEMSTOCK_TOTAL + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_STOCKPERCENTAGE + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_STATUS + " TEXT NOT NULL, " +
-            COLUMN_ITEMSTOCK_ATUALAMOUNT + " INTEGER NOT NULL, " +
+            COLUMN_ITEMSTOCK_ACTUALAMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_PRODUCT + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_STOCK + " INTEGER NOT NULL, " +
             "FOREIGN KEY(" + COLUMN_ITEMSTOCK_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + "), " +

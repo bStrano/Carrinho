@@ -3,10 +3,6 @@ package br.com.stralom.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import br.com.stralom.entities.ItemRecipe;
-import br.com.stralom.util.Constants;
 
 /**
  * Created by Bruno Strano on 04/01/2018.
@@ -27,6 +23,7 @@ public abstract class GenericDAO  {
         db = dbHelper.getWritableDatabase();
         return db.insertOrThrow(tableName,null,contentValues);
     }
+
 
     public void remove(Long id){
         db = dbHelper.getReadableDatabase();

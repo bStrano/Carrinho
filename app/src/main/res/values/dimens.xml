@@ -5,4 +5,16 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_61">61dp</dimen>
+    <dimen name="fab_111">122dp</dimen>
+
+
+    <!-- Lists -->
+    <dimen name="list_textSmallSize">15sp</dimen>
+    <dimen name="list_textMediumSize">20sp</dimen>
+    <dimen name="list_textLargeSize">25sp</dimen>
+    <dimen name="list_marginLeft">5dp</dimen>
+    <dimen name="list_marginRight">5dp</dimen>
+    <dimen name="list_paddingVertical">8dp</dimen>
+    <dimen name="list_height">43dp</dimen>
 </resources>

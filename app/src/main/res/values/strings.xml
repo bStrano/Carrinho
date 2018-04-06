@@ -18,6 +18,21 @@
     <string name="save">Salvar</string>
     <string name="cancel">Cancelar</string>
 
+    <!-- Cart -->
+        <!-- Dialog -->
+        <string name="cart_dialogTitle_addSimpleProduct">Adicionar Produto Temporario</string>
+        <string name="cart_dialogTitle_addProduct">Adicionar Produto</string>
+        <string name="cart_dialogTitle_addRecipe">Adicionar Receita</string>
+
+    <!-- ItemStock -->
+    <string name="itemStock_actualAmount">Quantidade Atual</string>
+    <string name="itemStock_maxAmount">Quantidade Máxima</string>
+    <string name="itemStock_actualAmountShort">Atual</string>
+    <string name="itemStock_maxAmountShort">Max</string>
+        <!-- Dialog -->
+        <string name="stock_dialogTitle_addProduct">Adicionar ao Estoque</string>
+
+
     <!-- Product -->
     <string name="productPrice">Preço</string>
     <string name="productName">Nome</string>
@@ -42,7 +57,13 @@
     </string-array>
 
 
-    <string name="title_ItemStockRegistration">Adicionar ao Estoque</string>
+
     <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
     <string name="dialog_simpleProduct_amount">Quantidade ( Opcional) </string>
+    <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
+    <string name="toast_product_add">Produto adicionado !</string>
+    <string name="toast_product_update">Produto atualizado.</string>
+    <string name="swipe_remove">REMOVER</string>
+
+
 </resources>
