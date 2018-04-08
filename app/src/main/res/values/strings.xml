@@ -12,8 +12,7 @@
         <item>Receitas</item>
         <item>Estoque</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
     <string name="save">Salvar</string>
     <string name="cancel">Cancelar</string>
@@ -23,6 +22,12 @@
         <string name="cart_dialogTitle_addSimpleProduct">Adicionar Produto Temporario</string>
         <string name="cart_dialogTitle_addProduct">Adicionar Produto</string>
         <string name="cart_dialogTitle_addRecipe">Adicionar Receita</string>
+
+    <!-- ItemCart -->
+    <string name="itemCartAmount">Quantidade</string>
+
+    <!-- Stock -->
+    <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
 
     <!-- ItemStock -->
     <string name="itemStock_actualAmount">Quantidade Atual</string>
@@ -34,36 +39,51 @@
 
 
     <!-- Product -->
-    <string name="productPrice">Preço</string>
-    <string name="productName">Nome</string>
-    <string name="productExpirationDate">Prazo de Validade</string>
     <string name="productCategory">Categoria</string>
-    <string name="btnProductRegistration">Registrar Produto</string>
-    <string name="edit">Editar</string>
-    <string name="delete">Deletar</string>
-    <string name="recipeName">Nome</string>
-    <string name="formName">Nome</string>
-    <string name="formPrice">Preço</string>
-    <string name="formDescription">Descrição</string>
-    <string name="form_title_ItemRecipeRegistration">Adicionar Ingrediente</string>
+    <string name="btnProductRegistration">Cadastro de Produto</string>
+    <!-- Product - ItemList -->
+    <string name="product_itemList_price">%.2f R$</string>
+
     <string name="title_RecipeRegistration">Nova Receita</string>
-    <string-array name="categories">
-        <item>Carnes</item>
-        <item>Congelados</item>
-        <item>Doces</item>
-        <item>Frutas</item>
-        <item>Legumes</item>
-        <item>Higiene</item>
-    </string-array>
-
-
-
-    <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
     <string name="dialog_simpleProduct_amount">Quantidade ( Opcional) </string>
-    <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
+        <!-- Register Form -->
+        <string name="productName">Nome</string>
+        <string name="productPrice">Preço</string>
+        <string-array name="categories">
+            <item>Carnes</item>
+            <item>Congelados</item>
+            <item>Doces</item>
+            <item>Frutas</item>
+            <item>Legumes</item>
+            <item>Higiene</item>
+        </string-array>
+
+    <!-- Recipe -->
+    <string name="recipeName">Nome</string>
+    <string name="recipeAmount">Quantidade</string>
+    <string name="form_title_ItemRecipeRegistration">Adicionar Ingrediente</string>
+    <string name="imageDescription_form_recipe">Imagem padrão de uma receita</string>
+    <!-- Recipe - ItemList -->
+    <string name="recipe_itemList_name"><b>%s</b> </string>
+    <string name="recipe_itemList_price">Preço: %.2f R$</string>
+    <string name="recipe_itemList_ingredientCount">Numero de Ingredientes: %d</string>
+
+
+    <!-- Others -->
+    <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
     <string name="toast_product_add">Produto adicionado !</string>
     <string name="toast_product_update">Produto atualizado.</string>
     <string name="swipe_remove">REMOVER</string>
+    <string name="check">Confirmar</string>
+    <string name="addIngredient">Adicionar Ingrediente</string>
+    <string name="delete">Deletar</string>
+    <string name="edit">Editar</string>
+    <string name="imageDescription_productCategory">Icone da Categoria do Produto</string>
+    <string name="produto">Produto</string>
+    <string name="recipeIngredientsCount">Total de Ingredientes</string>
+    <string name="recipePrice">Preço</string>
+    <string name="recipe_contentDescription_basicImage">Imagem padrão da receita</string>
+    <string name="contentDescription_iconDelete">Icone de deletar</string>
 
 
 </resources>

@@ -12,9 +12,9 @@ import br.com.stralom.entities.SimpleItem;
  */
 
 public class SimpleItemForm {
-    private EditText name;
-    private EditText amount;
-    private Cart cart;
+    private final EditText name;
+    private final EditText amount;
+    private final Cart cart;
 
     public SimpleItemForm(View view, Cart cart) {
         this.name = view.findViewById(R.id.form_simpleProduct_name);
@@ -31,7 +31,6 @@ public class SimpleItemForm {
             amount = Integer.valueOf(this.amount.getText().toString());
         }
 
-        Long cartId = cart.getId();
         return new SimpleItem(name,amount,cart);
     }
 }

@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -18,19 +17,16 @@ import br.com.stralom.entities.Recipe;
  */
 
 public class RecipeForm {
-    private static final String TAG = "RecipeForm";
-    private EditText name;
-    private  ListView ingredientsTest;
-    private double total;
-    private ImageView image;
-    private ArrayList<ItemRecipe> ingredients;
+    private final EditText name;
+    //private final double total;
+    private final ImageView image;
+    private final ArrayList<ItemRecipe> ingredients;
 
     public RecipeForm(View view, ArrayList<ItemRecipe> ingredients) {
         this.name = view.findViewById(R.id.form_recipe_name);
-        this.ingredientsTest = view.findViewById(R.id.form_recipe_ingredients);
         this.image = view.findViewById(R.id.form_recipe_image);
         this.ingredients = ingredients;
-        total = 0;
+      //  total = 0;
     }
 
     public Recipe getRecipe(){

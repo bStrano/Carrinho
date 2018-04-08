@@ -2,6 +2,7 @@ package br.com.stralom.adapters;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,11 +21,11 @@ import br.com.stralom.entities.ItemStock;
  */
 
 public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> implements ItemTouchHelperAdapter {
-    private List<ItemStock> itemStocks ;
-    private Activity activity;
+    private final List<ItemStock> itemStocks ;
+    private final Activity activity;
     private ItemClickListener clickListener;
     private boolean undoSwipe;
-    private ItemStockDAO itemStockDAO;
+    private final ItemStockDAO itemStockDAO;
 
     public StockAdapter(List<ItemStock> itemStocks, Activity activity) {
         this.activity = activity;
@@ -33,14 +34,15 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
         itemStockDAO = new ItemStockDAO(activity);
     }
 
+    @NonNull
     @Override
-    public StockViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v =  LayoutInflater.from(activity).inflate(R.layout.list_item_stock, parent , false);;
+    public StockViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v =  LayoutInflater.from(activity).inflate(R.layout.list_item_stock, parent , false);
         return new StockViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(StockViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StockViewHolder holder, int position) {
         ItemStock itemStock = itemStocks.get(position);
         holder.name.setText(itemStock.getProduct().getName());
         holder.maxAmount.setText(String.valueOf(itemStock.getAmount()));
@@ -55,8 +57,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
 
    // ItemTouchHelper Implementation {
     @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        return false;
+    public void onItemMove(int fromPosition, int toPosition) {
     }
 
     @Override
@@ -88,7 +89,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(undoSwipe == false) {
+                if(!undoSwipe) {
                         itemStockDAO.remove( itemStock.getId());
                 }
 
@@ -109,13 +110,13 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
     // }
 
     public class StockViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView name;
-        TextView maxAmount;
-        TextView actualAmount;
-        View viewForeground ;
-        View viewBackground;
+        final TextView name;
+        final TextView maxAmount;
+        final TextView actualAmount;
+        final View viewForeground ;
+        final View viewBackground;
 
-        public StockViewHolder(View view) {
+        StockViewHolder(View view) {
             super(view);
             itemView.setOnClickListener(this);
             name = view.findViewById(R.id.stock_name);

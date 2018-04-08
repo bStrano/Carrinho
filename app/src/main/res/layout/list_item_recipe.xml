@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recipe_view_main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
@@ -22,17 +22,16 @@
                 android:id="@+id/delete_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_delete"
-                />
+                android:contentDescription="@string/contentDescription_iconDelete" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/delete_icon"
+                android:layout_toStartOf="@+id/delete_icon"
                 android:text="@string/swipe_remove"
                 android:textColor="#fff"
                 android:textSize="@dimen/list_textMediumSize"
@@ -52,15 +51,16 @@
                 android:id="@+id/recipe_image"
                 android:layout_width="67dp"
                 android:layout_height="67dp"
-                android:background="@drawable/ic_recipe_image"/>
+                android:background="@drawable/ic_recipe_image"
+                android:contentDescription="@string/recipe_contentDescription_basicImage" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
-
-                android:layout_toRightOf="@+id/recipe_image"
+                android:paddingRight="10dp"
+                android:layout_toEndOf="@+id/recipe_image"
                 >
 
                 <TextView
@@ -69,19 +69,21 @@
                     android:layout_height="wrap_content"
                     android:text="Nome da Receita"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/recipe_ingredientCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total de Ingredientes"
-                    android:textSize="15sp"/>
+                    android:text="@string/recipeIngredientsCount"
+                    android:textSize="15sp"
+                     />
                 <TextView
                     android:id="@+id/recipe_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Preço"
+                    android:text="@string/recipePrice"
                     android:textSize="15sp"/>
 
 

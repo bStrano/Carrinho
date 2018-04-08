@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/stock_itemList_mainView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_height">
 
@@ -15,15 +14,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_swapDelete"
-            android:paddingVertical="@dimen/list_paddingVertical"
-            android:gravity="center|right">
+            android:paddingTop="@dimen/list_paddingVertical"
+            android:paddingBottom="@dimen/list_paddingVertical"
+            android:gravity="end">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/list_textMediumSize"
                 android:text="@string/swipe_remove"
-                android:layout_toLeftOf="@+id/stock_icon_swapRemove"
+                android:layout_toStartOf="@+id/stock_icon_swapRemove"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"/>
 
@@ -32,7 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_delete"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/contentDescription_iconDelete" />
 
         </RelativeLayout>
 
@@ -41,9 +42,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:paddingVertical="@dimen/list_paddingVertical"
+            android:paddingTop="@dimen/list_paddingVertical"
+            android:paddingBottom="@dimen/list_paddingVertical"
             android:background="#FAFAFA"
-            android:layout_gravity="center|right"
+            android:layout_gravity="end"
             >
 
             <TextView
@@ -53,9 +55,9 @@
                 android:text="Nome do Produto  "
                 android:textSize="@dimen/list_textMediumSize"
                 android:textColor="#25383C"
-                android:layout_marginLeft="@dimen/list_marginLeft"
-                android:gravity="center"
-                />
+                android:layout_marginStart="@dimen/list_marginLeft"
+                android:gravity="end"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/stock_actualAmount"
@@ -64,10 +66,10 @@
                 android:text="800"
                 android:textColor="@color/colorPrimaryLight"
                 android:textSize="@dimen/list_textSmallSize"
-                android:layout_toLeftOf="@id/stock_maxAmount"
-                android:layout_marginRight="10dp"
+                android:layout_toStartOf="@id/stock_maxAmount"
+                android:layout_marginEnd="10dp"
                 android:gravity="center"
-                />
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/stock_maxAmount"
@@ -78,8 +80,8 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_alignParentEnd="true"
                 android:gravity="center"
-                android:layout_marginRight="@dimen/list_marginRight"
-                />
+                android:layout_marginEnd="@dimen/list_marginRight"
+                tools:ignore="HardcodedText" />
 
 
         </RelativeLayout>

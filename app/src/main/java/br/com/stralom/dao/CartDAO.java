@@ -12,8 +12,6 @@ import br.com.stralom.entities.Cart;
  */
 
 public class CartDAO extends GenericDAO {
-    private static final String TAG = "CartDAO";
-    private ItemCartDAO itemDAO;
 
 
 
@@ -45,16 +43,11 @@ public class CartDAO extends GenericDAO {
 
 
     @NonNull
-    public ContentValues getContentValues(Cart cart) {
+    private ContentValues getContentValues(Cart cart) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.COLUMN_CART_TOTAL,cart.getTotal());
         return contentValues;
     }
 
-    public Long add(Cart cart) {
-        db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = getContentValues(cart);
-        return db.insert(DBHelper.TABLE_CART,null,contentValues);
 
-    }
 }

@@ -1,7 +1,9 @@
 package br.com.stralom.adapters;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,29 +23,32 @@ import br.com.stralom.entities.Product;
  */
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> implements ItemTouchHelperAdapter {
-    private List<Product> products;
-    private Activity activity;
-    private ProductDAO productDAO;
+    private final List<Product> products;
+    private final Activity activity;
+    private final ProductDAO productDAO;
     private boolean undoSwipe;
+    private Resources res;
 
     public ProductAdapter(List<Product> products, Activity activity) {
         this.products = products;
         this.activity = activity;
+        res = activity.getResources();
         productDAO = new ProductDAO(activity);
         this.undoSwipe = false;
     }
 
+    @NonNull
     @Override
-    public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(activity).inflate(R.layout.list_item_product,parent,false);
         return new ProductViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ProductViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = products.get(position);
         holder.name.setText(product.getName());
-        holder.price.setText(Double.toString(product.getPrice()));
+        holder.price.setText(String.format(res.getString(R.string.product_itemList_price), product.getPrice()));
     }
 
     @Override
@@ -52,8 +57,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        return false;
+    public void onItemMove(int fromPosition, int toPosition) {
     }
 
     @Override
@@ -84,7 +88,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(undoSwipe == false) {
+                if(!undoSwipe) {
                     productDAO.remove(product.getId());
                 }
             }
@@ -100,16 +104,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return  ((ProductViewHolder) viewHolder).viewForeground;
     }
 
-    public class ProductViewHolder extends  RecyclerView.ViewHolder{
-        ImageView categoryIcon;
-        TextView name;
-        TextView price;
-        View viewForeground;
-        View backgroundView;
+     class ProductViewHolder extends  RecyclerView.ViewHolder{
+        final ImageView categoryIcon;
+        final TextView name;
+        final TextView price;
+        final View viewForeground;
+        final View backgroundView;
 
 
 
-        public ProductViewHolder(View itemView) {
+        ProductViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.product_itemList_name);
             price = itemView.findViewById(R.id.product_itemList_price);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -12,17 +13,19 @@
         <include layout="@layout/swipe_test"/>
 
         <RelativeLayout
+            android:layout_height="match_parent"
             android:background="#FAFAFA"
             android:id="@+id/product_view_foreground"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/list_height"
-            android:paddingVertical="@dimen/list_paddingVertical">
+            android:paddingTop="@dimen/list_paddingVertical"
+            android:paddingBottom="@dimen/list_paddingVertical">
             <ImageView
                 android:id="@+id/product_itemList_categoryIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_recipe_image"
-                android:layout_marginLeft="@dimen/list_marginLeft"/>
+                android:layout_marginStart="@dimen/list_marginLeft"
+                android:contentDescription="@string/imageDescription_productCategory" />
 
             <TextView
                 android:id="@+id/product_itemList_name"
@@ -30,9 +33,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="@dimen/list_textMediumSize"
-                android:layout_toRightOf="@+id/product_itemList_categoryIcon"
+                android:layout_toEndOf="@+id/product_itemList_categoryIcon"
                 android:textStyle="bold"
-                android:text="Product Name" />
+                android:text="Product Name"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/product_itemList_price"
@@ -40,9 +44,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="@dimen/list_textMediumSize"
-                android:layout_marginLeft="@dimen/list_marginLeft"
-                android:layout_toRightOf="@+id/product_itemList_name"
-                android:text="400 R$"/>
+                android:layout_marginStart="@dimen/list_marginLeft"
+                android:layout_toEndOf="@+id/product_itemList_name"
+                android:text="400 R$"
+                tools:ignore="HardcodedText" />
         </RelativeLayout>
 
     </FrameLayout>

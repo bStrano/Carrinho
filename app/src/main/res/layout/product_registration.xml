@@ -1,22 +1,14 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
-
-    <!-- TODO: Update blank fragment layout -->
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="9dp">
+    android:orientation="vertical"
+    android:padding="9dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cadastro de Produtos"
+                android:text="@string/btnProductRegistration"
                 android:textSize="30sp"
                 android:textAlignment="center"
                 android:layout_marginTop="5dp"/>
@@ -27,7 +19,7 @@
                 android:hint="@string/productName"
                 android:textSize="20sp"
                 android:layout_marginTop="5dp"
-                />
+                android:inputType="textCapWords|textShortMessage" />
 
             <EditText
                 android:id="@+id/form_productPrice"
@@ -43,7 +35,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:text="@string/productCategory"
                 android:textSize="20sp"
                 android:layout_marginTop="10sp"/>
@@ -56,6 +47,5 @@
 
 
 
-        </LinearLayout>
+ </LinearLayout>
 
-</FrameLayout>

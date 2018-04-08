@@ -25,8 +25,8 @@ public class ItemCartDAO extends GenericDAO  {
     }
 
 
-    public Long add(ItemCart itemCart) {
-        return add(getContentValues(itemCart));
+    public void add(ItemCart itemCart) {
+        add(getContentValues(itemCart));
     }
 
     public void remove(Long id){
@@ -40,36 +40,40 @@ public class ItemCartDAO extends GenericDAO  {
     }
 
     public ItemCart getByProductId(Long id){
-        ItemCart itemCart = new ItemCart();
-        String sql = "SELECT i." + DBHelper.COLUMN_ITEMCART_ID + ", i." + DBHelper.COLUMN_ITEMCART_AMOUNT + ", i." + DBHelper.COLUMN_ITEMCART_CART + ", i." + DBHelper.COLUMN_ITEMCART_PRODUCT + ", i." + DBHelper.COLUMN_ITEMCART_TOTAL +
-                ", p." + DBHelper.COLUMN_PRODUCT_NAME +
+        db = dbHelper.getReadableDatabase();
+        ItemCart itemCart = null;
+        String sql = "SELECT i." + DBHelper.COLUMN_ITEMCART_ID + " , i." + DBHelper.COLUMN_ITEMCART_AMOUNT + " , i." + DBHelper.COLUMN_ITEMCART_CART + " , i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " , i." + DBHelper.COLUMN_ITEMCART_TOTAL +
+                ", p." + DBHelper.COLUMN_PRODUCT_NAME + " , p." + DBHelper.COLUMN_PRODUCT_PRICE +
                 " FROM " + DBHelper.TABLE_ITEMCART + " i " +
                 " JOIN " + DBHelper.TABLE_PRODUCT + " p " +
                 " ON i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = p." + DBHelper.COLUMN_PRODUCT_ID +
-                " WHERE i." + DBHelper.COLUMN_PRODUCT_ID + " = ? ";
+                " WHERE i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = ? ";
 
-        Cursor c = db.rawQuery(sql,new String[] {id.toString()});
-        if (c != null) {
-            while(c.moveToNext()){
-                int itemCartId = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_ID));
+
+        try(Cursor c = db.rawQuery(sql,new String[] {id.toString()})) {
+
+            while (c.moveToNext()) {
+                long itemCartId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_ID));
                 int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_AMOUNT));
                 Long cartId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_CART));
                 Long productId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_PRODUCT));
                 double total = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_TOTAL));
                 String productName = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
-
+                double productPrice = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
                 Product product = new Product();
                 product.setName(productName);
                 product.setId(productId);
+                product.setPrice(productPrice);
+
 
                 Cart cart = new Cart();
                 cart.setId(cartId);
-                itemCart = new ItemCart(id,product,amount,total,cart);
-            }
-            c.close();
-            return itemCart;
-        }
+                itemCart = new ItemCart(itemCartId, product, amount, total, cart);
 
+            }
+        } catch (NullPointerException e) {
+            Log.e(TAG,"[Null Cursor] No items found");
+        }
 
         return itemCart;
     }
@@ -92,7 +96,6 @@ public class ItemCartDAO extends GenericDAO  {
         while (c.moveToNext()){
             Long id = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_ID));
             int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_AMOUNT));
-            double total = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_TOTAL));
             Long productId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_PRODUCT));
             String name = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
 
@@ -126,5 +129,6 @@ public class ItemCartDAO extends GenericDAO  {
 
         return contentValues;
     }
+
 
 }

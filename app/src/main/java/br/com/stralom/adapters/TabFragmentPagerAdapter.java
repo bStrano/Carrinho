@@ -14,7 +14,7 @@ import br.com.stralom.compras.StockMain;
  */
 
 public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
-   private String[] tabTitles;
+   private final String[] tabTitles;
 
     public TabFragmentPagerAdapter(FragmentManager fm,  String[] tabTitles) {
         super(fm);

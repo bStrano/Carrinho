@@ -14,8 +14,8 @@ import br.com.stralom.adapters.ItemClickListener;
 
 public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener{
 
-    private ItemClickListener clicklistener;
-    private GestureDetector gestureDetector;
+    private final ItemClickListener clicklistener;
+    private final GestureDetector gestureDetector;
 
     public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final ItemClickListener clicklistener) {
         this.clicklistener = clicklistener;

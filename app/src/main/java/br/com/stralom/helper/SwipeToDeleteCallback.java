@@ -12,7 +12,7 @@ import br.com.stralom.adapters.ItemTouchHelperAdapter;
  */
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
-    private ItemTouchHelperAdapter adapter;
+    private final ItemTouchHelperAdapter adapter;
     private View foregroundView;
 
     public SwipeToDeleteCallback(ItemTouchHelperAdapter adapter) {

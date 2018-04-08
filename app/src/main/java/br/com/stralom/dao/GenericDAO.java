@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteDatabase;
  */
 
 public abstract class GenericDAO  {
-    protected SQLiteDatabase db;
-    protected DBHelper dbHelper;
-    private String tableName;
+    SQLiteDatabase db;
+    final DBHelper dbHelper;
+    private final String tableName;
 
 
-    public GenericDAO(Context context, String tableName ) {
+    GenericDAO(Context context, String tableName) {
         dbHelper = new DBHelper(context);
         this.tableName = tableName;
     }
@@ -30,7 +30,7 @@ public abstract class GenericDAO  {
         db.delete(tableName,"id = ?", new String[] {id.toString()});
     }
 
-    public void update(Object object, Long idObject, ContentValues contentValues) {
+    public void update(Long idObject, ContentValues contentValues) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.update(tableName,contentValues,"id = ?",new String[] {idObject.toString()});
     }

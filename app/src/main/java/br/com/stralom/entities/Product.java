@@ -17,14 +17,7 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(String name, double price) {
-        this.price = price;
-        this.name = name;
-    }
 
-    public Product(Long id) {
-        this.id = id;
-    }
 
     public Product(Long id, String name, double price, String category) {
         this.id = id;

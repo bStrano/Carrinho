@@ -13,9 +13,9 @@ import br.com.stralom.entities.Product;
  */
 
 public class ItemStockForm {
-    private Spinner products;
-    private EditText actualAmount;
-    private EditText maxAmount;
+    private final Spinner products;
+    private final EditText actualAmount;
+    private final EditText maxAmount;
 
     public ItemStockForm(View view) {
         this.products = view.findViewById(R.id.list_productsStock);

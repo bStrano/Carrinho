@@ -3,6 +3,7 @@ package br.com.stralom.compras;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import br.com.stralom.adapters.RecipeAdapter;
 import br.com.stralom.dao.RecipeDAO;
@@ -24,8 +26,6 @@ import br.com.stralom.helper.SwipeToDeleteCallback;
  * A simple {@link Fragment} subclass.
  */
 public class RecipeMain extends Fragment {
-    private RecipeDAO recipeDAO;
-    private RecyclerView recyclerView;
 
     public RecipeMain() {
         // Required empty public constructor
@@ -33,16 +33,16 @@ public class RecipeMain extends Fragment {
 
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recipe_main, container, false);
-        recyclerView = view.findViewById(R.id.list_recipe);
-        recipeDAO = new RecipeDAO(getContext());
+        RecyclerView recyclerView = view.findViewById(R.id.list_recipe);
+        RecipeDAO recipeDAO = new RecipeDAO(getContext());
 
         ArrayList<Recipe> recipes = recipeDAO.getAll();
 
-        RecipeAdapter adapter = new RecipeAdapter(recipes,getActivity());
+        RecipeAdapter adapter = new RecipeAdapter(recipes, Objects.requireNonNull(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

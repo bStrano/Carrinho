@@ -39,11 +39,10 @@ public class ItemStockDAO extends GenericDAO {
                 " JOIN " + DBHelper.TABLE_PRODUCT + " p" +
                 " ON s." + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + " = p." + DBHelper.COLUMN_PRODUCT_ID +
                 " WHERE s." + DBHelper.COLUMN_ITEMSTOCK_STOCK + " = ?";
-        Cursor cursor = db.rawQuery(sql,new String[] { idStock.toString() });
 
 
-        try{
-            while(cursor.moveToNext()){
+        try (Cursor cursor = db.rawQuery(sql, new String[]{idStock.toString()})) {
+            while (cursor.moveToNext()) {
                 Long id = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ID));
                 int amount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_AMOUNT));
                 double total = cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_TOTAL));
@@ -59,16 +58,13 @@ public class ItemStockDAO extends GenericDAO {
                 Stock stock = new Stock();
                 stock.setId(stockId);
 
-                ItemStock itemStock = new ItemStock(id,amount,total,product,stockPercentage,status,atualAmount,stock) ;
+                ItemStock itemStock = new ItemStock(id, amount, total, product, stockPercentage, status, atualAmount, stock);
                 products.add(itemStock);
             }
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.i(TAG, "[NullPointerException] Products not found.");
-        } finally {
-            cursor.close();
-            return  products;
         }
-
+        return  products;
     }
 
     public ContentValues getContentValues(ItemStock itemStock){

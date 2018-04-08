@@ -10,7 +10,7 @@ import br.com.stralom.adapters.ItemTouchHelperAdapter;
  * Created by Bruno Strano on 31/01/2018.
  */
 
-public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
+class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private final ItemTouchHelperAdapter mAdapter;
 
     public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter mAdapter) {
@@ -18,15 +18,15 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
 
-    @Override
-    public boolean isLongPressDragEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean isItemViewSwipeEnabled() {
-        return super.isItemViewSwipeEnabled();
-    }
+//    @Override
+//    public boolean isLongPressDragEnabled() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isItemViewSwipeEnabled() {
+//        return super.isItemViewSwipeEnabled();
+//    }
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
@@ -51,8 +51,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 
-    public void removeItem(){
 
-    }
 
 }

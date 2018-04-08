@@ -11,9 +11,6 @@ public class ItemStock extends Item {
     private Status status;
     private int actualAmount;
 
-    public ItemStock(int amount, Product product) {
-        super(amount, product);
-    }
 
     public ItemStock() {
 
@@ -28,6 +25,7 @@ public class ItemStock extends Item {
         this.stockPercentage = stockPercentage;
         this.status = status;
         this.actualAmount = actualAmount;
+        this.stock = stock;
     }
 
     public ItemStock(int amount, Product product, int actualAmount) {
@@ -54,7 +52,7 @@ public class ItemStock extends Item {
         this.actualAmount = atualAmount;
     }
 
-    public void setStatus(){
+    private void setStatus(){
             if(stockPercentage == 0){
                 this.status = Status.EMPTY;
              } else if (stockPercentage < 30) {

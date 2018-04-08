@@ -4,6 +4,7 @@ package br.com.stralom.compras;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import br.com.stralom.adapters.StockAdapter;
 import br.com.stralom.dao.ItemStockDAO;
@@ -35,13 +37,11 @@ import br.com.stralom.helper.SwipeToDeleteCallback;
  */
 public class StockMain extends Fragment {
     private static final String TAG = "StockMain";
-    ItemStockDAO itemStockDAO;
-    ProductDAO productDAO;
-    private StockDAO stockDAO;
+    private ItemStockDAO itemStockDAO;
+    private ProductDAO productDAO;
     private Stock stock;
     private FloatingActionButton fabAddStock, fabUpdateStock, fabMain;
     private boolean fabPressed = false;
-    private RecyclerView productsStockView;
 
     public StockMain() {
         // Required empty public constructor
@@ -50,13 +50,13 @@ public class StockMain extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         //DAOS
         itemStockDAO = new ItemStockDAO(getContext());
         productDAO = new ProductDAO(getContext());
-        stockDAO = new StockDAO(getContext());
+        StockDAO stockDAO = new StockDAO(getContext());
 
         stock = stockDAO.findById((long) 1);
         if(stock == null){
@@ -65,7 +65,7 @@ public class StockMain extends Fragment {
         }
         //VIEWS
         View view = inflater.inflate(R.layout.fragment_stock_main, container, false);
-        productsStockView = view.findViewById(R.id.list_itemStock);
+        RecyclerView productsStockView = view.findViewById(R.id.list_itemStock);
         final ArrayList<ItemStock> productsStock = (ArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
         StockAdapter adapter = new StockAdapter(productsStock,getActivity());
         productsStockView.setAdapter(adapter);
@@ -104,7 +104,7 @@ public class StockMain extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if(dy>0){
                     hideFabs();
-                    if(fabPressed == true) {
+                    if(fabPressed) {
                         closeFabMenu();
                     }
                 } else {
@@ -122,7 +122,7 @@ public class StockMain extends Fragment {
                 // Load Products Spinner
                 Spinner spinner = viewDialog.findViewById(R.id.list_productsStock);
                 ArrayList<Product> products = (ArrayList<Product>) productDAO.getAll();
-                ArrayAdapter adapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item, products);
+                ArrayAdapter adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),android.R.layout.simple_spinner_item, products);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
                 // Load Alert Dialog
@@ -139,8 +139,8 @@ public class StockMain extends Fragment {
                         Log.e(TAG,"Quantidade atual: " + itemStock.getActualAmount());
                         Log.e(TAG,"Quantidade Máxima: " + itemStock.getAmount());
                         itemStockDAO.add(itemStockDAO.getContentValues(itemStock));
-                        getActivity().recreate();
-                        Toast.makeText(getContext(),"Produto adicionado.", Toast.LENGTH_LONG);
+                        Objects.requireNonNull(getActivity()).recreate();
+                        Toast.makeText(getContext(),"Produto adicionado.", Toast.LENGTH_LONG).show();
                     }
                 });
                 dialogBuilder.setNegativeButton(R.string.cancel, null);

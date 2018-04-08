@@ -10,14 +10,13 @@ import android.widget.Spinner;
 import java.util.List;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.Product;
 
 /**
  * Created by Bruno on 02/02/2018.
  */
 
 public class BasicViewHelper {
-    private Context context;
+    private final Context context;
 
     public BasicViewHelper(Context context) {
         this.context = context;
@@ -33,7 +32,7 @@ public class BasicViewHelper {
     }
 
     public void loadSpinner(Spinner spinner, List content){
-        ArrayAdapter arrayAdapter = new ArrayAdapter<Product>(context, android.R.layout.simple_list_item_1, content);
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, content);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
     }

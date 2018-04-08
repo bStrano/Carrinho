@@ -14,17 +14,17 @@
             android:id="@+id/delete_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_delete"
+            android:contentDescription="@string/swipe_remove"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/delete_icon"
+            android:layout_toStartOf="@+id/delete_icon"
             android:text="@string/swipe_remove"
             android:textColor="#fff"
             android:textSize="@dimen/list_textMediumSize"

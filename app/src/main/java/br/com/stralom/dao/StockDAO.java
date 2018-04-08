@@ -23,15 +23,15 @@ public class StockDAO extends GenericDAO {
 
         db = dbHelper.getReadableDatabase();
         String sql = "SELECT * FROM " + DBHelper.TABLE_STOCK + " WHERE " + DBHelper.COLUMN_STOCK_ID + " = ? ";
-        Cursor c = db.rawQuery(sql, new String[] {id.toString()});
         Stock stock = null ;
-        try {
-            while(c.moveToNext()){
+        try (Cursor c = db.rawQuery(sql, new String[]{id.toString()})) {
+            while (c.moveToNext()) {
                 int ingredientsCount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_STOCK_PRODUCTSCOUNT));
 
                 stock = new Stock(id);
                 stock.setProductCount(ingredientsCount);
             }
+            c.close();
         } catch (NullPointerException e) {
 //            if(id == Long.valueOf(1)){
 //                stock = new Stock(id);
@@ -39,9 +39,7 @@ public class StockDAO extends GenericDAO {
 //
 //                this.add(getContentValues(stock));
 //            }
-            Log.i(TAG,"[NullPointerException] Stock not found");
-        } finally {
-            c.close();
+            Log.i(TAG, "[NullPointerException] Stock not found");
         }
         return stock;
     }

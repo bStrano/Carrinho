@@ -1,6 +1,7 @@
 package br.com.stralom.compras;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.ItemRecipeDAO;
@@ -62,7 +66,7 @@ public class RecipeRegistration extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_registration, container, false);
 
@@ -82,7 +86,7 @@ public class RecipeRegistration extends Fragment {
         mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setNavigationIcon(R.drawable.ic_back);
         mToolbar.setTitle(R.string.title_RecipeRegistration);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
         setHasOptionsMenu(true);
 
         // Toolbar - Back
@@ -90,7 +94,6 @@ public class RecipeRegistration extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(),MainActivity.class);
-                RecipeRegistration fragment = new RecipeRegistration();
                 intent.putExtra(RecipeRegistration.class.getSimpleName(),RecipeRegistration.class.getSimpleName());
                 startActivity(intent);
             }
@@ -114,7 +117,7 @@ public class RecipeRegistration extends Fragment {
             }
         });
         // Update Ingredient List
-        itemRecipeArrayAdapter = new ArrayAdapter<ItemRecipe>(getContext(),android.R.layout.simple_list_item_1,ingredients);
+        itemRecipeArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_list_item_1, ingredients);
         list_ingredients.setAdapter(itemRecipeArrayAdapter);
 
         // Save Recipe
@@ -149,7 +152,7 @@ public class RecipeRegistration extends Fragment {
         Spinner list_products = newItemRecipeLayout.findViewById(R.id.form_itemRecipe_products);
         ProductDAO productDAO = new ProductDAO(getContext());
         ArrayList<Product> products = (ArrayList<Product>) productDAO.getAll();
-        ArrayAdapter<Product> productArrayAdapter = new ArrayAdapter<Product>(getContext(),android.R.layout.simple_spinner_item,products);
+        ArrayAdapter<Product> productArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_spinner_item, products);
         productArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         list_products.setAdapter(productArrayAdapter);
     }
@@ -163,7 +166,7 @@ public class RecipeRegistration extends Fragment {
 
     private void capturePhotoIntent(){
         Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intentCamera.resolveActivity(getActivity().getPackageManager()) != null){
+        if (intentCamera.resolveActivity(Objects.requireNonNull(getActivity()).getPackageManager()) != null){
             File photo = null;
             try{
                 photo = createImageFile();
@@ -180,9 +183,9 @@ public class RecipeRegistration extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Objects.requireNonNull(getActivity()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName,".jpg",storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;

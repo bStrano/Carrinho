@@ -12,10 +12,10 @@ import br.com.stralom.entities.Product;
  */
 
 public class ProductForm {
-    EditText name;
-    EditText price;
-    Spinner category;
-    Long id;
+    private final EditText name;
+    private final EditText price;
+    private final Spinner category;
+
 
     public ProductForm(View view){
         name = view.findViewById(R.id.form_productName);
@@ -28,7 +28,6 @@ public class ProductForm {
         double price = Double.parseDouble(this.price.getText().toString());
         String category = this.category.getSelectedItem().toString();
 
-        Product product = new Product(name,price,category);
-        return product;
+        return new Product(name,price,category);
     }
 }

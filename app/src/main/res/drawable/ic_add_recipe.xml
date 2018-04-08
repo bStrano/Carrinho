@@ -3,13 +3,12 @@
     <item android:width="56dp"
         android:height="56dp">
         <shape android:shape="oval">
-            <solid android:color="#0886bf"></solid>
+            <solid android:color="#0886bf"/>
         </shape>
     </item>
 
     <item
         android:gravity="center">
-        <bitmap android:src="@drawable/ic_recipe"></bitmap>
-
+        <bitmap android:src="@drawable/ic_recipe"/>
     </item>
 </layer-list>

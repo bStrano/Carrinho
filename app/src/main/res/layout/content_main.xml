@@ -10,33 +10,19 @@
 
     <android.support.v4.view.ViewPager
         android:layout_marginTop="10dp"
-        android:layout_marginHorizontal="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mViewPager">
 
-
         <FrameLayout
-            android:paddingTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mainFrame">
+            android:id="@+id/main_frame">
         </FrameLayout>
-
 
     </android.support.v4.view.ViewPager>
 
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--app:layout_anchor="@id/mViewPager"-->
-        <!--app:layout_anchorGravity="bottom|right|end"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/ic_add"-->
-        <!--app:fabSize="normal"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:layout_gravity="bottom|right"-->
-        <!--/>-->
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -15,7 +15,7 @@ import br.com.stralom.entities.Recipe;
 
 public class RecipeDAO extends GenericDAO {
     private static final String TAG = "RecipeDAO";
-    public ItemRecipeDAO itemRecipeDAO;
+    private final ItemRecipeDAO itemRecipeDAO;
 
     public RecipeDAO(Context context) {
         super(context, DBHelper.TABLE_RECIPE);
@@ -42,9 +42,8 @@ public class RecipeDAO extends GenericDAO {
         db = dbHelper.getReadableDatabase();
         ArrayList<Recipe> recipes = new ArrayList<>();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_RECIPE,null);
-        try {
-            while(cursor.moveToNext()){
+        try (Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_RECIPE, null)) {
+            while (cursor.moveToNext()) {
                 Recipe recipe = new Recipe();
                 recipe.setId(cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_ID)));
                 recipe.setImagePath(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_IMAGEPATH)));
@@ -54,12 +53,11 @@ public class RecipeDAO extends GenericDAO {
 
                 recipes.add(recipe);
             }
-
-        } catch (NullPointerException e){
-            Log.e(TAG,"[NullPointerException] Empty recipe list");
-        } finally {
             cursor.close();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "[NullPointerException] Empty recipe list");
         }
+
 
 
         return recipes;

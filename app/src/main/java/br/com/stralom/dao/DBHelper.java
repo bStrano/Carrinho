@@ -9,7 +9,7 @@ import android.util.Log;
  * Created by Bruno Strano on 05/01/2018.
  */
 
-public class DBHelper extends SQLiteOpenHelper {
+class DBHelper extends SQLiteOpenHelper {
     private static final String TAG = "DBHelper";
 
     private static final String DATABASE_NAME = "Stralom_Compras";
@@ -21,22 +21,22 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PRODUCT_NAME = "name";
     public static final String COLUMN_PRODUCT_PRICE = "price";
     public static final String COLUMN_PRODUCT_CATEGORY = "category";
-    public static final String SQL_CREATE_TABLE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + "( " +
+    private static final String SQL_CREATE_TABLE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + "( " +
             COLUMN_PRODUCT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_PRODUCT_NAME + " TEXT NOT NULL UNIQUE, " +
             COLUMN_PRODUCT_PRICE + " REAL , " +
             COLUMN_PRODUCT_CATEGORY + " TEXT  " +
             ");";
-    public static final String SQL_DROP_TABLE_PRODUCT = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
+    //public static final String SQL_DROP_TABLE_PRODUCT = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
     // Cart
     public static final String TABLE_CART = "tb_cart";
     public static final String COLUMN_CART_ID = "id";
     public static final String COLUMN_CART_TOTAL = "total";
-    public static final String SQL_CREATE_TABLE_CART = "CREATE TABLE " + TABLE_CART + "( " +
+    private static final String SQL_CREATE_TABLE_CART = "CREATE TABLE " + TABLE_CART + "( " +
             COLUMN_CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_CART_TOTAL + " REAL NOT NULL " +
             ");";
-    public static final String SQL_DROP_TABLE_CART = "DROP TABLE IF EXISTS " + TABLE_CART;
+    //public static final String SQL_DROP_TABLE_CART = "DROP TABLE IF EXISTS " + TABLE_CART;
     // ItemCart
     public static final String TABLE_ITEMCART = "tb_itemCart";
     public static final String COLUMN_ITEMCART_ID = "id";
@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ITEMCART_TOTAL = "total";
     public static final String COLUMN_ITEMCART_CART = "cart_id";
     public static final String COLUMN_ITEMCART_PRODUCT = "product_id";
-    public static final String SQL_CREATE_TABLE_ITEMCART = "CREATE TABLE " + TABLE_ITEMCART + "(  " +
+    private static final String SQL_CREATE_TABLE_ITEMCART = "CREATE TABLE " + TABLE_ITEMCART + "(  " +
             COLUMN_ITEMCART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_ITEMCART_AMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMCART_TOTAL + " REAL NOT NULL, " +
@@ -53,7 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
             "FOREIGN KEY("+ COLUMN_ITEMCART_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + "), " +
             "FOREIGN KEY("+ COLUMN_ITEMCART_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ")" +
             ");";
-    public static final String SQL_DROP_TABLE_ITEMCART = "DROP TABLE IF EXISTS " + TABLE_ITEMCART;
+    //public static final String SQL_DROP_TABLE_ITEMCART = "DROP TABLE IF EXISTS " + TABLE_ITEMCART;
     // RECIPE
     public static final String TABLE_RECIPE = "tb_recipe";
     public static final String COLUMN_RECIPE_ID = "id";
@@ -61,7 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_RECIPE_TOTAL = "total";
     public static final String COLUMN_RECIPE_INGREDIENTCOUNT = "ingredientCount";
     public static final String COLUMN_RECIPE_IMAGEPATH = "imagePath";
-    public static final String SQL_CREATE_TABLE_RECIPE = "CREATE TABLE " + TABLE_RECIPE + "( " +
+    private static final String SQL_CREATE_TABLE_RECIPE = "CREATE TABLE " + TABLE_RECIPE + "( " +
             COLUMN_RECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_RECIPE_NAME + " TEXT NOT NULL, " +
             COLUMN_RECIPE_INGREDIENTCOUNT + " INTEGER NOT NULL, " +
@@ -75,7 +75,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ITEMRECIPE_TOTAL = "total";
     public static final String COLUMN_ITEMRECIPE_PRODUCT = "product_id";
     public static final String COLUMN_ITEMRECIPE_RECIPE = "recipe_id";
-    public static final String SQL_CREATE_TABLE_ITEMRECIPE = "CREATE TABLE " + TABLE_ITEMRECIPE + "( " +
+    private static final String SQL_CREATE_TABLE_ITEMRECIPE = "CREATE TABLE " + TABLE_ITEMRECIPE + "( " +
             COLUMN_ITEMRECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
              COLUMN_ITEMRECIPE_AMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMRECIPE_TOTAL + " REAL NOT NULL, " +
@@ -88,7 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_STOCK = "tb_stock";
     public static final String COLUMN_STOCK_ID = "id";
     public static final String COLUMN_STOCK_PRODUCTSCOUNT = "productsCount";
-    public static final String SQL_CREATE_TABLE_STOCK = "CREATE TABLE " + TABLE_STOCK  + " ( " +
+    private static final String SQL_CREATE_TABLE_STOCK = "CREATE TABLE " + TABLE_STOCK  + " ( " +
             COLUMN_STOCK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_STOCK_PRODUCTSCOUNT + " INTEGER " +
             ");";
@@ -102,7 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ITEMSTOCK_ACTUALAMOUNT = "actualAmount";
     public static final String COLUMN_ITEMSTOCK_PRODUCT = "product_id";
     public static final String COLUMN_ITEMSTOCK_STOCK = "stock_id";
-    public static final String SQL_CREATE_TABLE_ITEMSTOCK = "CREATE TABLE " + TABLE_ITEMSTOCK + " ( " +
+    private static final String SQL_CREATE_TABLE_ITEMSTOCK = "CREATE TABLE " + TABLE_ITEMSTOCK + " ( " +
             COLUMN_ITEMSTOCK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_ITEMSTOCK_AMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_TOTAL + " INTEGER NOT NULL, " +
@@ -116,11 +116,11 @@ public class DBHelper extends SQLiteOpenHelper {
             ");";
     // SIMPLEITEM
     public static final String TABLE_SIMPLEITEM = "tb_simpleItem";
-    public static final String COLUMN_SIMPLEITEM_ID = "id";
+    private static final String COLUMN_SIMPLEITEM_ID = "id";
     public static final String COLUMN_SIMPLEITEM_NAME = "name";
     public static final String COLUMN_SIMPLEITEM_AMOUNT = "amount";
     public static final String COLUMN_SIMPLEITEM_CART = "cart_id";
-    public static final String SQL_CREATE_TABLE_SIMPLEITEM = "CREATE TABLE " + TABLE_SIMPLEITEM + "( " +
+    private static final String SQL_CREATE_TABLE_SIMPLEITEM = "CREATE TABLE " + TABLE_SIMPLEITEM + "( " +
             COLUMN_SIMPLEITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_SIMPLEITEM_NAME + " TEXT NOT NULL, " +
             COLUMN_SIMPLEITEM_AMOUNT + " INTEGER, " +
@@ -133,10 +133,9 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-
-    private String getDropTableString(String tableName){
-        return "DROP TABLE IF EXISTS " + tableName;
-    }
+    // private String getDropTableString(String tableName){
+    //    return "DROP TABLE IF EXISTS " + tableName;
+    //}
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {

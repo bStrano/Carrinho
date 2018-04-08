@@ -1,9 +1,11 @@
 package br.com.stralom.adapters;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,30 +25,33 @@ import br.com.stralom.entities.Recipe;
  */
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> implements ItemTouchHelperAdapter {
-    private List<Recipe> recipeList;
-    private Activity activity ;
+    private final List<Recipe> recipeList;
+    private final Activity activity ;
     private boolean undoSwipe;
-    private RecipeDAO recipeDAO;
+    private final RecipeDAO recipeDAO;
+    private final Resources res ;
 
     public RecipeAdapter(List<Recipe> recipeList, Activity activity) {
         this.recipeList = recipeList;
         this.activity = activity;
         this.undoSwipe = false;
+        res = activity.getResources();
         recipeDAO = new RecipeDAO(activity);
     }
 
+    @NonNull
     @Override
-    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(activity).inflate(R.layout.list_item_recipe,parent, false);
         return new RecipeViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
-        holder.name.setText(recipe.getName());
-        holder.price.setText("Preço: " + Double.toString(recipe.getTotal()));
-        holder.ingredientCount.setText("Numero de Ingredientes: " + Integer.toString(recipe.getIgredientCount()));
+        holder.name.setText(String.format(res.getString(R.string.recipe_itemList_name),recipe.getName()));
+        holder.price.setText(String.format(res.getString(R.string.recipe_itemList_price), recipe.getTotal()));
+        holder.ingredientCount.setText(String.format(res.getString(R.string.recipe_itemList_ingredientCount),recipe.getIgredientCount()));
 
 
         String imagePath = recipe.getImagePath();
@@ -64,8 +69,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        return false;
+    public void onItemMove(int fromPosition, int toPosition) {
     }
 
     @Override
@@ -96,7 +100,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(undoSwipe == false) {
+                if(!undoSwipe) {
                      recipeDAO.remove(recipe.getId());
                 } else {
                     undoSwipe = false;
@@ -117,15 +121,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
 
-    public class RecipeViewHolder extends RecyclerView.ViewHolder{
-        TextView name;
-        TextView price;
-        TextView ingredientCount;
-        ImageView image;
-        View foregroundView;
+     class RecipeViewHolder extends RecyclerView.ViewHolder{
+        final TextView name;
+        final TextView price;
+        final TextView ingredientCount;
+        final ImageView image;
+        final View foregroundView;
 
 
-        public RecipeViewHolder(View itemView) {
+        RecipeViewHolder(View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.recipe_name);

@@ -3,13 +3,13 @@
     <item android:width="56dp"
         android:height="56dp">
         <shape android:shape="oval">
-            <solid android:color="@color/colorPrimaryDark"></solid>
+            <solid android:color="@color/colorPrimaryDark"/>
         </shape>
     </item>
 
     <item
         android:gravity="center">
-        <bitmap android:src="@drawable/ic_itemcart"></bitmap>
+        <bitmap android:src="@drawable/ic_itemcart"/>
 
     </item>
 </layer-list>

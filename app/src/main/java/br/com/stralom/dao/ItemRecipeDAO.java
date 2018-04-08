@@ -18,92 +18,60 @@ import br.com.stralom.entities.Recipe;
 
 public class ItemRecipeDAO extends GenericDAO {
     private static final String TAG = "ItemRecipeDAO";
-    private ProductDAO productDAO;
 
 
     public ItemRecipeDAO(Context context) {
         super(context,DBHelper.TABLE_ITEMRECIPE);
-        this.productDAO = new ProductDAO(context);
     }
 
-    @Override
-    public Long add(ContentValues contentValues) {
-        return super.add(contentValues);
-    }
 
     public void deleteAllFromRecipe(Long idRecipe){
         db = dbHelper.getWritableDatabase();
         db.delete(DBHelper.TABLE_ITEMRECIPE,DBHelper.COLUMN_ITEMRECIPE_RECIPE + " = ?" , new String[] {idRecipe.toString()});
     }
 
-    public List<ItemRecipe> getAll(Long recipeId){
+    public List<ItemRecipe> getAllByRecipe(Long recipeId){
         db = dbHelper.getReadableDatabase();
-        ArrayList<ItemRecipe>  ingredients = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM " + DBHelper.TABLE_ITEMRECIPE + " WHERE " + DBHelper.COLUMN_ITEMRECIPE_RECIPE + " = ?";
-            Cursor c = db.rawQuery(sql, new String[] {recipeId.toString()});
+        ArrayList<ItemRecipe>  itemRecipeList = new ArrayList<>();
+        String sql = "SELECT ir." + DBHelper.COLUMN_ITEMRECIPE_ID + ", ir." + DBHelper.COLUMN_ITEMRECIPE_PRODUCT
+                + " , ir." + DBHelper.COLUMN_ITEMRECIPE_TOTAL + " , ir." + DBHelper.COLUMN_ITEMRECIPE_AMOUNT
+                + " , p." + DBHelper.COLUMN_PRODUCT_NAME + " ,p." + DBHelper.COLUMN_PRODUCT_PRICE + " , p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
+                " FROM " + DBHelper.TABLE_ITEMRECIPE + " ir " +
+                " JOIN " + DBHelper.TABLE_PRODUCT + " p " +
+                " ON ir." + DBHelper.COLUMN_ITEMRECIPE_PRODUCT + " = p." + DBHelper.COLUMN_PRODUCT_ID +
+                " WHERE ir." + DBHelper.COLUMN_ITEMRECIPE_RECIPE + " =?";
 
-
-            while (c.moveToNext()){
+        try (Cursor c = db.rawQuery(sql, new String[]{recipeId.toString()})) {
+            while (c.moveToNext()) {
+                // Product
+                Long idProduct = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMRECIPE_PRODUCT));
+                String name = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
+                double price = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
+                String category = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_CATEGORY));
+                Product product = new Product(idProduct, name, price, category);
+                // Item Recipe
                 Long id = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMRECIPE_ID));
                 int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMRECIPE_AMOUNT));
                 double total = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_ITEMRECIPE_TOTAL));
-                Long productId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMRECIPE_PRODUCT));
-
-
-                Product product = productDAO.findById(productId);
                 Recipe recipe = new Recipe();
                 recipe.setId(recipeId);
-                ItemRecipe ingredient = new ItemRecipe(amount,product,recipe);
-                ingredient.setId(id);
-                ingredients.add(ingredient);
-                Log.i(TAG,"ITEM: " + ingredient.toString());
-                Log.i(TAG, String.valueOf(c.getCount()));
+                ItemRecipe itemRecipe = new ItemRecipe(amount, product, recipe);
+                itemRecipe.setId(id);
+                itemRecipe.setTotal(total);
+
+                itemRecipeList.add(itemRecipe);
+
             }
-            c.close();
         } catch (NullPointerException e) {
-            Log.e(TAG,"[NullPointerException] Ingredients not found.");
+            Log.e(TAG, "[NullPointerException] Ingredients not found.");
         }
-        return ingredients;
+        return itemRecipeList;
     }
 
 
-//    public ArrayList<ItemRecipe> getAllFromRecipe(Long recipeId) {
-//        db = dbHelper.getReadableDatabase();
-//        ArrayList<ItemRecipe> items = new ArrayList<>();
-//
-//        String sql = "SELECT ir." + DBHelper.COLUMN_ITEMRECIPE_AMOUNT + ", ir." + ", ir." + DBHelper.COLUMN_ITEMRECIPE_RECIPE + ", ir." + DBHelper.COLUMN_ITEMRECIPE_ID +
-//                ", ir." + DBHelper.COLUMN_ITEMRECIPE_PRODUCT + ", ir."
-//                ", p." + DBHelper.COLUMN_PRODUCT_NAME +
-//                " FROM " + DBHelper.TABLE_ITEMRECIPE + " ir " +
-//                " JOIN " + DBHelper.TABLE_PRODUCT + " p " +
-//                " ON ir." + DBHelper.COLUMN_ITEMRECIPE_PRODUCT + " = " + DBHelper.COLUMN_PRODUCT_ID +
-//                " WHERE ir." + DBHelper.COLUMN_ITEMRECIPE_RECIPE + " = ?";
-//        Cursor c = db.rawQuery(sql, new String[] {recipeId.toString()});
-//        try {
-//            while (c.moveToNext()) {
-//                int amout = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMRECIPE_AMOUNT));
-//                String product_name = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
-//                Product product = new Product();
-//                product.setName(product_name);
-//                ItemRecipe itemRecipe = new ItemRecipe();
-//                itemRecipe.setAmount(amout);
-//                itemRecipe.setProduct(product);
-//
-//                items.add(itemRecipe);
-//            }
-//        }catch (NullPointerException e) {
-//            Log.e(TAG,"[NullPointException] Items not found.");
-//        } finally {
-//            c.close();
-//        }
-//
-//        return items;
-//    }
-
     public ContentValues getContentValues(ItemRecipe itemRecipe){
         ContentValues contentValues = new ContentValues();
-        //contentValues.put(DBHelper.COLUMN_ITEMRECIPE_ID,itemRecipe.getId());
+        contentValues.put(DBHelper.COLUMN_ITEMRECIPE_ID,itemRecipe.getId());
         contentValues.put(DBHelper.COLUMN_ITEMRECIPE_AMOUNT,itemRecipe.getAmount());
         contentValues.put(DBHelper.COLUMN_ITEMRECIPE_TOTAL,itemRecipe.getTotal());
         contentValues.put(DBHelper.COLUMN_ITEMRECIPE_PRODUCT,itemRecipe.getProduct().getId());

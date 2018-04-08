@@ -15,7 +15,7 @@
             android:id="@+id/form_itemRecipe_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Quantidade"
+            android:hint="@string/recipeAmount"
             android:inputType="number"/>
 
         <Spinner

@@ -9,13 +9,15 @@
         android:id="@+id/form_simpleProduct_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/productName"/>
+        android:hint="@string/productName"
+        android:inputType="textCapWords|textShortMessage"/>
 
     <EditText
         android:id="@+id/form_simpleProduct_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/dialog_simpleProduct_amount"/>
+        android:hint="@string/dialog_simpleProduct_amount"
+        android:inputType="numberDecimal"/>
 
     <View
         android:layout_width="match_parent"

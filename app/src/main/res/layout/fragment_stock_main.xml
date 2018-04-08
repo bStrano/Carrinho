@@ -13,19 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingVertical="@dimen/list_paddingVertical"
-        android:layout_gravity="center|right"
+        android:paddingTop="@dimen/list_paddingVertical"
+        android:paddingBottom="@dimen/list_paddingVertical"
+        android:layout_gravity="end"
         >
 
         <TextView
             android:id="@+id/stock_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Produto  "
+            android:text="@string/produto"
             android:textSize="@dimen/list_textLargeSize"
             android:textStyle="bold"
             android:textColor="#25383C"
-            android:layout_marginLeft="@dimen/list_marginLeft"
+            android:layout_marginStart="@dimen/list_marginLeft"
             android:gravity="center"
             />
 
@@ -36,9 +37,9 @@
                 android:text="@string/itemStock_actualAmountShort"
                 android:textSize="@dimen/list_textMediumSize"
                 android:textColor="@color/colorPrimaryLight"
-                android:layout_toLeftOf="@+id/stock_maxAmount"
+                android:layout_toStartOf="@+id/stock_maxAmount"
                 android:textStyle="bold"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:gravity="center"
                 />
 
@@ -51,7 +52,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_alignParentEnd="true"
                 android:textStyle="bold"
-                android:layout_marginRight="@dimen/list_marginRight"
+                android:layout_marginEnd="@dimen/list_marginRight"
                 android:gravity="center"/>
 
         </RelativeLayout>
@@ -71,7 +72,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:src="@drawable/ic_recipe"
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
@@ -84,7 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:src="@drawable/ic_add"
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
@@ -98,7 +97,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:background="@drawable/ic_add"
             android:layout_alignParentBottom="true"
             app:backgroundTint="@color/colorPrimary"

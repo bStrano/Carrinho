@@ -13,9 +13,9 @@ import br.com.stralom.entities.Product;
  */
 
 public class ItemRecipeForm {
-    Spinner products;
-    EditText amount;
-    Long recipeId;
+    private final Spinner products;
+    private final EditText amount;
+
 
     public ItemRecipeForm(View view) {
         this.products = view.findViewById(R.id.form_itemRecipe_products);

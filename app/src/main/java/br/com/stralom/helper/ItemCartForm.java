@@ -14,10 +14,10 @@ import br.com.stralom.entities.Product;
  */
 
 public class ItemCartForm {
-    private Spinner product;
-    private EditText amout;
-    private Cart cart;
-    private static final String TAG = "[HELPER] ItemCartForm";
+    private final Spinner product;
+    private final EditText amout;
+    private final Cart cart;
+
 
     public ItemCartForm(View view, Cart cart) {
         product = view.findViewById(R.id.form_itemCart_product);

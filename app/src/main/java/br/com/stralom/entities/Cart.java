@@ -62,30 +62,5 @@ public class Cart implements Serializable {
     }
 
 
-    public int containsProductName(String name){
-        ItemCart itemCart;
-        Log.e(TAG,listItemCart.toString());
-        for (int position = 0 ; position < listItemCart.size() ; position++ ) {
-            itemCart = listItemCart.get(position);
 
-            String itemName = itemCart.getProduct().getName();
-            if(itemName != null){
-                Long itemID = itemCart.getProduct().getId();
-                if( itemName.equalsIgnoreCase(name) && (itemID != null)) {
-                    return position;
-                }
-            }
-
-        }
-        return -1;
-    }
-    
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id=" + id +
-                ", listItemCart=" + listItemCart +
-                ", total=" + total +
-                '}';
-    }
 }

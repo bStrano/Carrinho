@@ -20,11 +20,9 @@ public class ProductDAO {
     private static final String TAG = "ProductDAO";
 
    private SQLiteDatabase db;
-    private Context mContext;
-    private DBHelper dbHelper;
+    private final DBHelper dbHelper;
 
     public ProductDAO(Context context) {
-        this.mContext = context;
         dbHelper = new DBHelper(context);
     }
 
@@ -42,30 +40,23 @@ public class ProductDAO {
         db.delete(DBHelper.TABLE_PRODUCT,DBHelper.COLUMN_PRODUCT_ID + " = ?", new String[] {id.toString()});
     }
 
-    public void update(Product product) {
-        db = dbHelper.getWritableDatabase();
-        db.update(DBHelper.TABLE_PRODUCT,getContentValues(product),DBHelper.COLUMN_PRODUCT_ID + " = ?",new String[] {product.getId().toString()});
-    }
 
     public Product findById(Long id){
         db = dbHelper.getReadableDatabase();
         String sql = "SELECT * FROM " + DBHelper.TABLE_PRODUCT + " WHERE " + DBHelper.COLUMN_PRODUCT_ID + " = ?";
-        Cursor cursor = db.rawQuery(sql , new String[] {id.toString()});
         Product product = null;
-        try {
-            while(cursor.moveToNext()){
+        try (Cursor cursor = db.rawQuery(sql, new String[]{id.toString()})) {
+            while (cursor.moveToNext()) {
                 String name = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
                 double price = cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
                 String category = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_CATEGORY));
 
-                product = new Product(id,name,price,category);
+                product = new Product(id, name, price, category);
             }
 
-
-        } catch (NullPointerException e){
-            Log.e(TAG,"[NullPointException] Product not found.");
-        } finally {
-            cursor.close();
+        cursor.close();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "[NullPointException] Product not found.");
         }
         return product;
     }

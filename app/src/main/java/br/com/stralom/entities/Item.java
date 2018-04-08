@@ -7,31 +7,25 @@ import java.io.Serializable;
  */
 
 public class Item implements Serializable {
-    protected Long id;
-    protected int amount;
-    protected double total;
-    protected Product product;
+    Long id;
+    int amount;
+    double total;
+    Product product;
 
-    public Item(int amount, Product product) {
+    Item(int amount, Product product) {
         this.amount = amount;
         setTotal(amount,product.getPrice());
         this.product = product;
     }
 
-    public Item(int amount, double total, Product product) {
-        this.amount = amount;
-        this.total = total;
-        this.product = product;
-    }
-
-    public Item(Long id, int amount, double total, Product product) {
+    Item(Long id, int amount, double total, Product product) {
         this.id = id;
         this.amount = amount;
         this.total = total;
         this.product = product;
     }
 
-    public Item() {
+    Item() {
     }
 
     public Long getId() {
@@ -46,9 +40,6 @@ public class Item implements Serializable {
         return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 
     public int getAmount() {
         return amount;

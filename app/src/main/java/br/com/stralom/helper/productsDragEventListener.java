@@ -9,7 +9,7 @@ import android.view.View;
  * Created by Bruno Strano on 30/01/2018.
  */
 
-public class productsDragEventListener implements View.OnDragListener {
+class productsDragEventListener implements View.OnDragListener {
     @Override
     public boolean onDrag(View view, DragEvent dragEvent) {
 

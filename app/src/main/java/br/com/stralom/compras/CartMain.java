@@ -4,6 +4,7 @@ package br.com.stralom.compras;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.adapters.ItemClickListener;
@@ -44,11 +46,9 @@ import br.com.stralom.listeners.RecyclerTouchListener;
  * A simple {@link Fragment} subclass.
  */
 public class CartMain extends Fragment {
-    private CartDAO cartDAO ;
     private ProductDAO productDAO;
     private ItemCartDAO itemCartDAO;
     private ItemRecipeDAO itemRecipeDAO;
-    private SimpleItem simpleItem;
     private RecipeDAO recipeDAO;
     private Cart cart;
     private RecyclerView cartListView;
@@ -63,7 +63,7 @@ public class CartMain extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart_main, container, false);
 
@@ -71,7 +71,7 @@ public class CartMain extends Fragment {
         basicViewHelper = new BasicViewHelper(getActivity());
 
         //DAO
-        cartDAO = new CartDAO(getContext());
+        CartDAO cartDAO = new CartDAO(getContext());
         itemCartDAO = new ItemCartDAO(getContext());
         productDAO = new ProductDAO(getContext());
         recipeDAO = new RecipeDAO(getContext());
@@ -154,9 +154,8 @@ public class CartMain extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Recipe recipe = (Recipe) recipeSpinner.getSelectedItem();
-                List<ItemRecipe> itemRecipes = itemRecipeDAO.getAll(recipe.getId());
+                List<ItemRecipe> itemRecipes = itemRecipeDAO.getAllByRecipe(recipe.getId());
                 for (ItemRecipe itemRecipe :itemRecipes){
-                    String productName = itemRecipe.getProduct().getName();
                     addItemFromRecipe(itemRecipe);
                 }
             }
@@ -217,41 +216,25 @@ public class CartMain extends Fragment {
     private void addItem(ItemCart newItemCart){
         try {
             itemCartDAO.add(newItemCart);
-            Toast.makeText(getContext(),R.string.toast_product_add,Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),R.string.toast_product_add,Toast.LENGTH_LONG).show();
         } catch (SQLiteConstraintException e){
+            Log.e(TAG,"ID: " + newItemCart.getProduct().getId().toString());
             ItemCart itemCart = itemCartDAO.getByProductId(newItemCart.getProduct().getId());
+            Log.e(TAG,"Nome3: " + itemCart.toString());
             int updatedAmount = itemCart.getAmount() + newItemCart.getAmount();
+            Log.e(TAG,"Nome2: " + newItemCart.getProduct().getName() + " Preç2o: " +  newItemCart.getProduct().getPrice());
             itemCart.setTotal(updatedAmount, itemCart.getProduct().getPrice());
             itemCart.setAmount(updatedAmount);
             itemCartDAO.update(itemCart);
-            Toast.makeText(getContext(),R.string.toast_product_update,Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),R.string.toast_product_update,Toast.LENGTH_LONG).show();
         } finally {
-            getActivity().recreate();
+            Objects.requireNonNull(getActivity()).recreate();
         }
     }
 
-    private void addItem2(ItemCart newItemCart){
-        String productName = newItemCart.getProduct().getName();
-        int position = cart.containsProductName(productName);
-        ArrayList<ItemCart> itemCartList = (ArrayList<ItemCart>) cart.getListItemCart();
-        if(position != -1 ){
-            ItemCart itemCart = itemCartList.get(position);
-            int updatedAmount = itemCart.getAmount() + newItemCart.getAmount();
-            itemCart.setTotal(updatedAmount, itemCart.getProduct().getPrice());
-            itemCart.setAmount(updatedAmount);
-            itemCartDAO.update(itemCart);
 
-        } else if (position == -1){
-            Product product =new Product(newItemCart.getProduct().getId());
-            ItemCart itemCart = new ItemCart(product, newItemCart.getAmount(), cart);
-            itemCartDAO.add(itemCart);
-            itemCartList.add(itemCart);
-
-        }
-
-        getActivity().recreate();
-    }
     private void addItemFromRecipe(ItemRecipe itemRecipe) {
+        Log.e(TAG,"Nome: " + itemRecipe.getProduct().getName() + " Preço: " +  itemRecipe.getProduct().getPrice());
         ItemCart itemCart = new ItemCart(itemRecipe.getProduct(), itemRecipe.getAmount(), cart);
         addItem(itemCart);
     }

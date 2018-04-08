@@ -18,12 +18,6 @@ public class Recipe implements Serializable {
     public Recipe(){
     }
 
-    public Recipe(String name, double total, List<ItemRecipe> ingredients) {
-        this.name = name;
-        this.total = total;
-        this.igredientCount = ingredients.size();
-        this.ingredients = ingredients;
-    }
 
     public Recipe(Long id, String name, List<ItemRecipe> ingredients) {
         this.id = id;
@@ -41,7 +35,7 @@ public class Recipe implements Serializable {
         this.imagePath = imagePath;
     }
 
-    public double calculateTotal(){
+    private double calculateTotal(){
         double total = 0;
         for (ItemRecipe ingredient: ingredients) {
             total += ingredient.getTotal();

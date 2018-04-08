@@ -8,7 +8,7 @@ import android.view.View;
  */
 
 public interface ItemTouchHelperAdapter {
-    boolean onItemMove(int fromPosition, int toPosition);
+    void onItemMove(int fromPosition, int toPosition);
     void onItemDismiss(int position);
     View getForegroundView(RecyclerView.ViewHolder viewHolder);
 }
