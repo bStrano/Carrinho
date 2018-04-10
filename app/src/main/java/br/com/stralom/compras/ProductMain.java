@@ -8,29 +8,39 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import br.com.stralom.adapters.CategorySpinnerAdapter;
 import br.com.stralom.adapters.ProductAdapter;
+import br.com.stralom.dao.CategoryDAO;
 import br.com.stralom.dao.ProductDAO;
+import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
 import br.com.stralom.helper.ProductForm;
 import br.com.stralom.helper.SwipeToDeleteCallback;
+
+import static android.content.ContentValues.TAG;
 
 
 public class ProductMain extends Fragment {
     private List<Product> productList;
     private ProductAdapter productAdapter;
-
+    private ProductDAO productDAO;
 
 
 
@@ -47,8 +57,9 @@ public class ProductMain extends Fragment {
         Button buttonView = view.findViewById(R.id.btn_newProduct);
         RecyclerView productListView = view.findViewById(R.id.list_products);
 
-        ProductDAO productDAO = new ProductDAO(getActivity());
+        productDAO = new ProductDAO(getActivity());
         productList = productDAO.getAll();
+        Log.e(TAG,"SIZE: " + productList);
         registerForContextMenu(productListView);
 
         // Recycler View
@@ -66,13 +77,22 @@ public class ProductMain extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 final View newProductView = getLayoutInflater().inflate(R.layout.product_registration,null);
+                final Spinner spinner = newProductView.findViewById(R.id.form_productCategory);
+                CategoryDAO categoryDAO = new CategoryDAO(getContext());
+                final ArrayList<Category> categories = categoryDAO.getAll();
+
+
+                CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getContext(),categories);
+
+                //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
                 final ProductForm productForm = new ProductForm(newProductView);
 
 
                 builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ProductDAO productDAO = new ProductDAO(getActivity());
                         Product product = productForm.getProduct();
                         try{
                             productDAO.add(product);
@@ -100,6 +120,7 @@ public class ProductMain extends Fragment {
             }
         });
         return view;
+
     }
 
     @Override
@@ -120,4 +141,6 @@ public class ProductMain extends Fragment {
         }
         return super.onContextItemSelected(item);
     }
+
+
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_height">
+
+        <include layout="@layout/swipe_test"/>
+
+        <RelativeLayout
+            android:layout_height="match_parent"
+            android:background="#FAFAFA"
+            android:id="@+id/product_view_foreground"
+            android:layout_width="match_parent"
+            android:paddingTop="@dimen/list_paddingVertical"
+            android:paddingBottom="@dimen/list_paddingVertical">
+            <ImageView
+                android:id="@+id/category_spinner_icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_recipe_image"
+                android:layout_marginStart="@dimen/list_marginLeft"
+                android:contentDescription="@string/imageDescription_productCategory" />
+
+            <TextView
+                android:id="@+id/category_spinner_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/list_textMediumSize"
+                android:layout_toEndOf="@+id/category_spinner_icon"
+                android:textStyle="bold"
+                android:text="Category Name"
+                tools:ignore="HardcodedText" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>

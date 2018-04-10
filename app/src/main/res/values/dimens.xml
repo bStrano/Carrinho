@@ -16,4 +16,5 @@
     <dimen name="list_marginRight">5dp</dimen>
     <dimen name="list_paddingVertical">8dp</dimen>
     <dimen name="list_height">43dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

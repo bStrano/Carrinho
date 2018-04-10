@@ -10,7 +10,7 @@ public class Product implements Serializable {
     private Long id;
     private String name;
     private double price;
-    private String category;
+    private Category category;
 
 
 
@@ -19,14 +19,14 @@ public class Product implements Serializable {
 
 
 
-    public Product(Long id, String name, double price, String category) {
+    public Product(Long id, String name, double price, Category category) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.category = category;
     }
 
-    public Product(String name, double price, String category) {
+    public Product(String name, double price, Category category) {
         this.name = name;
         this.price = price;
         this.category = category;
@@ -56,11 +56,11 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

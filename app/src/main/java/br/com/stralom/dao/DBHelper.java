@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import br.com.stralom.compras.R;
+
 /**
  * Created by Bruno Strano on 05/01/2018.
  */
@@ -15,6 +17,18 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Stralom_Compras";
     private static final int DATABASE_VERSION = 1;
 
+    // Category
+    public static final String TABLE_CATEGORY = "tb_category";
+    public static final String COLUMN_CATEGORY_NAME = "category_name";
+    public static final String COLUMN_CATEGORY_NAMEINTERNACIONAL = "nameEnglish";
+    public static final String COLUMN_CATEGORY_DEFAULT = "isDefault";
+    public static final String COLUMN_CATEGORY_ICON = "icon_flag";
+    private static final String SQL_CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_CATEGORY + "( " +
+            COLUMN_CATEGORY_NAME + " TEXT PRIMARY KEY, " +
+            COLUMN_CATEGORY_NAMEINTERNACIONAL + " TEXT, " +
+            COLUMN_CATEGORY_DEFAULT + " INTEGER DEFAULT 0, " +
+            COLUMN_CATEGORY_ICON + " INTEGER" +
+            ");";
     // Product
     public static final String TABLE_PRODUCT = "tb_product";
     public static final String COLUMN_PRODUCT_ID = "id";
@@ -25,7 +39,8 @@ class DBHelper extends SQLiteOpenHelper {
             COLUMN_PRODUCT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_PRODUCT_NAME + " TEXT NOT NULL UNIQUE, " +
             COLUMN_PRODUCT_PRICE + " REAL , " +
-            COLUMN_PRODUCT_CATEGORY + " TEXT  " +
+            COLUMN_PRODUCT_CATEGORY + " TEXT NOT NULL,  " +
+            " FOREIGN KEY(" + COLUMN_PRODUCT_CATEGORY + " ) REFERENCES " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + ")" +
             ");";
     //public static final String SQL_DROP_TABLE_PRODUCT = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
     // Cart
@@ -139,6 +154,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_CATEGORY);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_PRODUCT);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_CART);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ITEMCART);
@@ -148,6 +164,7 @@ class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ITEMSTOCK);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_SIMPLEITEM);
 
+        insertDefaultCategories(sqLiteDatabase);
         sqLiteDatabase.execSQL("INSERT INTO " + TABLE_CART + "(" + COLUMN_CART_TOTAL + ") VALUES('0')");
         //sqLiteDatabase.execSQL("INSERT INTO " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ", " + COLUMN_PRODUCT_NAME + ") VALUES('-1','SimpleProduct')");
     }
@@ -165,5 +182,12 @@ class DBHelper extends SQLiteOpenHelper {
 //        sqLiteDatabase.execSQL(getDropTableString(TABLE_ITEMRECIPE));
 //        sqLiteDatabase.execSQL(getDropTableString(TABLE_RECIPE));
 //        onCreate(sqLiteDatabase);
+
+    }
+
+    void insertDefaultCategories(SQLiteDatabase sqLiteDatabase){
+        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
+            + " VALUES ('Carnes',1, " + R.drawable.meat + ")," +
+                "('Frutas',1," + R.drawable.cherries + " );");
     }
 }

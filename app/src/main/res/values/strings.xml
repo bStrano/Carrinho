@@ -18,10 +18,10 @@
     <string name="cancel">Cancelar</string>
 
     <!-- Cart -->
-        <!-- Dialog -->
-        <string name="cart_dialogTitle_addSimpleProduct">Adicionar Produto Temporario</string>
-        <string name="cart_dialogTitle_addProduct">Adicionar Produto</string>
-        <string name="cart_dialogTitle_addRecipe">Adicionar Receita</string>
+    <!-- Dialog -->
+    <string name="cart_dialogTitle_addSimpleProduct">Adicionar Produto Temporario</string>
+    <string name="cart_dialogTitle_addProduct">Adicionar Produto</string>
+    <string name="cart_dialogTitle_addRecipe">Adicionar Receita</string>
 
     <!-- ItemCart -->
     <string name="itemCartAmount">Quantidade</string>
@@ -34,8 +34,8 @@
     <string name="itemStock_maxAmount">Quantidade Máxima</string>
     <string name="itemStock_actualAmountShort">Atual</string>
     <string name="itemStock_maxAmountShort">Max</string>
-        <!-- Dialog -->
-        <string name="stock_dialogTitle_addProduct">Adicionar ao Estoque</string>
+    <!-- Dialog -->
+    <string name="stock_dialogTitle_addProduct">Adicionar ao Estoque</string>
 
 
     <!-- Product -->
@@ -46,17 +46,17 @@
 
     <string name="title_RecipeRegistration">Nova Receita</string>
     <string name="dialog_simpleProduct_amount">Quantidade ( Opcional) </string>
-        <!-- Register Form -->
-        <string name="productName">Nome</string>
-        <string name="productPrice">Preço</string>
-        <string-array name="categories">
-            <item>Carnes</item>
-            <item>Congelados</item>
-            <item>Doces</item>
-            <item>Frutas</item>
-            <item>Legumes</item>
-            <item>Higiene</item>
-        </string-array>
+    <!-- Register Form -->
+    <string name="productName">Nome</string>
+    <string name="productPrice">Preço</string>
+    <string-array name="categories">
+        <item>Carnes</item>
+        <item>Congelados</item>
+        <item>Doces</item>
+        <item>Frutas</item>
+        <item>Legumes</item>
+        <item>Higiene</item>
+    </string-array>
 
     <!-- Recipe -->
     <string name="recipeName">Nome</string>
@@ -78,12 +78,13 @@
     <string name="addIngredient">Adicionar Ingrediente</string>
     <string name="delete">Deletar</string>
     <string name="edit">Editar</string>
-    <string name="imageDescription_productCategory">Icone da Categoria do Produto</string>
+    <string name="imageDescription_productCategory">Icone da Categoria </string>
     <string name="produto">Produto</string>
     <string name="recipeIngredientsCount">Total de Ingredientes</string>
     <string name="recipePrice">Preço</string>
     <string name="recipe_contentDescription_basicImage">Imagem padrão da receita</string>
     <string name="contentDescription_iconDelete">Icone de deletar</string>
+    <string name="title_activity_product_registration">ProductRegistrationActivity</string>
 
 
 </resources>

@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
 
 /**
@@ -18,7 +19,11 @@ import br.com.stralom.entities.Product;
 
 public class ProductDAO {
     private static final String TAG = "ProductDAO";
-
+    private static final String sqlSelectAll = "SELECT p." + DBHelper.COLUMN_PRODUCT_ID + " , p." + DBHelper.COLUMN_PRODUCT_NAME + " , p." + DBHelper.COLUMN_PRODUCT_PRICE + " , p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
+            " , c." + DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL + " , c." + DBHelper.COLUMN_CATEGORY_ICON + " , c." + DBHelper.COLUMN_CATEGORY_DEFAULT + " , c." + DBHelper.COLUMN_CATEGORY_NAME +
+            " FROM " + DBHelper.TABLE_PRODUCT + " p " +
+            " LEFT JOIN " + DBHelper.TABLE_CATEGORY + " c " +
+            " ON p." + DBHelper.COLUMN_PRODUCT_CATEGORY + " = c." + DBHelper.COLUMN_CATEGORY_NAME ;
    private SQLiteDatabase db;
     private final DBHelper dbHelper;
 
@@ -43,15 +48,11 @@ public class ProductDAO {
 
     public Product findById(Long id){
         db = dbHelper.getReadableDatabase();
-        String sql = "SELECT * FROM " + DBHelper.TABLE_PRODUCT + " WHERE " + DBHelper.COLUMN_PRODUCT_ID + " = ?";
+        String sql = sqlSelectAll + " WHERE " + DBHelper.COLUMN_PRODUCT_ID + " = ?";
         Product product = null;
         try (Cursor cursor = db.rawQuery(sql, new String[]{id.toString()})) {
             while (cursor.moveToNext()) {
-                String name = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
-                double price = cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
-                String category = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_CATEGORY));
-
-                product = new Product(id, name, price, category);
+                product = getProduct(cursor);
             }
 
         cursor.close();
@@ -66,19 +67,22 @@ public class ProductDAO {
         db = dbHelper.getReadableDatabase();
         ArrayList<Product> products = new ArrayList<>();
 
+
+        String sql = "SELECT p." + DBHelper.COLUMN_PRODUCT_ID + " , p." + DBHelper.COLUMN_PRODUCT_NAME + " , p." + DBHelper.COLUMN_PRODUCT_PRICE + " , p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
+                " , c." + DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL + " , c." + DBHelper.COLUMN_CATEGORY_ICON + " , c." + DBHelper.COLUMN_CATEGORY_DEFAULT + " , c." + DBHelper.COLUMN_CATEGORY_NAME +
+                " FROM " + DBHelper.TABLE_PRODUCT + " p " +
+                " LEFT JOIN " + DBHelper.TABLE_CATEGORY + " c " +
+                " ON p." + DBHelper.COLUMN_PRODUCT_CATEGORY + " = c." + DBHelper.COLUMN_CATEGORY_NAME ;
         try {
 
 
-        Cursor c = db.rawQuery("SELECT * FROM "+ DBHelper.TABLE_PRODUCT, null);
-        while (c.moveToNext()){
-            Long id = c.getLong(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_ID));
-            String name = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
-            double price = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
-            String category = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_CATEGORY));
-            Product product = new Product(id,name,price,category);
+        Cursor cursor = db.rawQuery(sql, null);
+        while (cursor.moveToNext()){
+            Product product = getProduct(cursor);
+
             products.add(product);
         }
-        c.close();
+        cursor.close();
 
         } catch (NullPointerException e ){
             Log.e(TAG,"[NullPointExcepetion] Products not found.");
@@ -87,11 +91,29 @@ public class ProductDAO {
     }
 
     @NonNull
+    private Product getProduct(Cursor c) {
+        // Category
+        String categoryName = c.getString(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAME));
+        String categoryInternacional = c.getString(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL));
+        int categoryIcon = c.getInt(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_ICON));
+        int isDefault = c.getInt(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_DEFAULT));
+        Category category = new Category(categoryName,categoryInternacional,categoryIcon);
+        category.setDefault(isDefault);
+
+        // Product
+        Long id = c.getLong(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_ID));
+        String name = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
+        double price = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
+
+        return new Product(id,name,price,category);
+    }
+
+    @NonNull
     private ContentValues getContentValues(Product product) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.COLUMN_PRODUCT_NAME,product.getName());
         contentValues.put(DBHelper.COLUMN_PRODUCT_PRICE,product.getPrice());
-        contentValues.put(DBHelper.COLUMN_PRODUCT_CATEGORY,product.getCategory());
+        contentValues.put(DBHelper.COLUMN_PRODUCT_CATEGORY,product.getCategory().getName());
         return contentValues;
     }
 
