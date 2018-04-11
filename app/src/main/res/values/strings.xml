@@ -25,6 +25,7 @@
 
     <!-- ItemCart -->
     <string name="itemCartAmount">Quantidade</string>
+    <string name="itemcart_itemList_nameAmount"> ( %d x ) %s </string>
 
     <!-- Stock -->
     <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
@@ -85,6 +86,7 @@
     <string name="recipe_contentDescription_basicImage">Imagem padrão da receita</string>
     <string name="contentDescription_iconDelete">Icone de deletar</string>
     <string name="title_activity_product_registration">ProductRegistrationActivity</string>
+    <string name="contentDescription_categoryIcon">Icone da Categoria</string>
 
 
 </resources>

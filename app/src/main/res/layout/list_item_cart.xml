@@ -24,25 +24,24 @@
             android:paddingBottom="@dimen/list_paddingVertical"
             >
 
-            <TextView
-                android:id="@+id/product_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" ( 2x )"
-                android:textSize="@dimen/list_textMediumSize"
-                tools:ignore="HardcodedText" />
+
 
             <TextView
-                android:id="@+id/product_name"
+                android:id="@+id/itemCart_itemList_nameAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Product Name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginStart="@dimen/list_marginLeft"
                 android:textSize="@dimen/list_textMediumSize"
-                android:layout_toEndOf="@+id/product_amount"
                 tools:ignore="HardcodedText" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cherries"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/contentDescription_categoryIcon"/>
         </RelativeLayout>
 
 

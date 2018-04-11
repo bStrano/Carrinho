@@ -1,6 +1,7 @@
 package br.com.stralom.adapters;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -29,26 +30,26 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
     private final CartDAO cartDAO;
     private final SimpleItemDAO simpleItemDAO;
     private boolean undoSwipe = false;
+    private Resources res;
 
     public CartAdapter(List<ItemCart> products, Activity activity) {
         this.products = products;
         this.activity = activity;
+        res = activity.getResources();
         cartDAO = new CartDAO(activity);
         simpleItemDAO = new SimpleItemDAO(activity);
     }
 
 
-     class mViewHolder extends  RecyclerView.ViewHolder{
-        final TextView productName;
-        final TextView productAmount;
+     public class mViewHolder extends  RecyclerView.ViewHolder{
+        final TextView product_NameAmount;
         final View viewForeground;
         final View viewBackground;
 
         mViewHolder(View itemView) {
             super(itemView);
 
-            productName = itemView.findViewById(R.id.product_name);
-            productAmount = itemView.findViewById(R.id.product_amount);
+            product_NameAmount = itemView.findViewById(R.id.itemCart_itemList_nameAmount);
             viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.cart_view_foreground);
         }
@@ -64,8 +65,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
     @Override
     public void onBindViewHolder(@NonNull mViewHolder holder, int position) {
         ItemCart itemCart = products.get(position);
-        holder.productName.setText(itemCart.getProduct().getName());
-        holder.productAmount.setText(String.valueOf(itemCart.getAmount()));
+        holder.product_NameAmount.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
+
     }
 
     @Override

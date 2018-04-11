@@ -3,6 +3,7 @@ package br.com.stralom.compras;
 
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteConstraintException;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -91,7 +93,7 @@ public class CartMain extends Fragment {
         cart.setListItemCart(itemCartList);
         cartListView.setHasFixedSize(true);
         cartListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        CartAdapter adapter = new CartAdapter(itemCartList,getActivity());
+        CartAdapter adapter = new CartAdapter(itemCartList, Objects.requireNonNull(getActivity()));
         cartListView.setAdapter(adapter);
 
 
@@ -100,6 +102,23 @@ public class CartMain extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 ItemCart item = itemCartList.get(position);
+                RecyclerView.ViewHolder holder = cartListView.findViewHolderForAdapterPosition(position);
+                TextView productName = holder.itemView.findViewById(R.id.itemCart_itemList_nameAmount);
+
+
+                // Bitwise operators
+                // https://stackoverflow.com/questions/276706/what-are-bitwise-operators
+                    productName.setPaintFlags(productName.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
+//                if((productName.getPaintFlags() & Paint.STRIKE_THRU_TEXT_FLAG) > 0) {
+//                    productName.setPaintFlags( (productName.getPaintFlags()) & (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                } else {
+//                    productName.setPaintFlags( productName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//
+//                }
+
+                Log.e(TAG,Integer.toString(productName.getPaintFlags()));
+
+
                 Toast.makeText(getContext(),item.getProduct().getName(), Toast.LENGTH_LONG).show();
             }
 
