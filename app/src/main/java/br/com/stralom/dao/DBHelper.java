@@ -59,12 +59,14 @@ class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ITEMCART_TOTAL = "total";
     public static final String COLUMN_ITEMCART_CART = "cart_id";
     public static final String COLUMN_ITEMCART_PRODUCT = "product_id";
+    public static final String COLUMN_ITEMCART_UPDATESTOCK = "update_stock";
     private static final String SQL_CREATE_TABLE_ITEMCART = "CREATE TABLE " + TABLE_ITEMCART + "(  " +
             COLUMN_ITEMCART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_ITEMCART_AMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMCART_TOTAL + " REAL NOT NULL, " +
             COLUMN_ITEMCART_CART + " INTEGER NOT NULL, " +
             COLUMN_ITEMCART_PRODUCT + " INTEGER UNIQUE NOT NULL, " +
+            COLUMN_ITEMCART_UPDATESTOCK + " INTEGER DEFAULT 0, " +
             "FOREIGN KEY("+ COLUMN_ITEMCART_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + "), " +
             "FOREIGN KEY("+ COLUMN_ITEMCART_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ")" +
             ");";

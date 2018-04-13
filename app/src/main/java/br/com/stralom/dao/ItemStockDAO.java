@@ -3,6 +3,7 @@ package br.com.stralom.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class ItemStockDAO extends GenericDAO {
         super(context, DBHelper.TABLE_ITEMSTOCK);
     }
 
+    public void update(ItemStock itemStock){
+        super.update(DBHelper.COLUMN_ITEMSTOCK_ID, itemStock.getId(),getContentValues(itemStock));
+    }
 
     public List<ItemStock> getAll(Long idStock){
         db = dbHelper.getReadableDatabase();
@@ -43,28 +47,45 @@ public class ItemStockDAO extends GenericDAO {
 
         try (Cursor cursor = db.rawQuery(sql, new String[]{idStock.toString()})) {
             while (cursor.moveToNext()) {
-                Long id = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ID));
-                int amount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_AMOUNT));
-                double total = cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_TOTAL));
-                int stockPercentage = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCKPERCENTAGE));
-                ItemStock.Status status = ItemStock.Status.valueOf(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STATUS)));
-                int atualAmount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT));
-                Long productId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_PRODUCT));
-                Long stockId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCK));
-                String productName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
-                Product product = new Product();
-                product.setId(productId);
-                product.setName(productName);
-                Stock stock = new Stock();
-                stock.setId(stockId);
-
-                ItemStock itemStock = new ItemStock(id, amount, total, product, stockPercentage, status, atualAmount, stock);
+                ItemStock itemStock = getItemStock(cursor);
                 products.add(itemStock);
             }
         } catch (NullPointerException e) {
             Log.i(TAG, "[NullPointerException] Products not found.");
         }
         return  products;
+    }
+
+    @NonNull
+    private ItemStock getItemStock(Cursor cursor) {
+        Long id = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ID));
+        int amount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_AMOUNT));
+        double total = cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_TOTAL));
+        int stockPercentage = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCKPERCENTAGE));
+        ItemStock.Status status = ItemStock.Status.valueOf(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STATUS)));
+        int atualAmount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT));
+        Long productId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_PRODUCT));
+        Long stockId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCK));
+        String productName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
+        Product product = new Product();
+        product.setId(productId);
+        product.setName(productName);
+        Stock stock = new Stock();
+        stock.setId(stockId);
+
+        return new ItemStock(id, amount, total, product, stockPercentage, status, atualAmount, stock);
+    }
+
+    public ItemStock findByProductId(  long productId) {
+        db = dbHelper.getReadableDatabase();
+        String sql = "SELECT * FROM " + DBHelper.TABLE_ITEMSTOCK + " WHERE " + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + " = ?";
+
+
+        Cursor cursor = db.rawQuery(sql,new String[] { Long.toString(productId)});
+        if(cursor.moveToNext()){
+            return getItemStock(cursor);
+        }
+        return null;
     }
 
     public ContentValues getContentValues(ItemStock itemStock){

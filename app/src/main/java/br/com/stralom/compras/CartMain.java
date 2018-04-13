@@ -93,7 +93,7 @@ public class CartMain extends Fragment {
         cart.setListItemCart(itemCartList);
         cartListView.setHasFixedSize(true);
         cartListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        CartAdapter adapter = new CartAdapter(itemCartList, Objects.requireNonNull(getActivity()));
+        final CartAdapter adapter = new CartAdapter(itemCartList, Objects.requireNonNull(getActivity()));
         cartListView.setAdapter(adapter);
 
 
@@ -116,7 +116,7 @@ public class CartMain extends Fragment {
 //
 //                }
 
-                Log.e(TAG,Integer.toString(productName.getPaintFlags()));
+                    adapter.remove(position);
 
 
                 Toast.makeText(getContext(),item.getProduct().getName(), Toast.LENGTH_LONG).show();

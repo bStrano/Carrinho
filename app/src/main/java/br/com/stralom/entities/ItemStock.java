@@ -31,8 +31,12 @@ public class ItemStock extends Item {
     public ItemStock(int amount, Product product, int actualAmount) {
         super(amount, product);
         this.actualAmount = actualAmount;
-        this.stockPercentage = ((100 * actualAmount)/amount);
+        setStockPercentage(amount, actualAmount);
         setStatus();
+    }
+
+    private void setStockPercentage(int amount, int actualAmount) {
+        this.stockPercentage = ((100 * actualAmount)/amount);
     }
 
 

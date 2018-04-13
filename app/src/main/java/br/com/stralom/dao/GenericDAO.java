@@ -30,9 +30,9 @@ public abstract class GenericDAO  {
         db.delete(tableName,"id = ?", new String[] {id.toString()});
     }
 
-    public void update(Long idObject, ContentValues contentValues) {
+    public void update(String columnId, Long idObject, ContentValues contentValues) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.update(tableName,contentValues,"id = ?",new String[] {idObject.toString()});
+        db.update(tableName,contentValues,columnId + " = ?",new String[] {idObject.toString()});
     }
 
 

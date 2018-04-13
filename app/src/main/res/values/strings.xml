@@ -87,6 +87,7 @@
     <string name="contentDescription_iconDelete">Icone de deletar</string>
     <string name="title_activity_product_registration">ProductRegistrationActivity</string>
     <string name="contentDescription_categoryIcon">Icone da Categoria</string>
+    <string name="snackbar_undo">DESFAZER</string>
 
 
 </resources>
