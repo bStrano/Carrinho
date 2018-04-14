@@ -121,7 +121,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 if(!undoSwipe) {
-                    Log.e("TAG","ItemCart ID: " + itemCart.getId() + "SimpleItem ID: " + itemCart.getConvertedId());
                     if(itemCart.getId() != null) {
                         cartDAO.remove( itemCart.getId());
                     } else if(itemCart.getConvertedId() != null){
@@ -136,6 +135,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
 
         snackbar.show();
         //
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
 
     }
 
