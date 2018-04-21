@@ -88,6 +88,7 @@
     <string name="title_activity_product_registration">ProductRegistrationActivity</string>
     <string name="contentDescription_categoryIcon">Icone da Categoria</string>
     <string name="snackbar_undo">DESFAZER</string>
+    <string name="toast_product_alreadyUpdate">Produto já esta cadastrado.</string>
 
 
 </resources>

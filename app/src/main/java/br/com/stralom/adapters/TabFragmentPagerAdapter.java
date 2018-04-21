@@ -30,7 +30,6 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
                 return new ProductMain();
             case 2:
                return new RecipeMain();
-               // return new RecipeRegistration();
             case 3:
                 return new StockMain();
             default:

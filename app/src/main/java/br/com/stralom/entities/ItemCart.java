@@ -49,6 +49,10 @@ public class ItemCart extends Item {
         }
     }
 
+    public void setUpdateStock(boolean updateStock){
+        this.updateStock = updateStock;
+    }
+
     @Override
     public String toString(){
       return  product.getName() + " ( " + amount + " )" + " - "  + product.getPrice();

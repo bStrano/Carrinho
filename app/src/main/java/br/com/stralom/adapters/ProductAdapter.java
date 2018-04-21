@@ -6,14 +6,12 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stralom.compras.R;
@@ -51,7 +49,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Product product = products.get(position);
         holder.name.setText(product.getName());
         holder.price.setText(String.format(res.getString(R.string.product_itemList_price), product.getPrice()));
-        Log.e("Teste",product.toString());
          holder.categoryIcon.setImageResource(product.getCategory().getIconFlag());
         //holder.categoryIcon.setImageDrawable(R.drawable.ic_add);
     }

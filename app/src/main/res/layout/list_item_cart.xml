@@ -19,7 +19,7 @@
             android:gravity="start"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?selectableItemBackground"
+            android:foreground="?android:selectableItemBackground"
             android:paddingTop="@dimen/list_paddingVertical"
             android:paddingBottom="@dimen/list_paddingVertical"
             >
@@ -37,6 +37,7 @@
                 tools:ignore="HardcodedText" />
 
             <ImageView
+                android:id="@+id/itemCart_itemList_categoryIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/cherries"

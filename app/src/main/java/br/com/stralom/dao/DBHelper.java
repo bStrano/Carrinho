@@ -35,6 +35,7 @@ class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PRODUCT_NAME = "name";
     public static final String COLUMN_PRODUCT_PRICE = "price";
     public static final String COLUMN_PRODUCT_CATEGORY = "category";
+
     private static final String SQL_CREATE_TABLE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + "( " +
             COLUMN_PRODUCT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_PRODUCT_NAME + " TEXT NOT NULL UNIQUE, " +
@@ -187,7 +188,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    void insertDefaultCategories(SQLiteDatabase sqLiteDatabase){
+    private void insertDefaultCategories(SQLiteDatabase sqLiteDatabase){
         sqLiteDatabase.execSQL("INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
             + " VALUES ('Carnes',1, " + R.drawable.meat + ")," +
                 "('Frutas',1," + R.drawable.cherries + " );");

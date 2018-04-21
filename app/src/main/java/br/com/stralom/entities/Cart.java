@@ -1,12 +1,8 @@
 package br.com.stralom.entities;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Bruno Strano on 03/01/2018.

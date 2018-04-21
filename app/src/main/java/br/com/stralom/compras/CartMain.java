@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -47,7 +48,7 @@ import br.com.stralom.listeners.RecyclerTouchListener;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CartMain extends Fragment {
+public class CartMain extends Fragment  {
     private ProductDAO productDAO;
     private ItemCartDAO itemCartDAO;
     private ItemRecipeDAO itemRecipeDAO;
@@ -56,7 +57,9 @@ public class CartMain extends Fragment {
     private RecyclerView cartListView;
     private BasicViewHelper basicViewHelper;
     private SimpleItemDAO simpleItemDAO;
-    private List<ItemCart> itemCartList;
+    private ArrayList<ItemCart> itemCartList;
+    private CartAdapter adapter;
+    private ViewPager viewPager;
 
     private static final String TAG = "CartMainTAG";
 
@@ -87,13 +90,13 @@ public class CartMain extends Fragment {
         Button btn_newItemCart = view.findViewById(R.id.btn_newItemCart);
 
         cart = cartDAO.findById((long) 1);
-        itemCartList = itemCartDAO.getAll(cart.getId());
+        itemCartList = (ArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
         addSimpleProducts(simpleItemList);
         cart.setListItemCart(itemCartList);
         cartListView.setHasFixedSize(true);
         cartListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final CartAdapter adapter = new CartAdapter(itemCartList, Objects.requireNonNull(getActivity()));
+        adapter = new CartAdapter(itemCartList, Objects.requireNonNull(getActivity()));
         cartListView.setAdapter(adapter);
 
 
@@ -102,29 +105,26 @@ public class CartMain extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 ItemCart item = itemCartList.get(position);
-                RecyclerView.ViewHolder holder = cartListView.findViewHolderForAdapterPosition(position);
-                TextView productName = holder.itemView.findViewById(R.id.itemCart_itemList_nameAmount);
-
+                CartAdapter.mViewHolder holder = (CartAdapter.mViewHolder) cartListView.findViewHolderForAdapterPosition(position);
+                TextView productNameAmount = holder.itemView.findViewById(R.id.itemCart_itemList_nameAmount);
 
                 // Bitwise operators
                 // https://stackoverflow.com/questions/276706/what-are-bitwise-operators
-                    productName.setPaintFlags(productName.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
+                   // productName.setPaintFlags(productName.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
 //                if((productName.getPaintFlags() & Paint.STRIKE_THRU_TEXT_FLAG) > 0) {
 //                    productName.setPaintFlags( (productName.getPaintFlags()) & (~Paint.STRIKE_THRU_TEXT_FLAG));
 //                } else {
 //                    productName.setPaintFlags( productName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 //
-//                }
-
-                    adapter.remove(position);
-
+//                   }
+                productNameAmount.setPaintFlags( productNameAmount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    adapter.completeItem(position,productNameAmount);
 
                 Toast.makeText(getContext(),item.getProduct().getName(), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onLongClick(View view, int position) {
-                Log.e(TAG,"ONLONGCLICK");
                 ItemCart item = itemCartList.get(position);
                 Toast.makeText(getContext(),item.getProduct().getName(), Toast.LENGTH_LONG).show();
             }
@@ -234,26 +234,18 @@ public class CartMain extends Fragment {
 
     private void addItem(ItemCart newItemCart){
         try {
-            itemCartDAO.add(newItemCart);
+            Long id = itemCartDAO.add(newItemCart);
+            newItemCart.setId(id);
             Toast.makeText(getContext(),R.string.toast_product_add,Toast.LENGTH_LONG).show();
+            itemCartList.add(newItemCart);
+            cartListView.getAdapter().notifyDataSetChanged();
         } catch (SQLiteConstraintException e){
-            Log.e(TAG,"ID: " + newItemCart.getProduct().getId().toString());
-            ItemCart itemCart = itemCartDAO.getByProductId(newItemCart.getProduct().getId());
-            Log.e(TAG,"Nome3: " + itemCart.toString());
-            int updatedAmount = itemCart.getAmount() + newItemCart.getAmount();
-            Log.e(TAG,"Nome2: " + newItemCart.getProduct().getName() + " Preç2o: " +  newItemCart.getProduct().getPrice());
-            itemCart.setTotal(updatedAmount, itemCart.getProduct().getPrice());
-            itemCart.setAmount(updatedAmount);
-            itemCartDAO.update(itemCart);
-            Toast.makeText(getContext(),R.string.toast_product_update,Toast.LENGTH_LONG).show();
-        } finally {
-            Objects.requireNonNull(getActivity()).recreate();
+            Toast.makeText(getContext(),R.string.toast_product_alreadyUpdate,Toast.LENGTH_LONG).show();
         }
     }
 
 
     private void addItemFromRecipe(ItemRecipe itemRecipe) {
-        Log.e(TAG,"Nome: " + itemRecipe.getProduct().getName() + " Preço: " +  itemRecipe.getProduct().getPrice());
         ItemCart itemCart = new ItemCart(itemRecipe.getProduct(), itemRecipe.getAmount(), cart);
         addItem(itemCart);
     }
@@ -283,48 +275,17 @@ public class CartMain extends Fragment {
     }
 
 
+    // https://stackoverflow.com/questions/9590386/fragment-onhiddenchanged-not-called
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser) {
+            if(adapter != null){
+                adapter.dismissSnackbar();
+            }
 
-
-
-//    private void loadItemCartDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        final
-//        Spinner productSpinner = itemCartView.findViewById(R.id.form_itemCart_product);
-//        List<Product> products = productDAO.getAll();
-//        Product teste = products.get(0);
-//
-//
-//        ArrayAdapter<Product> itemCartArrayAdapter = new ArrayAdapter<Product>(getContext(), android.R.layout.simple_list_item_1, products);
-//        itemCartArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        productSpinner.setAdapter(itemCartArrayAdapter);
-//
-//        builder.setView(itemCartView);
-//
-//        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                ItemCartForm itemCartForm = new ItemCartForm(itemCartView,cart);
-//                ItemCart itemCart = itemCartForm.getItemCart();
-//                Log.e(TAG,"Teste " + itemCart.toString());
-//                itemCartDAO.add(itemCart);
-//                getActivity().recreate();
-//                Toast.makeText(getActivity(), "Item adicionado!",Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                Toast.makeText(getActivity(),"Cancelado.",Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//        AlertDialog alertDialog = builder.create();
-//        alertDialog.show();
-//    }
-
-
-
+        }
+    }
 
 }
 

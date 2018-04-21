@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import br.com.stralom.entities.Category;
 
@@ -33,6 +32,7 @@ public class CategoryDAO extends GenericDAO {
 
                 categories.add(category);
             }
+            cursor.close();
         } catch (NullPointerException e) {
             Log.e(TAG,"[Null Cursor] No category found.");
         }

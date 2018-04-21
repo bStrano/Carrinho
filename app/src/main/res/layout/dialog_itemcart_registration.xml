@@ -44,7 +44,8 @@
                 android:text="@string/dialog_checkbox_updateStock"
                 android:textSize="20sp"/>
             <CheckBox
-                android:checked="true"
+                android:id="@+id/form_itemCart_updateStock"
+                android:checked="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

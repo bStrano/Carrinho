@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stralom.entities.Cart;
+import br.com.stralom.entities.Category;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.Product;
 
@@ -25,8 +26,8 @@ public class ItemCartDAO extends GenericDAO  {
     }
 
 
-    public void add(ItemCart itemCart) {
-        add(getContentValues(itemCart));
+    public Long add(ItemCart itemCart) {
+        return add(getContentValues(itemCart));
     }
 
     public void remove(Long id){
@@ -84,11 +85,12 @@ public class ItemCartDAO extends GenericDAO  {
         try {
             //String sql = "SELECT * FROM " + DBHelper.TABLE_ITEMCART + " WHERE " + DBHelper.COLUMN_ITEMCART_CART + " = ?";
             String sql = "SELECT i." + DBHelper.COLUMN_ITEMCART_AMOUNT + ", i." + DBHelper.COLUMN_ITEMCART_TOTAL + ", i." + DBHelper.COLUMN_ITEMCART_CART + ", i." + DBHelper.COLUMN_ITEMCART_PRODUCT +
-                    ", i." + DBHelper.COLUMN_ITEMCART_ID +
-                    ", p." + DBHelper.COLUMN_PRODUCT_NAME +
-                     " FROM " + DBHelper.TABLE_ITEMCART + " i " +
+                    ", i." + DBHelper.COLUMN_ITEMCART_ID + ", i." +DBHelper.COLUMN_ITEMCART_UPDATESTOCK + ", p." + DBHelper.COLUMN_PRODUCT_NAME +  ", c." + DBHelper.COLUMN_CATEGORY_ICON + " , c." + DBHelper.COLUMN_CATEGORY_NAME +
+                    " FROM " + DBHelper.TABLE_ITEMCART + " i " +
                     " JOIN " + DBHelper.TABLE_PRODUCT + " p " +
                     " ON i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = " + " p." + DBHelper.COLUMN_PRODUCT_ID +
+                    " JOIN " + DBHelper.TABLE_CATEGORY + " c " +
+                    " ON c." + DBHelper.COLUMN_CATEGORY_NAME + " = " + " p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
                             " WHERE i." + DBHelper.COLUMN_ITEMCART_CART + " = ?";
             Cursor c = db.rawQuery(sql, new String[] {cartId.toString()});
 
@@ -98,9 +100,17 @@ public class ItemCartDAO extends GenericDAO  {
             int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_AMOUNT));
             Long productId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_PRODUCT));
             String name = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
+            int iconFlag = c.getInt(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_ICON));
+            String categoryName = c.getString(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAME));
+            int updateStock = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_UPDATESTOCK));
+
+            Category category = new Category();
+            category.setIconFlag(iconFlag);
+            category.setName(categoryName);
 
             Product product = new Product();
             product.setName(name);
+            product.setCategory(category);
             product.setId(productId);
 
             Cart cart = new Cart();
@@ -108,6 +118,7 @@ public class ItemCartDAO extends GenericDAO  {
 
             ItemCart item = new ItemCart(product,amount,cart);
             item.setId(id);
+            item.setUpdateStock(updateStock);
             items.add(item);
 
         }
@@ -126,6 +137,12 @@ public class ItemCartDAO extends GenericDAO  {
         contentValues.put(DBHelper.COLUMN_ITEMCART_TOTAL, item.getTotal());
         contentValues.put(DBHelper.COLUMN_ITEMCART_CART, item.getCart().getId());
         contentValues.put(DBHelper.COLUMN_ITEMCART_PRODUCT, item.getProduct().getId());
+        if(item.isUpdateStock()){
+            contentValues.put(DBHelper.COLUMN_ITEMCART_UPDATESTOCK,1);
+        } else {
+            contentValues.put(DBHelper.COLUMN_ITEMCART_UPDATESTOCK,0);
+        }
+
 
         return contentValues;
     }

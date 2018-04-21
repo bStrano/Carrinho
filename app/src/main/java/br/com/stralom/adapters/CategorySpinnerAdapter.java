@@ -2,12 +2,10 @@ package br.com.stralom.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,10 +16,10 @@ import br.com.stralom.compras.R;
 import br.com.stralom.entities.Category;
 
 public class CategorySpinnerAdapter extends BaseAdapter {
-    Context context;
-    ArrayList<Category> categories;
-    LayoutInflater inflater;
-    Resources res;
+    private Context context;
+    private ArrayList<Category> categories;
+    private LayoutInflater inflater;
+    private Resources res;
 
     public CategorySpinnerAdapter(Context context,ArrayList<Category> categories) {
         this.context = context;

@@ -20,11 +20,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -48,19 +49,21 @@ public class MainActivity extends AppCompatActivity
 //        }
 
         TabLayout mTabLayout = findViewById(R.id.mTabLayout);
-        ViewPager mVewPager = findViewById(R.id.mViewPager);
+        ViewPager mViewPager = findViewById(R.id.mViewPager);
+        mViewPager.setOffscreenPageLimit(4);
 
 
 
-        mVewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles)));
-        mTabLayout.setupWithViewPager(mVewPager);
+
+        mViewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles)));
+        mTabLayout.setupWithViewPager(mViewPager);
 
 
         if(bundle != null) {
             Log.e("Bundle", "Not null");
             if ((bundle.getString(RecipeRegistration.class.getSimpleName()) != null)) {
                 Log.e("Bundle 2", "Not Null");
-                mVewPager.setCurrentItem(2);
+                mViewPager.setCurrentItem(2);
             }
         }
     }

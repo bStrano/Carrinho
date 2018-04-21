@@ -1,6 +1,7 @@
 package br.com.stralom.helper;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -17,19 +18,24 @@ public class ItemCartForm {
     private final Spinner product;
     private final EditText amout;
     private final Cart cart;
+    private final CheckBox updateStock;
 
 
     public ItemCartForm(View view, Cart cart) {
         product = view.findViewById(R.id.form_itemCart_product);
         amout = view.findViewById(R.id.form_itemCart_amount);
         this.cart = cart;
+        updateStock = view.findViewById(R.id.form_itemCart_updateStock);
     }
 
      public ItemCart getItemCart(){
         Product product = (Product) this.product.getSelectedItem();
         int amount = Integer.parseInt(amout.getText().toString());
+        updateStock.isChecked();
 
-        return new ItemCart(product,amount,cart);
+        ItemCart itemCart = new ItemCart(product,amount,cart);
+        itemCart.setUpdateStock(updateStock.isChecked());
+        return itemCart;
 
 
      }

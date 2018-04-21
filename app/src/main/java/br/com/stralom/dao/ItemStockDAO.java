@@ -47,7 +47,9 @@ public class ItemStockDAO extends GenericDAO {
 
         try (Cursor cursor = db.rawQuery(sql, new String[]{idStock.toString()})) {
             while (cursor.moveToNext()) {
+                String productName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
                 ItemStock itemStock = getItemStock(cursor);
+                itemStock.getProduct().setName(productName);
                 products.add(itemStock);
             }
         } catch (NullPointerException e) {
@@ -66,10 +68,10 @@ public class ItemStockDAO extends GenericDAO {
         int atualAmount = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT));
         Long productId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_PRODUCT));
         Long stockId = cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_ITEMSTOCK_STOCK));
-        String productName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
+        //String productName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
         Product product = new Product();
         product.setId(productId);
-        product.setName(productName);
+       // product.setName(productName);
         Stock stock = new Stock();
         stock.setId(stockId);
 
@@ -85,6 +87,7 @@ public class ItemStockDAO extends GenericDAO {
         if(cursor.moveToNext()){
             return getItemStock(cursor);
         }
+        cursor.close();
         return null;
     }
 
