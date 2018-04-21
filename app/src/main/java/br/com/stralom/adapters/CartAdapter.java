@@ -17,8 +17,12 @@ import java.util.List;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.CartDAO;
+import br.com.stralom.dao.ItemCartDAO;
+import br.com.stralom.dao.ItemStockDAO;
 import br.com.stralom.dao.SimpleItemDAO;
+import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemCart;
+import br.com.stralom.entities.ItemStock;
 
 /**
  * Created by Bruno Strano on 30/01/2018.
@@ -27,8 +31,9 @@ import br.com.stralom.entities.ItemCart;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> implements ItemTouchHelperAdapter {
     private final List<ItemCart> products;
     private final Activity activity;
-    private final CartDAO cartDAO;
+    private final ItemCartDAO itemCartDAO;
     private final SimpleItemDAO simpleItemDAO;
+    private final ItemStockDAO itemStockDAO;
     private boolean undoSwipe = false;
     private Resources res;
 
@@ -36,7 +41,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
         this.products = products;
         this.activity = activity;
         res = activity.getResources();
-        cartDAO = new CartDAO(activity);
+        itemCartDAO = new ItemCartDAO(activity);
+        itemStockDAO = new ItemStockDAO(activity);
         simpleItemDAO = new SimpleItemDAO(activity);
     }
 
@@ -95,34 +101,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
     public void onItemDismiss(final int position) {
 
         final ItemCart itemCart = products.get(position);
-
-
         String name = itemCart.getProduct().getName();
 
-        // Remover Temporiariamente
-        products.remove(position);
-        notifyItemRemoved(position);
-
-        Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), name + " removido do carrinho!", Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.BLUE);
-
-        // Desfazer remoção
-        snackbar.setAction("DESFAZER", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                products.add(position,itemCart);
-                notifyItemInserted(position);
-                undoSwipe = true;
-            }
-        });
+        Snackbar snackbar = removeTemporarily(position,itemCart,  name + " removido do carrinho.");
 
         // Remover Definitivamente
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(!undoSwipe) {
+                if(!itemCart.isRemoved()) {
                     if(itemCart.getId() != null) {
-                        cartDAO.remove( itemCart.getId());
+                        itemCartDAO.remove( itemCart.getId());
                     } else if(itemCart.getConvertedId() != null){
                         simpleItemDAO.remove( itemCart.getConvertedId());
 
@@ -138,11 +127,30 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
 
     }
 
-    @Override
-    public void onItemClick(int position) {
+    public void remove(int position) {
+        final ItemCart itemCart = products.get(position);
+        Snackbar snackbar = removeTemporarily(position, itemCart, "Concluido");
 
+        snackbar.addCallback(new Snackbar.Callback(){
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event){
+                if(!itemCart.isRemoved()){
+                    if(itemCart.getId() != null){
+                        itemCartDAO.remove( itemCart.getId() );
+                        if(itemCart.isUpdateStock()) {
+                            ItemStock itemStock = itemStockDAO.findByProductId(itemCart.getId());
+                            itemStock.setAmount(itemCart.getAmount() + itemStock.getActualAmount());
+                            itemStock.setTotal(itemStock.getActualAmount(),itemStock.getAmount());
+                            itemStockDAO.update(itemStock);
+                        }
+                    } else if(itemCart.getConvertedId() != null) {
+                        simpleItemDAO.remove( itemCart.getConvertedId());
+                    }
+                }
+            }
+        });
+        snackbar.show();
     }
-
     @Override
     public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
         return  ((CartAdapter.mViewHolder) viewHolder).viewForeground;
@@ -150,5 +158,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
 
 
 
+    @NonNull
+    private Snackbar removeTemporarily(final int position, final ItemCart itemCart, String message) {
+        // Remover Temporiariamente
+        products.remove(position);
+        notifyItemRemoved(position);
 
+        Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), message, Snackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(Color.BLUE);
+
+        // Desfazer remoção
+        snackbar.setAction(R.string.snackbar_undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                products.add(position,itemCart);
+                notifyItemInserted(position);
+                itemCart.setRemoved(true);
+            }
+        });
+        return snackbar;
+    }
 }

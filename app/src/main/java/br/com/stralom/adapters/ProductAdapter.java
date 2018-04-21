@@ -109,7 +109,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return  ((ProductViewHolder) viewHolder).viewForeground;
     }
 
-     class ProductViewHolder extends  RecyclerView.ViewHolder{
+    class ProductViewHolder extends  RecyclerView.ViewHolder{
         final ImageView categoryIcon;
         final TextView name;
         final TextView price;

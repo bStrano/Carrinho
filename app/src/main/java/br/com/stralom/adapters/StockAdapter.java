@@ -107,7 +107,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
     public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
         return ((StockAdapter.StockViewHolder) viewHolder).viewForeground;
     }
-    // }
+
+
 
     public class StockViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView name;

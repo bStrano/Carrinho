@@ -121,7 +121,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
 
-     class RecipeViewHolder extends RecyclerView.ViewHolder{
+
+    class RecipeViewHolder extends RecyclerView.ViewHolder{
         final TextView name;
         final TextView price;
         final TextView ingredientCount;
