@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_products"
+            android:id="@+id/product_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
         />
 
         <Button
-            android:id="@+id/btn_newProduct"
+            android:id="@+id/product_btn_addNew"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentBottom="true"

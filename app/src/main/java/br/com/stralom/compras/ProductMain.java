@@ -50,10 +50,10 @@ public class ProductMain extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_lista_produtos, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_list, container, false);
 
-        Button buttonView = view.findViewById(R.id.btn_newProduct);
-        RecyclerView productListView = view.findViewById(R.id.list_products);
+        Button buttonView = view.findViewById(R.id.product_btn_addNew);
+        RecyclerView productListView = view.findViewById(R.id.product_list);
 
         productDAO = new ProductDAO(getActivity());
         productList = productDAO.getAll();
@@ -85,23 +85,12 @@ public class ProductMain extends Fragment {
                 //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
 
-                final ProductForm productForm = new ProductForm(newProductView);
+                final ProductForm productForm = new ProductForm(getActivity(),newProductView);
 
 
                 builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Product product = productForm.getProduct();
-                        try{
-                            productDAO.add(product);
-                            productList.add(product);
-                            productAdapter.notifyDataSetChanged();
-                            Toast.makeText(getActivity(),"Produto salvo!",Toast.LENGTH_LONG).show();
-                        }catch (android.database.sqlite.SQLiteConstraintException e){
-                            Toast.makeText(getActivity(),"Produto já está cadastrado.",Toast.LENGTH_LONG).show();
-                        }
-
-
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -113,8 +102,28 @@ public class ProductMain extends Fragment {
 
 
                 builder.setView(newProductView);
-                AlertDialog dialog = builder.create();
+                final AlertDialog dialog = builder.create();
                 dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        productForm.getValidator().validate();
+                        if(productForm.isValidationSuccessful()){
+                            Product product = productForm.getProduct();
+                            try{
+                                productDAO.add(product);
+                                productList.add(product);
+                                productAdapter.notifyDataSetChanged();
+                                Toast.makeText(getActivity(),R.string.toast_produc_register,Toast.LENGTH_LONG).show();
+                            }catch (android.database.sqlite.SQLiteConstraintException e){
+                                Toast.makeText(getActivity(),R.string.toast_product_alreadyRegistered,Toast.LENGTH_LONG).show();
+                            }
+                            dialog.dismiss();
+                        }
+                    }
+
+                });
+
             }
         });
         return view;

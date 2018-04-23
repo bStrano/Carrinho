@@ -58,6 +58,8 @@
         <item>Legumes</item>
         <item>Higiene</item>
     </string-array>
+    <string name="category_Meat">Carnes</string>
+    <string name="category_Fruit">Frutas</string>
 
     <!-- Recipe -->
     <string name="recipeName">Nome</string>
@@ -72,8 +74,10 @@
 
     <!-- Others -->
     <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
-    <string name="toast_product_add">Produto adicionado !</string>
+    <string name="toast_product_addedToCart">Produto adicionado !</string>
     <string name="toast_product_update">Produto atualizado.</string>
+    <string name="toast_produc_register">Produto Salvo !</string>
+    <string name="toast_product_alreadyRegistered">Produto já está cadastrado.</string>
     <string name="swipe_remove">REMOVER</string>
     <string name="check">Confirmar</string>
     <string name="addIngredient">Adicionar Ingrediente</string>
@@ -89,6 +93,9 @@
     <string name="contentDescription_categoryIcon">Icone da Categoria</string>
     <string name="snackbar_undo">DESFAZER</string>
     <string name="toast_product_alreadyUpdate">Produto já esta cadastrado.</string>
+    <string name="product_validation_name">Preencha o nome do produto.</string>
+    <string name="validation_maxLenght">O numero de caracteres não deve ser superior a 25</string>
+    <string name="product_validation_price">Campo obrigatório.</string>
 
 
 </resources>

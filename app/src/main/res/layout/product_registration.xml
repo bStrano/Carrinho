@@ -2,7 +2,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="9dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/product_dialog_mainLayout">
 
 
             <TextView
@@ -12,6 +13,7 @@
                 android:textSize="30sp"
                 android:textAlignment="center"
                 android:layout_marginTop="5dp"/>
+
             <EditText
                 android:id="@+id/form_productName"
                 android:layout_width="match_parent"
