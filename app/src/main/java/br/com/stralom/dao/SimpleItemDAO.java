@@ -26,10 +26,12 @@ public class SimpleItemDAO extends GenericDAO {
         Cursor c = db.rawQuery(sql,new String[] {cartId.toString()});
         if( c != null) {
             while(c.moveToNext()){
+                long id = c.getLong(c.getColumnIndex(DBHelper.COLUMN_SIMPLEITEM_ID));
                 String name = c.getString(c.getColumnIndex(DBHelper.COLUMN_SIMPLEITEM_NAME));
                 int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_SIMPLEITEM_AMOUNT));
 
                 SimpleItem simpleItem = new SimpleItem(name,amount);
+                simpleItem.setId(id);
                 items.add(simpleItem);
             }
             c.close();

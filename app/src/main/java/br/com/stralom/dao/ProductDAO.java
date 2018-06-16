@@ -19,11 +19,6 @@ import br.com.stralom.entities.Product;
 
 public class ProductDAO {
     private static final String TAG = "ProductDAO";
-    private static final String sqlSelectAll = "SELECT p." + DBHelper.COLUMN_PRODUCT_ID + " , p." + DBHelper.COLUMN_PRODUCT_NAME + " , p." + DBHelper.COLUMN_PRODUCT_PRICE + " , p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
-            " , c." + DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL + " , c." + DBHelper.COLUMN_CATEGORY_ICON + " , c." + DBHelper.COLUMN_CATEGORY_DEFAULT + " , c." + DBHelper.COLUMN_CATEGORY_NAME +
-            " FROM " + DBHelper.TABLE_PRODUCT + " p " +
-            " LEFT JOIN " + DBHelper.TABLE_CATEGORY + " c " +
-            " ON p." + DBHelper.COLUMN_PRODUCT_CATEGORY + " = c." + DBHelper.COLUMN_CATEGORY_NAME ;
    private SQLiteDatabase db;
     private final DBHelper dbHelper;
 
@@ -46,21 +41,6 @@ public class ProductDAO {
     }
 
 
-    public Product findById(Long id){
-        db = dbHelper.getReadableDatabase();
-        String sql = sqlSelectAll + " WHERE " + DBHelper.COLUMN_PRODUCT_ID + " = ?";
-        Product product = null;
-        try (Cursor cursor = db.rawQuery(sql, new String[]{id.toString()})) {
-            while (cursor.moveToNext()) {
-                product = getProduct(cursor);
-            }
-
-        cursor.close();
-        } catch (NullPointerException e) {
-            Log.e(TAG, "[NullPointException] Product not found.");
-        }
-        return product;
-    }
 
     public List<Product> getAll(){
 

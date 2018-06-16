@@ -25,15 +25,28 @@
             >
 
 
+            <TextView
+                android:id="@+id/itemCart_itemList_amount"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:text="12x"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/list_textMediumSize"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+
 
             <TextView
-                android:id="@+id/itemCart_itemList_nameAmount"
+                android:id="@+id/itemCart_itemList_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Product Name"
+                android:layout_toRightOf="@+id/itemCart_itemList_amount"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginStart="@dimen/list_marginLeft"
                 android:textSize="@dimen/list_textMediumSize"
+                android:layout_marginLeft="10dp"
                 tools:ignore="HardcodedText" />
 
             <ImageView

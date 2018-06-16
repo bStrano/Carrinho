@@ -35,10 +35,27 @@ public class ItemStock extends Item {
         setStatus();
     }
 
+    /**
+     * This method cheks the value of the stockPercentage attribute and updates the status with the correspondent value
+     */
+    public void setStatus(){
+        if(stockPercentage == 0){
+            this.status = Status.EMPTY;
+        } else if (stockPercentage < 30) {
+            this.status = Status.BAD;
+        } else if (stockPercentage < 65){
+            this.status = Status.NEUTRAL;
+        } else if(stockPercentage <= 99) {
+            this.status = Status.GOOD;
+        } else if(stockPercentage == 100){
+            this.status = Status.FULL;
+        }
+
+    }
+
     private void setStockPercentage(int amount, int actualAmount) {
         this.stockPercentage = ((100 * actualAmount)/amount);
     }
-
 
     public Stock getStock() {
         return stock;
@@ -54,21 +71,6 @@ public class ItemStock extends Item {
 
     public void setActualAmount(int atualAmount) {
         this.actualAmount = atualAmount;
-    }
-
-    private void setStatus(){
-            if(stockPercentage == 0){
-                this.status = Status.EMPTY;
-             } else if (stockPercentage < 30) {
-                this.status = Status.BAD;
-            } else if (stockPercentage < 70){
-                this.status = Status.NEUTRAL;
-            } else if(stockPercentage <= 99) {
-                this.status = Status.GOOD;
-            } else if(stockPercentage == 100){
-                this.status = Status.FULL;
-            }
-
     }
 
     public int getStockPercentage() {

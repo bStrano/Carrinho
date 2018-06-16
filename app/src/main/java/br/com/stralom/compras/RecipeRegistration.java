@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-import br.com.stralom.compras.R;
 import br.com.stralom.dao.ItemRecipeDAO;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
@@ -216,7 +215,7 @@ public class RecipeRegistration extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
-            case R.id.productRegistration_save:
+            case R.id.recipeRegistration_save:
                 Recipe recipe = recipeForm.getRecipe();
                 Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
                 recipe.setId(idRecipe);

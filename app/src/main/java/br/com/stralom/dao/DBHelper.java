@@ -134,7 +134,7 @@ class DBHelper extends SQLiteOpenHelper {
             ");";
     // SIMPLEITEM
     public static final String TABLE_SIMPLEITEM = "tb_simpleItem";
-    private static final String COLUMN_SIMPLEITEM_ID = "id";
+    public static final String COLUMN_SIMPLEITEM_ID = "id";
     public static final String COLUMN_SIMPLEITEM_NAME = "name";
     public static final String COLUMN_SIMPLEITEM_AMOUNT = "amount";
     public static final String COLUMN_SIMPLEITEM_CART = "cart_id";

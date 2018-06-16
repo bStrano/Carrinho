@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.ItemCartDAO;
@@ -29,7 +28,7 @@ import br.com.stralom.entities.ItemStock;
  * Created by Bruno Strano on 30/01/2018.
  */
 
-public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> implements ItemTouchHelperAdapter {
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder> implements ItemTouchHelperAdapter {
     private final ArrayList<ItemCart> products;
     private final Activity activity;
     private final ItemCartDAO itemCartDAO;
@@ -53,16 +52,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
 
 
 
-    public class mViewHolder extends  RecyclerView.ViewHolder{
-        final TextView product_NameAmount;
+    public class cartViewHolder extends  RecyclerView.ViewHolder{
+        final TextView productName;
+        final TextView productAmount;
         final ImageView categoryIcon;
         final View viewForeground;
         final View viewBackground;
 
-        mViewHolder(View itemView) {
+        cartViewHolder(View itemView) {
             super(itemView);
 
-            product_NameAmount = itemView.findViewById(R.id.itemCart_itemList_nameAmount);
+            productName = itemView.findViewById(R.id.itemCart_itemList_name);
+            productAmount = itemView.findViewById(R.id.itemCart_itemList_amount);
             viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.cart_view_foreground);
             categoryIcon = itemView.findViewById(R.id.itemCart_itemList_categoryIcon);
@@ -72,15 +73,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
 
     @NonNull
     @Override
-    public mViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public cartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(activity).inflate(R.layout.list_item_cart, parent, false);
-        return new mViewHolder(v);
+        return new cartViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull mViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
         ItemCart itemCart = products.get(position);
-        holder.product_NameAmount.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
+        //holder.productName.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
+        holder.productName.setText(itemCart.getProduct().getName());
+        holder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getAmount()));
         try{
             holder.categoryIcon.setImageResource(itemCart.getProduct().getCategory().getIconFlag());
         } catch (NullPointerException e){
@@ -143,7 +146,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
     public void completeItem(int position, TextView textView) {
         final ItemCart itemCart = products.get(position);
         snackbar = removeTemporarily(position, itemCart, "Concluido",textView);
-
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event){
@@ -169,7 +171,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.mViewHolder> i
     }
     @Override
     public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
-        return  ((CartAdapter.mViewHolder) viewHolder).viewForeground;
+        return  ((cartViewHolder) viewHolder).viewForeground;
     }
 
 

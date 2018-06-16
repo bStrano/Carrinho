@@ -1,5 +1,7 @@
 package br.com.stralom.entities;
 
+import android.util.Log;
+
 /**
  * Created by Bruno Strano on 03/01/2018.
  */
@@ -75,6 +77,20 @@ public class ItemCart extends Item {
     }
 
 
+    /**
+     *  This method convert a simpleItem into a ItemCart and returns the converted ItemCart
+     *
+     * @param simpleItem
+     * @return
+     */
+    public static ItemCart convertToItemCart(SimpleItem simpleItem){
+        Product product = new Product();
+        product.setName(simpleItem.getName());
+        ItemCart itemCart = new ItemCart(product,simpleItem.getAmount(),simpleItem.getCart());
+        itemCart.setConvertedId(simpleItem.getId());
+
+        return itemCart;
+    }
 
 
 }

@@ -7,10 +7,10 @@
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/list_cart"/>
+            android:id="@+id/cart_list_itemCarts"/>
 
         <Button
-            android:id="@+id/btn_newItemCart"
+            android:id="@+id/itemCart_btn_registerProduct"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentBottom="true"
@@ -21,7 +21,7 @@
             />
 
         <Button
-            android:id="@+id/btn_newItemCart_recipe"
+            android:id="@+id/itemCart_btn_registerRecipe"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentEnd="true"
@@ -33,7 +33,7 @@
             />
 
         <Button
-            android:id="@+id/btn_newItemCart_simpleProduct"
+            android:id="@+id/itemcart_btn_registerSimpleProduct"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"

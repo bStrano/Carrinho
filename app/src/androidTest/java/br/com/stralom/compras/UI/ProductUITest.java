@@ -1,22 +1,12 @@
 package br.com.stralom.compras.UI;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.action.GeneralLocation;
-import android.support.test.espresso.action.GeneralSwipeAction;
-import android.support.test.espresso.action.Press;
-import android.support.test.espresso.action.Swipe;
-import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.internal.util.Checks;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
+
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -28,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 
+import javax.xml.validation.Validator;
+
 import br.com.stralom.adapters.ProductAdapter;
 import br.com.stralom.adapters.StockAdapter;
 import br.com.stralom.compras.MainActivity;
@@ -37,26 +29,27 @@ import br.com.stralom.compras.R;
 import static android.support.test.espresso.Espresso.*;
 import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.assertion.ViewAssertions.*;
-import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.*;
+import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProductUITest {
-    private Activity activity;
+    protected static String DEFAULTPRODUCTNAME = "Register Product Test";
+    protected Activity activity;
+    private Validator validator;
+
     @Before
     public void init(){
+        goToProductTab();
         activity = activityActivityTestRule.getActivity();
-        onView(withText("Produtos")).perform(click());
+
     }
 
     @Rule
@@ -71,7 +64,7 @@ public class ProductUITest {
 
     @Test
     public void bTestAddingProducts() {
-        registerProduct();
+        registerProduct(DEFAULTPRODUCTNAME,"10");
 
         onView(withText(R.string.toast_produc_register)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
@@ -79,19 +72,49 @@ public class ProductUITest {
 
     @Test
     public void cTestAddingProductsAlreadyRegistered(){
-        registerProduct();
+        registerProduct(DEFAULTPRODUCTNAME,"10");
 
         onView(withText(R.string.toast_product_alreadyRegistered)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
     }
 
+    @Test
+    public void dTestProductValidationEmptyPrice(){
+        registerProduct("Test Validation","");
+        String errorMsg = activity.getResources().getString(R.string.product_validation_price);
+        //onView(withId(R.id.product_dialog_mainLayout)).check((matches(hasErrorText(errorMsg))));
+        onView(withId(R.id.form_productPrice)).check(matches(withError(errorMsg)));
+    }
 
-    private void registerProduct() {
+    @Test
+    public void dTestProductValidationEmptyName(){
+        registerProduct("","12");
+        String errorMsg = activity.getResources().getString(R.string.product_validation_name);
+        onView(withId(R.id.form_productName)).check(matches(withError(errorMsg)));
+    }
+
+    @Test
+    public void dTestProductValidationNameToLong(){
+        registerProduct("This product name is greater than the max chars permited","12");
+        String errorMsg = activity.getResources().getString(R.string.validation_maxLenght);
+        //onView(withId(R.id.product_dialog_mainLayout)).check((matches(hasErrorText(errorMsg))));
+        onView(withId(R.id.form_productName)).check(matches(withError(errorMsg)));
+    }
+
+    public static void registerProduct(String productName, String productPrice) {
+        goToProductTab();
+        onView(withText("Produtos")).perform(click());
         onView(withId(R.id.product_btn_addNew)).perform(click());
-        onView(withId(R.id.form_productName)).perform(replaceText("Register Product Test"));
-        onView(withId(R.id.form_productPrice)).perform(replaceText("12"));
+        onView(withId(R.id.form_productName)).perform(replaceText(productName));
+        onView(withId(R.id.form_productPrice)).perform(replaceText(productPrice));
         onView(withId(R.id.form_productCategory)).perform(click());
         onData(anything()).atPosition(1).inRoot(isPlatformPopup()).perform(click());
         onView(withText(R.string.save)).perform(click());
+
     }
+
+    public static void goToProductTab(){
+        onView(withText("Produtos")).perform(click());
+    }
+
 }

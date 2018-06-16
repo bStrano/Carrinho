@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setOffscreenPageLimit(4);
 
 
-
-
         mViewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles)));
         mTabLayout.setupWithViewPager(mViewPager);
 

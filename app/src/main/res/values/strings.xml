@@ -25,7 +25,8 @@
 
     <!-- ItemCart -->
     <string name="itemCartAmount">Quantidade</string>
-    <string name="itemcart_itemList_nameAmount"> ( %d x ) %s </string>
+    <string name="itemcart_itemList_name"> %s </string>
+    <string name="itemcart_itemList_amount"> %dx  </string>
 
     <!-- Stock -->
     <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
@@ -74,7 +75,7 @@
 
     <!-- Others -->
     <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
-    <string name="toast_product_addedToCart">Produto adicionado !</string>
+    <string name="itemCart_toast_productAdded">Produto adicionado !</string>
     <string name="toast_product_update">Produto atualizado.</string>
     <string name="toast_produc_register">Produto Salvo !</string>
     <string name="toast_product_alreadyRegistered">Produto já está cadastrado.</string>
@@ -92,10 +93,13 @@
     <string name="title_activity_product_registration">ProductRegistrationActivity</string>
     <string name="contentDescription_categoryIcon">Icone da Categoria</string>
     <string name="snackbar_undo">DESFAZER</string>
-    <string name="toast_product_alreadyUpdate">Produto já esta cadastrado.</string>
+    <string name="itemCart_toast_productAlreadyRegistered">Produto já esta cadastrado.</string>
     <string name="product_validation_name">Preencha o nome do produto.</string>
     <string name="validation_maxLenght">O numero de caracteres não deve ser superior a 25</string>
     <string name="product_validation_price">Campo obrigatório.</string>
+    <string name="itemCart_validation_amount">Campo obrigatório.</string>
+    <string name="validation_obrigatoryField">Campo obrigatório.</string>
+    <string name="itemCart_validation_simpleItemAlreadyExists">Já existe um produto cadastrado com esse nome.</string>
 
 
 </resources>

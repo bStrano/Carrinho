@@ -66,7 +66,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return (getId() + "   " + getName() + " - " + getPrice() + " R$");
+        return getName();
     }
 }
 

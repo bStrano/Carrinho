@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="@string/check"
-        android:id="@+id/productRegistration_save"
+        android:id="@+id/recipeRegistration_save"
         app:showAsAction="always"
         android:icon="@drawable/ic_check"/>
 </menu>

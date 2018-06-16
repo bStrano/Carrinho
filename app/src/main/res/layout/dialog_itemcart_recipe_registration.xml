@@ -5,9 +5,10 @@
     android:orientation="vertical">
 
     <Spinner
+        android:layout_marginTop="5dp"
         android:id="@+id/list_itemCart_recipe"
         android:layout_width="match_parent"
-        android:layout_height="61dp" />
+        android:layout_height="41dp" />
 
     <View
         android:layout_width="match_parent"

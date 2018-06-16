@@ -38,9 +38,10 @@ public class ItemCartDAO extends GenericDAO  {
     public void update(ItemCart item) {
         db = dbHelper.getWritableDatabase();
         db.update(DBHelper.TABLE_ITEMCART,getContentValues(item),DBHelper.COLUMN_ITEMCART_ID+ " = ?",new String[] {item.getId().toString()});
+        db.close();
     }
 
-    public ItemCart getByProductId(Long id){
+    public ItemCart getByProductName(String name){
         db = dbHelper.getReadableDatabase();
         ItemCart itemCart = null;
         String sql = "SELECT i." + DBHelper.COLUMN_ITEMCART_ID + " , i." + DBHelper.COLUMN_ITEMCART_AMOUNT + " , i." + DBHelper.COLUMN_ITEMCART_CART + " , i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " , i." + DBHelper.COLUMN_ITEMCART_TOTAL +
@@ -48,33 +49,34 @@ public class ItemCartDAO extends GenericDAO  {
                 " FROM " + DBHelper.TABLE_ITEMCART + " i " +
                 " JOIN " + DBHelper.TABLE_PRODUCT + " p " +
                 " ON i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = p." + DBHelper.COLUMN_PRODUCT_ID +
-                " WHERE i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = ? ";
+                " WHERE p." + DBHelper.COLUMN_PRODUCT_NAME + " = ? ";
 
 
-        try(Cursor c = db.rawQuery(sql,new String[] {id.toString()})) {
+            Cursor c = db.rawQuery(sql,new String[] {name});
+            if(c != null){
+                while (c.moveToNext()) {
+                    long itemCartId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_ID));
+                    int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_AMOUNT));
+                    Long cartId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_CART));
+                    Long productId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_PRODUCT));
+                    double total = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_TOTAL));
+                    String productName = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
+                    double productPrice = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
+                    Product product = new Product();
+                    product.setName(productName);
+                    product.setId(productId);
+                    product.setPrice(productPrice);
 
-            while (c.moveToNext()) {
-                long itemCartId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_ID));
-                int amount = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_AMOUNT));
-                Long cartId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_CART));
-                Long productId = c.getLong(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_PRODUCT));
-                double total = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_TOTAL));
-                String productName = c.getString(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME));
-                double productPrice = c.getDouble(c.getColumnIndex(DBHelper.COLUMN_PRODUCT_PRICE));
-                Product product = new Product();
-                product.setName(productName);
-                product.setId(productId);
-                product.setPrice(productPrice);
 
+                    Cart cart = new Cart();
+                    cart.setId(cartId);
+                    itemCart = new ItemCart(itemCartId, product, amount, total, cart);
 
-                Cart cart = new Cart();
-                cart.setId(cartId);
-                itemCart = new ItemCart(itemCartId, product, amount, total, cart);
-
+                }
             }
-        } catch (NullPointerException e) {
-            Log.e(TAG,"[Null Cursor] No items found");
-        }
+
+            c.close();
+
 
         return itemCart;
     }
