@@ -17,22 +17,28 @@ import br.com.stralom.entities.Recipe;
 
 public class RecipeMatcher {
 
-    public static Matcher<RecyclerView.ViewHolder> withRecipeHolder(final String text) {
+    public static Matcher<RecyclerView.ViewHolder> withRecipeHolder(final String recipeName, final String recipeIngredientCount, final String recipePrice ) {
         return new BoundedMatcher<RecyclerView.ViewHolder, RecipeAdapter.RecipeViewHolder>(RecipeAdapter.RecipeViewHolder.class) {
 
             @Override
             protected boolean matchesSafely(RecipeAdapter.RecipeViewHolder item) {
                 TextView name = item.itemView.findViewById(R.id.recipe_name);
-                if(name == null) {
+                TextView ingredientsCount = item.itemView.findViewById(R.id.recipe_ingredientCount);
+                TextView price = item.itemView.findViewById(R.id.recipe_price);
+                if(name == null || ingredientsCount == null || price == null ) {
                     return false;
                 }
-                return name.getText().toString().matches(text);
+
+
+                return (name.getText().toString().equals(recipeName) &&
+                        ingredientsCount.getText().toString().contains(recipeIngredientCount) &&
+                        price.getText().toString().equals(recipePrice));
 
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("No ViewHolder found [" + text + "]");
+                description.appendText("No ViewHolder found [ Name: " + recipeName + " / IngredientCount: " + recipeIngredientCount +" / Price:  " + recipePrice + "] ");
             }
 
         };

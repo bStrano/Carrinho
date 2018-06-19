@@ -32,11 +32,32 @@ public class RecipeDAO extends GenericDAO {
         return contentValues;
     }
 
+    public void update(Recipe recipe){
+        super.update(DBHelper.COLUMN_RECIPE_ID, recipe.getId(),getContentValues(recipe));
+    }
+
     @Override
     public void remove(Long id) {
         itemRecipeDAO.deleteAllFromRecipe(id);
         super.remove(id);
     }
+
+     public Recipe findByName(String name){
+        db = dbHelper.getReadableDatabase();
+        Recipe recipe = null;
+
+        String sql = "SELECT * FROM " + DBHelper.TABLE_RECIPE + " WHERE " +
+                DBHelper.COLUMN_RECIPE_NAME + " = ?";
+
+        Cursor c = db.rawQuery(sql,new String[] {name});
+
+        if(c != null  && c.moveToFirst()){
+            recipe = getRecipe(c);
+            c.close();
+        }
+
+        return  recipe;
+     }
 
     public ArrayList<Recipe> getAll() {
         db = dbHelper.getReadableDatabase();
@@ -44,12 +65,7 @@ public class RecipeDAO extends GenericDAO {
 
         try (Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_RECIPE, null)) {
             while (cursor.moveToNext()) {
-                Recipe recipe = new Recipe();
-                recipe.setId(cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_ID)));
-                recipe.setImagePath(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_IMAGEPATH)));
-                recipe.setIgredientCount(cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_INGREDIENTCOUNT)));
-                recipe.setTotal(cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_TOTAL)));
-                recipe.setName(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_NAME)));
+                Recipe recipe = getRecipe(cursor);
 
                 recipes.add(recipe);
             }
@@ -61,5 +77,15 @@ public class RecipeDAO extends GenericDAO {
 
 
         return recipes;
+    }
+
+    private Recipe getRecipe(Cursor cursor) {
+        Recipe recipe = new Recipe();
+        recipe.setId(cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_ID)));
+        recipe.setImagePath(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_IMAGEPATH)));
+        recipe.setIgredientCount(cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_INGREDIENTCOUNT)));
+        recipe.setTotal(cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_TOTAL)));
+        recipe.setName(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_NAME)));
+        return recipe;
     }
 }

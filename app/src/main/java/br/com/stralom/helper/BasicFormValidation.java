@@ -32,7 +32,7 @@ public abstract class BasicFormValidation implements Validator.ValidationListene
             View view = error.getView();
             String message = error.getCollatedErrorMessage(activity);
 
-            // Display error messages ;)
+            // Display error messages
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {

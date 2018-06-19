@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,8 +26,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +82,7 @@ public class RecipeRegistration extends Fragment {
         itemRecipeDAO = new ItemRecipeDAO(getActivity());
          ingredients = new ArrayList<>();
 
-        recipeForm = new RecipeForm(view,ingredients);
+        recipeForm = new RecipeForm(getActivity(),view,ingredients);
 
         // Toolbar
         Toolbar mToolbar = view.findViewById(R.id.toolbar3);
@@ -216,21 +221,38 @@ public class RecipeRegistration extends Fragment {
         int id = item.getItemId();
         switch (id){
             case R.id.recipeRegistration_save:
+                recipeForm.getValidator().validate();
                 Recipe recipe = recipeForm.getRecipe();
-                Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
-                recipe.setId(idRecipe);
-                for (ItemRecipe ingredient: ingredients) {
-                    ingredient.setRecipe(recipe);
-                    // *********************************
-                    itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
-                }
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.putExtra(RecipeRegistration.class.getSimpleName(),RecipeRegistration.class.getSimpleName());
-                startActivity(intent);
 
-                break;
+                boolean registered = false;
+                if(recipeForm.isValidationSuccessful()){
+                    registered = registerRecipe(recipe);
+                }
+
+                if(registered){
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.putExtra(RecipeRegistration.class.getSimpleName(),RecipeRegistration.class.getSimpleName());
+                    startActivity(intent);
+                }
+
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private boolean registerRecipe(Recipe recipe) {
+        if( recipeDAO.findByName(recipe.getName()) == null){
+            Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
+            recipe.setId(idRecipe);
+            for (ItemRecipe ingredient: ingredients) {
+                ingredient.setRecipe(recipe);
+                itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
+            }
+            return true;
+        } else {
+            Toast.makeText(getContext(), R.string.toast_recipe_alreadyRegistered,Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
+
 }

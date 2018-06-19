@@ -43,7 +43,6 @@ class DBHelper extends SQLiteOpenHelper {
             COLUMN_PRODUCT_CATEGORY + " TEXT NOT NULL,  " +
             " FOREIGN KEY(" + COLUMN_PRODUCT_CATEGORY + " ) REFERENCES " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + ")" +
             ");";
-    //public static final String SQL_DROP_TABLE_PRODUCT = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
     // Cart
     public static final String TABLE_CART = "tb_cart";
     public static final String COLUMN_CART_ID = "id";
@@ -52,7 +51,6 @@ class DBHelper extends SQLiteOpenHelper {
             COLUMN_CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_CART_TOTAL + " REAL NOT NULL " +
             ");";
-    //public static final String SQL_DROP_TABLE_CART = "DROP TABLE IF EXISTS " + TABLE_CART;
     // ItemCart
     public static final String TABLE_ITEMCART = "tb_itemCart";
     public static final String COLUMN_ITEMCART_ID = "id";
@@ -71,7 +69,6 @@ class DBHelper extends SQLiteOpenHelper {
             "FOREIGN KEY("+ COLUMN_ITEMCART_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + "), " +
             "FOREIGN KEY("+ COLUMN_ITEMCART_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ")" +
             ");";
-    //public static final String SQL_DROP_TABLE_ITEMCART = "DROP TABLE IF EXISTS " + TABLE_ITEMCART;
     // RECIPE
     public static final String TABLE_RECIPE = "tb_recipe";
     public static final String COLUMN_RECIPE_ID = "id";
@@ -81,7 +78,7 @@ class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_RECIPE_IMAGEPATH = "imagePath";
     private static final String SQL_CREATE_TABLE_RECIPE = "CREATE TABLE " + TABLE_RECIPE + "( " +
             COLUMN_RECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COLUMN_RECIPE_NAME + " TEXT NOT NULL, " +
+            COLUMN_RECIPE_NAME + " TEXT NOT NULL UNIQUE, " +
             COLUMN_RECIPE_INGREDIENTCOUNT + " INTEGER NOT NULL, " +
             COLUMN_RECIPE_TOTAL + " REAL NOT NULL, " +
             COLUMN_RECIPE_IMAGEPATH + " TEXT " +
