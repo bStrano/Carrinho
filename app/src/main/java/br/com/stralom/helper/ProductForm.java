@@ -60,7 +60,7 @@ public class ProductForm implements Validator.ValidationListener {
         Category category = (Category) categorySpinner.getSelectedItem();
 
         product = new Product(name, price, category);
-        Toast.makeText(activity, "Yay! we got it right!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "...", Toast.LENGTH_SHORT).show();
     }
 
     @Override

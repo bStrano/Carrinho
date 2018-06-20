@@ -118,6 +118,7 @@ public class RecipeUITest {
     }
 
     public static void registerRecipe(String name, String productName, String productAmount){
+        goToRecipeTab();
         onView(withId(R.id.btn_newRecipe)).perform(click());
         onView(withId(R.id.form_recipe_name)).perform(replaceText(name));
 

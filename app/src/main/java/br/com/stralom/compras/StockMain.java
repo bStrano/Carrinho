@@ -120,7 +120,7 @@ public class StockMain extends Fragment {
             public void onClick(View view) {
                 final View viewDialog = getLayoutInflater().inflate(R.layout.dialog_itemstock_registration,null);
                 // Load Products Spinner
-                Spinner spinner = viewDialog.findViewById(R.id.list_productsStock);
+                Spinner spinner = viewDialog.findViewById(R.id.form_itemStock_products);
                 ArrayList<Product> products = (ArrayList<Product>) productDAO.getAll();
                 ArrayAdapter adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),android.R.layout.simple_spinner_item, products);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -130,28 +130,45 @@ public class StockMain extends Fragment {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
                 dialogBuilder.setTitle(R.string.stock_dialogTitle_addProduct);
                 dialogBuilder.setView(viewDialog);
-                dialogBuilder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                dialogBuilder.setPositiveButton(R.string.save, null);
+                dialogBuilder.setNegativeButton(R.string.cancel, null);
+                final AlertDialog dialog = dialogBuilder.create();
+                dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ItemStockForm itemStockForm = new ItemStockForm(viewDialog);
-                        ItemStock itemStock = itemStockForm.getItemStock();
-                        itemStock.setStock(stock);
-                        Log.e(TAG,"Quantidade atual: " + itemStock.getActualAmount());
-                        Log.e(TAG,"Quantidade Máxima: " + itemStock.getAmount());
-                        itemStockDAO.add(itemStockDAO.getContentValues(itemStock));
-                        Objects.requireNonNull(getActivity()).recreate();
-                        Toast.makeText(getContext(),"Produto adicionado.", Toast.LENGTH_LONG).show();
+                    public void onClick(View view) {
+                        if(registerItemStock(viewDialog)){
+                            dialog.dismiss();
+                        }
                     }
                 });
-                dialogBuilder.setNegativeButton(R.string.cancel, null);
-                AlertDialog dialog = dialogBuilder.create();
-                dialog.show();
 
                 //
             }
         });
 
         return view;
+    }
+
+    /**
+     * Register a item if it is valid.
+     * @param viewDialog Dialog View
+     * @return  true if the item is valid and false otherwise.
+     */
+    private boolean registerItemStock(View viewDialog) {
+        ItemStockForm itemStockForm = new ItemStockForm(getActivity(),viewDialog);
+        itemStockForm.getValidator().validate();
+
+        if(itemStockForm.isValidationSuccessful()){
+            ItemStock itemStock = itemStockForm.getItemStock();
+            itemStock.setStock(stock);
+            itemStockDAO.add(itemStockDAO.getContentValues(itemStock));
+            Objects.requireNonNull(getActivity()).recreate();
+            Toast.makeText(getContext(),"Produto adicionado.", Toast.LENGTH_LONG).show();
+            return  true;
+        } else {
+            return false;
+        }
     }
 
     private void closeFabMenu() {
