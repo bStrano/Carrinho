@@ -44,6 +44,10 @@ public class Category {
         this.iconFlag = iconFlag;
     }
 
+    public String getNameInternacional() {
+        return nameInternacional;
+    }
+
     @Override
     public String toString() {
         return "Category{" +

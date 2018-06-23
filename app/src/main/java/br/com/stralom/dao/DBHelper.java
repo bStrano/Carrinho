@@ -16,6 +16,9 @@ class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Stralom_Compras";
     private static final int DATABASE_VERSION = 1;
+    public DBHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
     // Category
     public static final String TABLE_CATEGORY = "tb_category";
@@ -124,7 +127,7 @@ class DBHelper extends SQLiteOpenHelper {
             COLUMN_ITEMSTOCK_STOCKPERCENTAGE + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_STATUS + " TEXT NOT NULL, " +
             COLUMN_ITEMSTOCK_ACTUALAMOUNT + " INTEGER NOT NULL, " +
-            COLUMN_ITEMSTOCK_PRODUCT + " INTEGER NOT NULL, " +
+            COLUMN_ITEMSTOCK_PRODUCT + " INTEGER NOT NULL UNIQUE, " +
             COLUMN_ITEMSTOCK_STOCK + " INTEGER NOT NULL, " +
             "FOREIGN KEY(" + COLUMN_ITEMSTOCK_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + "), " +
             "FOREIGN KEY(" + COLUMN_ITEMSTOCK_STOCK + ") REFERENCES " + TABLE_STOCK + "(" + COLUMN_STOCK_ID + ") " +
@@ -144,9 +147,6 @@ class DBHelper extends SQLiteOpenHelper {
             ");";
 
 
-    public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
 
     // private String getDropTableString(String tableName){
     //    return "DROP TABLE IF EXISTS " + tableName;

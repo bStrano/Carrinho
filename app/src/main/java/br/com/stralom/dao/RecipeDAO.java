@@ -7,6 +7,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import br.com.stralom.entities.Item;
+import br.com.stralom.entities.ItemRecipe;
+import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
 
 /**
@@ -20,6 +23,18 @@ public class RecipeDAO extends GenericDAO {
     public RecipeDAO(Context context) {
         super(context, DBHelper.TABLE_RECIPE);
         itemRecipeDAO = new ItemRecipeDAO(context);
+    }
+
+    public Long add(Recipe recipe){
+        return super.add(getContentValues(recipe));
+    }
+
+    public Recipe add(String name, ArrayList<ItemRecipe> items, String imagePath){
+        Recipe recipe = new Recipe(name,items, null);
+        Long recipeId = add(recipe);
+        Log.e(TAG, String.valueOf(recipeId));
+        recipe.setId(recipeId);
+        return recipe;
     }
 
     public ContentValues getContentValues(Recipe recipe){

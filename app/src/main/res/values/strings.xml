@@ -102,7 +102,8 @@
     <string name="itemCart_validation_simpleItemAlreadyExists">Já existe um produto cadastrado com esse nome.</string>
     <string name="toast_recipe_alreadyRegistered">Receita já cadastrada.</string>
     <string name="recipe_validation_ingredients"> %s ( Obrigatório )</string>
-
+    <string name="toast_itemStock_validRegistration">Produto Cadastrado !</string>
+    <string name="toast_itemStock_invalidRegistration">O produto já está cadastrado.</string>
 
 
 </resources>

@@ -84,11 +84,39 @@ public class ItemStockDAO extends GenericDAO {
 
 
         Cursor cursor = db.rawQuery(sql,new String[] { Long.toString(productId)});
-        if(cursor.moveToNext()){
-            return getItemStock(cursor);
-        }
+        ItemStock itemStock =  find(cursor);
         cursor.close();
-        return null;
+        return itemStock;
+    }
+
+    public ItemStock findByProductName(String name){
+        db = dbHelper.getReadableDatabase();
+        String sql = "SELECT i." + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + " ,i." + DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT + " ,i." + DBHelper.COLUMN_ITEMSTOCK_AMOUNT +
+                 " ,i." + DBHelper.COLUMN_ITEMSTOCK_ID + " ,i." + DBHelper.COLUMN_ITEMSTOCK_STATUS + " ,i." + DBHelper.COLUMN_ITEMSTOCK_STOCK + " ,i." + DBHelper.COLUMN_ITEMSTOCK_STOCKPERCENTAGE +
+                 " ,i." + DBHelper.COLUMN_ITEMSTOCK_TOTAL + " ,p." + DBHelper.COLUMN_PRODUCT_NAME +
+                 " FROM " + DBHelper.TABLE_ITEMSTOCK + " i " +
+                 " JOIN " + DBHelper.TABLE_PRODUCT + " p " +
+                 " ON i." + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + " = p." + DBHelper.COLUMN_PRODUCT_ID +
+                 " WHERE p." + DBHelper.COLUMN_PRODUCT_NAME  + " =  ? ";
+
+
+        Cursor cursor = db.rawQuery(sql, new String [] { name});
+
+        ItemStock itemStock =  find(cursor);
+        if(itemStock == null) {
+            return null;
+        }
+        itemStock.getProduct().setName(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME)));
+        cursor.close();
+        return itemStock;
+    }
+
+    private ItemStock find(Cursor cursor){
+        ItemStock itemStock = null;
+        if(cursor != null && cursor.moveToFirst()){
+            itemStock = getItemStock(cursor);
+        }
+        return  itemStock;
     }
 
     public ContentValues getContentValues(ItemStock itemStock){

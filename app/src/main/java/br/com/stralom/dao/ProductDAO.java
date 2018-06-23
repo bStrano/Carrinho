@@ -28,10 +28,17 @@ public class ProductDAO {
 
 
 
-    public void add(Product product) {
+    public Long add(Product product) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = getContentValues(product);
-        db.insertOrThrow(DBHelper.TABLE_PRODUCT,null,contentValues);
+        return db.insertOrThrow(DBHelper.TABLE_PRODUCT,null,contentValues);
+    }
+
+    public Product add(String name, double price, Category category){
+        Product product = new Product(name,price,category );
+        Long id = add(product);
+        product.setId(id);
+        return product;
     }
 
 

@@ -26,6 +26,19 @@ public class ItemRecipeDAO extends GenericDAO {
     }
 
 
+    public Long add(ItemRecipe itemRecipe){
+        return super.add(getContentValues(itemRecipe));
+    }
+
+
+
+    public ItemRecipe add(int amount, Product product, Recipe recipe){
+        ItemRecipe itemRecipe = new ItemRecipe(amount,product,recipe);
+        Long id = add(itemRecipe);
+        itemRecipe.setId(id);
+        return itemRecipe;
+    }
+
     public void deleteAllFromRecipe(Long idRecipe){
         db = dbHelper.getWritableDatabase();
         db.delete(DBHelper.TABLE_ITEMRECIPE,DBHelper.COLUMN_ITEMRECIPE_RECIPE + " = ?" , new String[] {idRecipe.toString()});
@@ -84,6 +97,8 @@ public class ItemRecipeDAO extends GenericDAO {
         contentValues.put(DBHelper.COLUMN_ITEMRECIPE_TOTAL,itemRecipe.getTotal());
         contentValues.put(DBHelper.COLUMN_ITEMRECIPE_PRODUCT,itemRecipe.getProduct().getId());
         contentValues.put(DBHelper.COLUMN_ITEMRECIPE_RECIPE, itemRecipe.getRecipe().getId());
+
+
 
         return contentValues;
     }

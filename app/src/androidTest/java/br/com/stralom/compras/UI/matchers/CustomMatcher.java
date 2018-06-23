@@ -1,11 +1,16 @@
 package br.com.stralom.compras.UI.matchers;
 
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.test.espresso.Root;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,9 +22,56 @@ import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.entities.Product;
 
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.v4.util.Preconditions.checkNotNull;
 
 public class CustomMatcher {
+
+    // https://stackoverflow.com/questions/21045509/check-if-a-dialog-is-displayed-with-espresso/34465170
+    public static Matcher<Root> isToast() {
+        return new TypeSafeMatcher<Root>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is toast");
+            }
+
+            @Override
+            public boolean matchesSafely(Root root) {
+                int type = root.getWindowLayoutParams().get().type;
+                if (type == WindowManager.LayoutParams.TYPE_TOAST) {
+                    IBinder windowToken = root.getDecorView().getWindowToken();
+                    IBinder appToken = root.getDecorView().getApplicationWindowToken();
+                    if (windowToken == appToken) {
+                        // windowToken == appToken means this window isn't contained by any other windows.
+                        // if it was a window for an activity, it would have TYPE_BASE_APPLICATION.
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+}
+
+    // https://stackoverflow.com/questions/21417954/espresso-thread-sleep
+    public static ViewAction waitFor(final long millis) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "Wait for " + millis + " milliseconds.";
+            }
+
+            @Override
+            public void perform(UiController uiController, final View view) {
+                uiController.loopMainThreadForAtLeast(millis);
+            }
+        };
+    }
 
     // https://stackoverflow.com/a/34286462/9175197
     public static Matcher withError(final String expected) {
