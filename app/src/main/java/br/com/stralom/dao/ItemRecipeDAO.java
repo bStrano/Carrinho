@@ -36,7 +36,7 @@ public class ItemRecipeDAO extends GenericDAO {
         ItemRecipe itemRecipe = new ItemRecipe(amount,product,recipe);
         Long id = add(itemRecipe);
         itemRecipe.setId(id);
-        return itemRecipe;
+        return  itemRecipe;
     }
 
     public void deleteAllFromRecipe(Long idRecipe){

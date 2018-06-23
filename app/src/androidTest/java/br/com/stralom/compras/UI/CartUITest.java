@@ -1,7 +1,6 @@
 package br.com.stralom.compras.UI;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.LargeTest;
@@ -9,32 +8,36 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import java.util.ArrayList;
+
 import br.com.stralom.compras.MainActivity;
 import br.com.stralom.compras.R;
+import br.com.stralom.dao.CategoryDAO;
+import br.com.stralom.dao.ItemRecipeDAO;
+import br.com.stralom.dao.ProductDAO;
+import br.com.stralom.dao.RecipeDAO;
+import br.com.stralom.entities.Category;
+import br.com.stralom.entities.ItemRecipe;
+import br.com.stralom.entities.Product;
+import br.com.stralom.entities.Recipe;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static android.support.test.espresso.assertion.ViewAssertions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static br.com.stralom.compras.UI.ProductUITest.goToProductTab;
-import static br.com.stralom.compras.UI.ProductUITest.registerProduct;
-import static br.com.stralom.compras.UI.RecipeUITest.goToRecipeTab;
-import static br.com.stralom.compras.UI.RecipeUITest.registerRecipe;
-import static br.com.stralom.compras.UI.matchers.CustomMatcher.atPosition;
+import static br.com.stralom.compras.UI.matchers.CartMatcher.withCartHolder;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.productSpinnerWithText;
-import static br.com.stralom.compras.UI.matchers.CustomMatcher.withCartHolder;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 import static br.com.stralom.compras.UI.matchers.RecipeMatcher.recipeSpinnerWithText;
 
@@ -46,8 +49,14 @@ public class CartUITest {
     private Activity activity;
     private ViewInteraction registerSimpleProductBtn;
     private ViewInteraction cartViewMain;
-    private final String defaultProductName = "Product for Test";
-    private final String defaultRecipeName = "Product Recipe Test";
+    private static Product product;
+    private static Category category;
+    private static Recipe recipe;
+    private static CategoryDAO categoryDAO;
+    private static ProductDAO productDAO;
+    private static RecipeDAO recipeDAO;
+    private static ItemRecipeDAO itemRecipeDAO;
+    private static boolean initialized = false;
 
 
 //   @BeforeClass
@@ -61,15 +70,27 @@ public class CartUITest {
         activity = activityActivityTestRule.getActivity();
         registerSimpleProductBtn = onView(withId(R.id.itemcart_btn_registerSimpleProduct));
         cartViewMain = onView(withId(R.id.cart_view_main));
+        goToCartTab();
+        if(!initialized){
+            initialized = true;
+            productDAO = new ProductDAO(activity);
+            categoryDAO = new CategoryDAO(activity);
+            recipeDAO = new RecipeDAO(activity);
+            itemRecipeDAO = new ItemRecipeDAO(activity);
+
+            category = categoryDAO.add("Cart Category","Cart Category", R.drawable.cherries);
+            product = productDAO.add("Cart Product",12,category);
+            ArrayList<ItemRecipe> itemRecipes = new ArrayList<>();
+            ItemRecipe itemRecipe = new ItemRecipe(2,product);
+            itemRecipes.add(itemRecipe);
+            recipe = recipeDAO.add("Cart Recipe",itemRecipes,null);
+            itemRecipeDAO.add(itemRecipe.getAmount(),product,recipe);
+
+        }
     }
 
     @Rule
     public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
-    @Test
-    public void ATestSetUp(){
-        setUp(defaultRecipeName,defaultProductName,"10","2");
-    }
 
 
 
@@ -82,7 +103,7 @@ public class CartUITest {
     @Test
     public void TestAddingSimpleItemWithAmount(){
         String amount = "10";
-        String name = "Simple" + defaultProductName;
+        String name = "Simple Product";
         registerSimpleProduct(name,amount);
         cartViewMain
                 .check(matches(isDisplayed()));
@@ -103,23 +124,52 @@ public class CartUITest {
 
     @Test
     public void TestAddingRecipe(){
-        String name = "TestAddingRecipe";
-        setUp(name, name, "10","2");
-        registerItemCartRecipe(name);
+
+        Product product = productDAO.add("Cart Add Recipe",10,category);
+        Product product2 = productDAO.add("Cart Add Recipe 2",20,category);
+
+        ItemRecipe itemRecipe = new ItemRecipe(2,product);
+        ItemRecipe itemRecipe2 = new ItemRecipe(1,product2);
+        ArrayList<ItemRecipe> itemRecipes = new ArrayList<>();
+        itemRecipes.add(itemRecipe);
+        itemRecipes.add(itemRecipe2);
+
+        Recipe recipe = recipeDAO.add("Cart add Recipe",itemRecipes,null);
+        itemRecipe=  itemRecipeDAO.add(itemRecipe.getAmount(),product,recipe);
+        itemRecipe2 = itemRecipeDAO.add(itemRecipe2.getAmount(),product2,recipe);
+
+        //String name = "TestAddingRecipe";
+        //setUp(name, name, "10","2");
+        registerItemCartRecipe(recipe.getName());
+
 
         onView(withId(R.id.cart_list_itemCarts))
-                .perform(RecyclerViewActions.scrollToHolder(withCartHolder(name,null)))
+                .perform(RecyclerViewActions.scrollToHolder(withCartHolder(itemRecipe.getProduct().getName(), String.valueOf(itemRecipe.getAmount()))))
                 .check(matches(isDisplayed()));
+        onView(withId(R.id.cart_list_itemCarts))
+                .perform(RecyclerViewActions.scrollToHolder(withCartHolder(itemRecipe2.getProduct().getName(), String.valueOf(itemRecipe2.getAmount()))))
+                .check(matches(isDisplayed()));
+
 
     }
 
     @Test
     public void TestAddingRecipeAlreadyRegistered(){
-        String name = "TestAddingRecipe";
-        registerItemCartRecipe(name);
+        Product product = productDAO.add("CartRecipe Already Registered",10,category);
 
+        ItemRecipe itemRecipe = new ItemRecipe(2,product);
+        ArrayList<ItemRecipe> itemRecipes = new ArrayList<>();
+        itemRecipes.add(itemRecipe);
+
+        Recipe recipe = recipeDAO.add("CartRecipe Already Registered",itemRecipes,null);
+        itemRecipeDAO.add(itemRecipe.getAmount(),product,recipe);
+
+        registerItemCartRecipe(recipe.getName());
+        registerItemCartRecipe(recipe.getName());
+
+        String amount = String.valueOf(itemRecipe.getAmount() *2);
         onView(withId(R.id.cart_list_itemCarts))
-                .perform(RecyclerViewActions.scrollToHolder(withCartHolder(name,"4")))
+                .perform(RecyclerViewActions.scrollToHolder(withCartHolder(product.getName(),amount)))
                 .check(matches(isDisplayed()));
     }
 
@@ -130,12 +180,12 @@ public class CartUITest {
    public void TestAddingProduct(){
 
 
-        registerItemCartProduct(defaultProductName,"10");
+        registerItemCartProduct(product.getName(),"10");
 
         cartViewMain
                 .check(matches(isDisplayed()));
 
-        onView(withId(R.id.cart_list_itemCarts)).perform(RecyclerViewActions.scrollToHolder(withCartHolder(defaultProductName)))
+        onView(withId(R.id.cart_list_itemCarts)).perform(RecyclerViewActions.scrollToHolder(withCartHolder(product.getName())))
             .check(matches(isDisplayed()));
    }
 
@@ -144,7 +194,7 @@ public class CartUITest {
     @Test
    public void TestAddingProductWithEmptyAmount(){
 
-        registerItemCartProduct(defaultProductName,"");
+        registerItemCartProduct(product.getName(),"");
         String errorMsg= activity.getString(R.string.itemCart_validation_amount);
         onView(withId(R.id.itemCart_form_productAmount)).check(matches(withError(errorMsg)));
    }
@@ -176,17 +226,7 @@ public class CartUITest {
         onView(withText(R.string.save)).perform(click());
     }
 
-    /**
-     * Register a Product and back to Cart Tab.
-     */
 
-    private void setUp(String recipeName, String productName, String productPrice, String productAmount){
-        goToProductTab();
-        registerProduct(productName,productPrice);
-        goToRecipeTab();
-        registerRecipe(recipeName, productName,productAmount);
-        goToCartTab();
-    }
 
     private static void goToCartTab(){
         onView(withText("Carrinho")).perform(click());

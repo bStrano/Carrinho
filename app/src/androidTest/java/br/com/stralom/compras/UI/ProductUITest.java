@@ -3,13 +3,9 @@ package br.com.stralom.compras.UI;
 import android.app.Activity;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
-import android.support.test.internal.util.Checks;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -17,23 +13,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-
-import javax.xml.validation.Validator;
-
-import br.com.stralom.adapters.ProductAdapter;
-import br.com.stralom.adapters.StockAdapter;
 import br.com.stralom.compras.MainActivity;
 import br.com.stralom.compras.R;
 
-
-import static android.support.test.espresso.Espresso.*;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.Matchers.*;
+import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 
 
@@ -41,9 +37,8 @@ import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 @LargeTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProductUITest {
-    protected static String DEFAULTPRODUCTNAME = "Register Product Test";
-    protected Activity activity;
-    private Validator validator;
+    private static String DEFAULTPRODUCTNAME = "Register Product Test";
+    private Activity activity;
 
     @Before
     public void init(){

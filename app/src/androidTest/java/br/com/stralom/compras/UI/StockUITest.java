@@ -1,17 +1,12 @@
 package br.com.stralom.compras.UI;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Debug;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +30,6 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
@@ -43,13 +37,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static br.com.stralom.compras.UI.ProductUITest.registerProduct;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.isToast;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.productSpinnerWithText;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.waitFor;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 import static br.com.stralom.compras.UI.matchers.StockMatcher.withStockHolder;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -60,6 +52,13 @@ public class StockUITest {
     private static final String PRODUCT_NAME = "Stock Product";
     private static final String RECIPE_NAME = "Stock Recipe";
     private static boolean initialized = false;
+    private static ProductDAO productDAO;
+    private static CategoryDAO categoryDAO;
+    private static RecipeDAO recipeDAO;
+    private static ItemRecipeDAO itemRecipeDAO;
+    private static Product product;
+    private static Category category;
+    private static Recipe recipe;
     private  Activity activity;
 
 
@@ -70,23 +69,21 @@ public class StockUITest {
     public void init(){
         activity = activityActivityTestRule.getActivity();
         if(!initialized){
-            ProductDAO productDAO = new ProductDAO(activity);
-            CategoryDAO categoryDAO = new CategoryDAO(activity);
-            RecipeDAO recipeDAO = new RecipeDAO(activity);
-            ItemRecipeDAO itemRecipeDAO = new ItemRecipeDAO(activity);
-            Category category = categoryDAO.add(CATEGORY_NAME,CATEGORY_NAME,R.drawable.meat);
-            Product product = productDAO.add(PRODUCT_NAME,120,category);
+            productDAO = new ProductDAO(activity);
+            categoryDAO = new CategoryDAO(activity);
+            recipeDAO = new RecipeDAO(activity);
+            itemRecipeDAO = new ItemRecipeDAO(activity);
+            category = categoryDAO.add(CATEGORY_NAME,CATEGORY_NAME,R.drawable.meat);
+            product = productDAO.add(PRODUCT_NAME,120,category);
             ItemRecipe itemRecipe = new ItemRecipe(2,product);
             ArrayList<ItemRecipe> products = new ArrayList<>();
             products.add(itemRecipe);
-            Recipe recipe = recipeDAO.add(RECIPE_NAME,products, null);
+            recipe = recipeDAO.add(RECIPE_NAME,products, null);
             itemRecipeDAO.add(2,product,recipe);
             initialized = true;
         }
         goToStockTab();
     }
-
-
 
 
 
@@ -126,11 +123,12 @@ public class StockUITest {
 
     @Test
     public void TestAddingItemAlreadyRegistered(){
+        String productName = "Already Registered";
+        productDAO = new ProductDAO(activity);
+        productDAO.add(productName,2,category);
 
-        //productDAO.add(productName,2,category);
-
-        openDialogAndRegisterItem(PRODUCT_NAME,"20","40");
-        openDialogAndRegisterItem(PRODUCT_NAME,"20","40");
+        openDialogAndRegisterItem(productName,"20","40");
+        openDialogAndRegisterItem(productName,"20","40");
 
         onView(withText(R.string.toast_itemStock_invalidRegistration)).inRoot(isToast())
                 .check(matches(isDisplayed()));
@@ -158,8 +156,9 @@ public class StockUITest {
     }
 
     private void accessStockProductDialog() {
+        onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.fab_stock)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
+        onView(isRoot()).perform(waitFor(2000));
         onView(withId(R.id.fab_addStock)).perform(click());
     }
 

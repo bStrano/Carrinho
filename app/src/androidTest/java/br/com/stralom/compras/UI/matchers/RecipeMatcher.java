@@ -4,15 +4,11 @@ import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.adapters.RecipeAdapter;
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.ItemRecipe;
-import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
 
 public class RecipeMatcher {

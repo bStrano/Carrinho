@@ -15,10 +15,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-
 import br.com.stralom.compras.MainActivity;
 import br.com.stralom.compras.R;
-
+import br.com.stralom.dao.CategoryDAO;
+import br.com.stralom.dao.ProductDAO;
+import br.com.stralom.entities.Category;
+import br.com.stralom.entities.Product;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -27,39 +29,42 @@ import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static br.com.stralom.compras.UI.ProductUITest.registerProduct;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.productSpinnerWithText;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 import static br.com.stralom.compras.UI.matchers.RecipeMatcher.withRecipeHolder;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RecipeUITest {
-    private static final String PRODUCT_NAME = " ProductRecipe Test";
-    private static final String PRODUCT_PRICE = "2";
     private Activity activity;
+    private static boolean initialized = false;
+    private static Product product;
+    private static Category category;
+    private static ProductDAO productDAO;
+    private static CategoryDAO categoryDAO;
 
     @Rule
-    public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Before
-    public void init(){
+    public void setUp(){
         goToRecipeTab();
         activity = activityActivityTestRule.getActivity();
+        if(!initialized){
+            initialized = true;
+            categoryDAO = new CategoryDAO(activity);
+            productDAO = new ProductDAO(activity);
+
+            category = categoryDAO.add("Recipe Category","Recipe Category",R.drawable.meat);
+            product = productDAO.add(" ProductRecipe Test",2,category);
+        }
     }
 
-    @Test
-    public void ASetUp(){
-        registerProduct(PRODUCT_NAME, PRODUCT_PRICE);
-        goToRecipeTab();
-    }
 
     @Test
     public void TestAddingRecipe(){
@@ -68,11 +73,11 @@ public class RecipeUITest {
         String ingredientsCount = activity.getString(R.string.recipe_itemList_ingredientCount);
         ingredientsCount = String.format(ingredientsCount,1);
         String price = activity.getString(R.string.recipe_itemList_price);
-        double total = Double.valueOf(productAmount) * Double.valueOf(PRODUCT_PRICE);
+        double total = Double.valueOf(productAmount) * product.getPrice();
 
         price = String.format(price,total);
 
-        registerRecipe(recipeName, PRODUCT_NAME,productAmount);
+        registerRecipe(recipeName, product.getName(),productAmount);
         onView(withId(R.id.recipe_view_main)).check(matches(isDisplayed()));
         onView(withId(R.id.list_recipe))
                 .perform(RecyclerViewActions.scrollToHolder(withRecipeHolder(recipeName,ingredientsCount,price)))
@@ -82,15 +87,15 @@ public class RecipeUITest {
     @Test
     public void TestAddingRecipeAlreadyRegistered(){
         String recipeName = "Recipe Test 2";
-        registerRecipe(recipeName, PRODUCT_NAME,"2");
-        registerRecipe(recipeName, PRODUCT_NAME,"2");
+        registerRecipe(recipeName, product.getName(),"2");
+        registerRecipe(recipeName, product.getName(),"2");
         onView(withText(R.string.toast_recipe_alreadyRegistered)).inRoot(withDecorView(not(Matchers.is(activity.getWindow().getDecorView()))))
             .check(matches(isDisplayed()));
     }
 
     @Test
     public void TestAddingRecipeWithoutName(){
-        registerRecipe("", PRODUCT_NAME,"2");
+        registerRecipe("", product.getName(),"2");
         String errorMsg = activity.getString(R.string.validation_obrigatoryField);
         onView(withId(R.id.form_recipe_name))
                 .check(matches(withError(errorMsg)));
@@ -118,7 +123,7 @@ public class RecipeUITest {
     }
 
     public static void registerRecipe(String name, String productName, String productAmount){
-        goToRecipeTab();
+        //goToRecipeTab();
         onView(withId(R.id.btn_newRecipe)).perform(click());
         onView(withId(R.id.form_recipe_name)).perform(replaceText(name));
 
