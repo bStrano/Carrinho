@@ -104,6 +104,9 @@
     <string name="recipe_validation_ingredients"> %s ( Obrigatório )</string>
     <string name="toast_itemStock_validRegistration">Produto Cadastrado !</string>
     <string name="toast_itemStock_invalidRegistration">O produto já está cadastrado.</string>
+    <string name="itemCart_emptyList_title">Nenhum item cadastrado</string>
+    <string name="itemCart_emptyList_description">Os itens adicionados ao carrinho serão exibidos aqui. Para cadastrar um item clique no botão abaixo.</string>
+    <string name="emptyList_image_contentDescription">Imagem de um carrinho, indicando que a lista está vazia</string>
 
 
 </resources>

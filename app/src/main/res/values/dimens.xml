@@ -17,4 +17,11 @@
     <dimen name="list_paddingVertical">8dp</dimen>
     <dimen name="list_height">43dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+
+    <!-- Empty Lists -->
+    <dimen name="list_empty_title">20sp</dimen>
+    <dimen name="list_empty_description">20sp</dimen>
+    <dimen name="list_empty_imageWidth">150dp</dimen>
+    <dimen name="list_empty_imageHeight">120dp</dimen>
 </resources>

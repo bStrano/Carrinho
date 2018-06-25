@@ -4,28 +4,28 @@ package br.com.stralom.compras;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteConstraintException;
+import android.databinding.ObservableArrayList;
+import android.databinding.ObservableList;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.adapters.ItemClickListener;
@@ -46,7 +46,10 @@ import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ItemCartForm;
 import br.com.stralom.helper.SimpleItemForm;
 import br.com.stralom.helper.SwipeToDeleteCallback;
+import br.com.stralom.listeners.ListChangeListener;
 import br.com.stralom.listeners.RecyclerTouchListener;
+
+import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
 
 
 /**
@@ -61,9 +64,9 @@ public class CartMain extends Fragment  {
     private RecyclerView cartListView;
     private BasicViewHelper basicViewHelper;
     private SimpleItemDAO simpleItemDAO;
-    private ArrayList<ItemCart> itemCartList;
+    private ObservableArrayList<ItemCart> itemCartList;
     private CartAdapter adapter;
-    private ViewPager viewPager;
+    private View fragmentView;
 
     private static final String TAG = "CartMainTAG";
 
@@ -74,7 +77,7 @@ public class CartMain extends Fragment  {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cart_main, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_cart_main, container, false);
 
         // Helpers
         basicViewHelper = new BasicViewHelper(getActivity());
@@ -88,13 +91,17 @@ public class CartMain extends Fragment  {
         simpleItemDAO = new SimpleItemDAO(getContext());
 
         // Views
-        cartListView = view.findViewById(R.id.cart_list_itemCarts);
-        Button btn_addRecipe = view.findViewById(R.id.itemCart_btn_registerRecipe);
-        Button btn_addSimpleItem = view.findViewById(R.id.itemcart_btn_registerSimpleProduct);
-        Button btn_newItemCart = view.findViewById(R.id.itemCart_btn_registerProduct);
+        cartListView = fragmentView.findViewById(R.id.cart_list_itemCarts);
+        Button btn_addRecipe = fragmentView.findViewById(R.id.itemCart_btn_registerRecipe);
+        Button btn_addSimpleItem = fragmentView.findViewById(R.id.itemcart_btn_registerSimpleProduct);
+        Button btn_newItemCart = fragmentView.findViewById(R.id.itemCart_btn_registerProduct);
 
         cart = cartDAO.findById((long) 1);
         loadItemsFromCart(cart);
+
+        setUpEmptyListView(fragmentView,itemCartList,R.id.itemCart_emptyList,R.drawable.ic_cart,R.id.itemCart_emptyList_image,R.id.itemCart_emptyList_title, R.string.itemCart_emptyList_title,R.id.itemCart_emptyList_description,R.string.itemCart_emptyList_description);
+
+
 
         cartListView.setHasFixedSize(true);
         cartListView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -157,24 +164,27 @@ public class CartMain extends Fragment  {
             }
         });
 
-        return view;
+        return fragmentView;
     }
+
 
     /**
      * Obtem todos os item contidos no {@code cart}
      * @param cart
      */
     private void loadItemsFromCart(Cart cart) {
-        itemCartList = (ArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
+        itemCartList = (ObservableArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
         cart.setListItemCart(itemCartList);
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
         addSimpleProducts(simpleItemList);
     }
 
-    private void reloadItemsFromCart(Cart cart){
+    private void reloadItemsFromCart(Cart cart, View view){
           //itemCartList.clear();
 
           loadItemsFromCart(cart);
+        LinearLayout layout = view.findViewById(R.id.itemCart_emptyList);
+        itemCartList.addOnListChangedCallback(new ListChangeListener(layout,itemCartList.size()));
          // cartListView.getAdapter().notifyDataSetChanged();
          adapter = new CartAdapter(itemCartList,getActivity());
          cartListView.setAdapter(adapter);
@@ -196,7 +206,7 @@ public class CartMain extends Fragment  {
                 for (ItemRecipe itemRecipe :itemRecipes){
                     addItemFromRecipe(itemRecipe);
                 }
-                reloadItemsFromCart(cart);
+                reloadItemsFromCart(cart,fragmentView);
 
             }
         };
@@ -275,15 +285,19 @@ public class CartMain extends Fragment  {
     }
 
     private void addItem(ItemCart newItemCart){
-        try {
+        ItemCart itemCartExists =itemCartDAO.getByProductName(newItemCart.getProduct().getName());
+        if(itemCartExists == null){
             Long id = itemCartDAO.add(newItemCart);
             newItemCart.setId(id);
             Toast.makeText(getContext(),R.string.itemCart_toast_productAdded,Toast.LENGTH_LONG).show();
             itemCartList.add(newItemCart);
             cartListView.getAdapter().notifyDataSetChanged();
-        } catch (SQLiteConstraintException e){
-             Toast.makeText(getContext(),R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(),R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
         }
+
+
+
     }
 
     /**
@@ -298,11 +312,8 @@ public class CartMain extends Fragment  {
             addItem(convertedItemCart);
         } else {
             int updatedAmount = itemCart.getAmount() + itemRecipe.getAmount();
-            Log.e("AddItemFromRecipe",  "aa" + updatedAmount);
             itemCart.setAmount(updatedAmount);
             itemCartDAO.update(itemCart);
-
-            cartListView.getAdapter().notifyDataSetChanged();
         }
 
     }

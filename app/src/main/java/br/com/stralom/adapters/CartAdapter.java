@@ -24,6 +24,8 @@ import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemStock;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by Bruno Strano on 30/01/2018.
  */

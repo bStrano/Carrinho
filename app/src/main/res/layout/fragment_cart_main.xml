@@ -3,11 +3,19 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+        <include
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/itemCart_emptyList"
+            layout="@layout/test"/>
+
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/cart_list_itemCarts"/>
+            android:id="@+id/cart_list_itemCarts"
+            />
 
         <Button
             android:id="@+id/itemCart_btn_registerProduct"

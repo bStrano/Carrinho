@@ -3,6 +3,7 @@ package br.com.stralom.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.databinding.ObservableArrayList;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -71,11 +72,11 @@ public class ItemCartDAO extends GenericDAO  {
                     Cart cart = new Cart();
                     cart.setId(cartId);
                     itemCart = new ItemCart(itemCartId, product, amount, total, cart);
-
+                    c.close();
                 }
             }
 
-            c.close();
+
 
 
         return itemCart;
@@ -83,7 +84,7 @@ public class ItemCartDAO extends GenericDAO  {
 
     public List<ItemCart> getAll(Long cartId){
         db = dbHelper.getReadableDatabase();
-        ArrayList<ItemCart> items = new ArrayList<>();
+        ObservableArrayList<ItemCart> items = new ObservableArrayList<>();
         try {
             //String sql = "SELECT * FROM " + DBHelper.TABLE_ITEMCART + " WHERE " + DBHelper.COLUMN_ITEMCART_CART + " = ?";
             String sql = "SELECT i." + DBHelper.COLUMN_ITEMCART_AMOUNT + ", i." + DBHelper.COLUMN_ITEMCART_TOTAL + ", i." + DBHelper.COLUMN_ITEMCART_CART + ", i." + DBHelper.COLUMN_ITEMCART_PRODUCT +
