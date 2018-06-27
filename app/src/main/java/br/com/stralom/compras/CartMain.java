@@ -3,9 +3,7 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,12 +11,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -66,7 +62,6 @@ public class CartMain extends Fragment  {
     private SimpleItemDAO simpleItemDAO;
     private ObservableArrayList<ItemCart> itemCartList;
     private CartAdapter adapter;
-    private View fragmentView;
 
     private static final String TAG = "CartMainTAG";
 
@@ -77,7 +72,7 @@ public class CartMain extends Fragment  {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fragmentView = inflater.inflate(R.layout.fragment_cart_main, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_cart_main, container, false);
 
         // Helpers
         basicViewHelper = new BasicViewHelper(getActivity());
@@ -206,7 +201,7 @@ public class CartMain extends Fragment  {
                 for (ItemRecipe itemRecipe :itemRecipes){
                     addItemFromRecipe(itemRecipe);
                 }
-                reloadItemsFromCart(cart,fragmentView);
+               // reloadItemsFromCart(cart,fragmentView);
 
             }
         };
@@ -306,17 +301,29 @@ public class CartMain extends Fragment  {
      * @param itemRecipe    Ingredient of a Recipe
      */
     private void addItemFromRecipe(ItemRecipe itemRecipe) {
-        ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
-        if(itemCart == null){
+        //ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
+        int index = -1;
+        ItemCart itemCart = null;
+        for(int i = 0 ; i< itemCartList.size() ; i++){
+            if(itemCartList.get(i).getProduct().getName().equals(itemRecipe.getProduct().getName())){
+                itemCart = itemCartList.get(i);
+                index = i;
+            }
+        }
+        if(index == -1){
             ItemCart convertedItemCart = new ItemCart(itemRecipe.getProduct(), itemRecipe.getAmount(), cart);
             addItem(convertedItemCart);
         } else {
             int updatedAmount = itemCart.getAmount() + itemRecipe.getAmount();
             itemCart.setAmount(updatedAmount);
-            itemCartDAO.update(itemCart);
-        }
+            itemCartList.get(index).setAmount(updatedAmount);
 
-    }
+
+            itemCartDAO.update(itemCart);
+            itemCartList.get(index).setAmount(updatedAmount);
+            cartListView.getAdapter().notifyDataSetChanged();
+        }
+   }
     /**
      * Add a new item to the cart, from a Product.
      * @param itemCartView an Dialog that contains the form

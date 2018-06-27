@@ -31,9 +31,13 @@ public abstract class GenericDAO  {
     }
 
     public void update(String columnId, Long idObject, ContentValues contentValues) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db = dbHelper.getWritableDatabase();
         db.update(tableName,contentValues,columnId + " = ?",new String[] {idObject.toString()});
     }
 
+    public void clean(){
+        db = dbHelper.getWritableDatabase();
+        db.delete(tableName,null,null);
+    }
 
 }

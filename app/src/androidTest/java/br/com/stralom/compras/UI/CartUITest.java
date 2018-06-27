@@ -6,7 +6,9 @@ import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import br.com.stralom.compras.MainActivity;
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.CategoryDAO;
+import br.com.stralom.dao.ItemCartDAO;
 import br.com.stralom.dao.ItemRecipeDAO;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
@@ -40,6 +43,7 @@ import static br.com.stralom.compras.UI.matchers.CartMatcher.withCartHolder;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.productSpinnerWithText;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 import static br.com.stralom.compras.UI.matchers.RecipeMatcher.recipeSpinnerWithText;
+import static org.hamcrest.Matchers.not;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -56,6 +60,7 @@ public class CartUITest {
     private static ProductDAO productDAO;
     private static RecipeDAO recipeDAO;
     private static ItemRecipeDAO itemRecipeDAO;
+    private static ItemCartDAO itemCartDAO;
     private static boolean initialized = false;
 
 
@@ -77,6 +82,7 @@ public class CartUITest {
             categoryDAO = new CategoryDAO(activity);
             recipeDAO = new RecipeDAO(activity);
             itemRecipeDAO = new ItemRecipeDAO(activity);
+            itemCartDAO = new ItemCartDAO(activity);
 
             category = categoryDAO.add("Cart Category","Cart Category", R.drawable.cherries);
             product = productDAO.add("Cart Product",12,category);
@@ -89,8 +95,49 @@ public class CartUITest {
         }
     }
 
+    @After
+    public void clean(){
+        itemCartDAO.clean();
+    }
+
+
+
     @Rule
     public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
+
+
+    @Test
+    public void TestEmptyListView(){
+        itemCartDAO.clean();
+        activity.recreate();
+        RecyclerView recyclerView = activity.findViewById(R.id.cart_list_itemCarts);
+        recyclerView.getAdapter();
+        onView(withId(R.id.itemCart_emptyList)).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void TestAddingProductToEmptyList()
+    {
+        Product product = productDAO.add("EmptyList",2,category);
+        registerItemCartProduct(product.getName(),"2");
+        onView(withId(R.id.itemCart_emptyList)).check(matches(not(isDisplayed())));
+
+    }
+
+    @Test
+    public void TestAddingRecipeToEmptyList(){
+        registerItemCartRecipe(recipe.getName());
+        onView(withId(R.id.itemCart_emptyList)).check(matches(not(isDisplayed())));
+
+    }
+    
+    public void TestAddingSimpleItemToEmptyList(){
+        registerSimpleProduct("Simple Empty","2");
+        onView(withId(R.id.itemCart_emptyList)).check(matches(not(isDisplayed())));
+    }
+
 
 
 
@@ -193,7 +240,6 @@ public class CartUITest {
 
     @Test
    public void TestAddingProductWithEmptyAmount(){
-
         registerItemCartProduct(product.getName(),"");
         String errorMsg= activity.getString(R.string.itemCart_validation_amount);
         onView(withId(R.id.itemCart_form_productAmount)).check(matches(withError(errorMsg)));
@@ -201,7 +247,9 @@ public class CartUITest {
 
 
 
+
     private void registerItemCartRecipe(String name) {
+
         onView(withId(R.id.itemCart_btn_registerRecipe)).perform(click());
 
         onView(withId(R.id.list_itemCart_recipe)).perform(click());
@@ -225,6 +273,7 @@ public class CartUITest {
         onView(withId(R.id.itemCart_form_simpleProduct_amount)).perform(replaceText(amount));
         onView(withText(R.string.save)).perform(click());
     }
+
 
 
 

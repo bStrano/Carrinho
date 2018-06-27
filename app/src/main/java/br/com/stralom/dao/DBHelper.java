@@ -11,13 +11,15 @@ import br.com.stralom.compras.R;
  * Created by Bruno Strano on 05/01/2018.
  */
 
-class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
     private static final String TAG = "DBHelper";
-
-    private static final String DATABASE_NAME = "Stralom_Compras";
+    private String[] tables;
+    public static final String DATABASE_NAME = "Stralom_Compras";
     private static final int DATABASE_VERSION = 1;
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        tables = new String[] {TABLE_CATEGORY , TABLE_PRODUCT, TABLE_CART,TABLE_ITEMCART, TABLE_RECIPE,TABLE_ITEMRECIPE
+                ,TABLE_STOCK,SQL_CREATE_TABLE_ITEMSTOCK,TABLE_ITEMSTOCK,TABLE_SIMPLEITEM};
     }
 
     // Category
@@ -147,6 +149,10 @@ class DBHelper extends SQLiteOpenHelper {
             ");";
 
 
+    public static final String SQL_INSERT_DEFAULT_CATEGORIES = "INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
+            + " VALUES ('Carnes',1, " + R.drawable.meat + ")," +
+            "('Frutas',1," + R.drawable.cherries + " ) ";
+
 
     // private String getDropTableString(String tableName){
     //    return "DROP TABLE IF EXISTS " + tableName;
@@ -163,9 +169,9 @@ class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_STOCK);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ITEMSTOCK);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_SIMPLEITEM);
-
-        insertDefaultCategories(sqLiteDatabase);
         sqLiteDatabase.execSQL("INSERT INTO " + TABLE_CART + "(" + COLUMN_CART_TOTAL + ") VALUES('0')");
+
+        sqLiteDatabase.execSQL(SQL_INSERT_DEFAULT_CATEGORIES);
         //sqLiteDatabase.execSQL("INSERT INTO " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ", " + COLUMN_PRODUCT_NAME + ") VALUES('-1','SimpleProduct')");
     }
 
@@ -174,6 +180,7 @@ class DBHelper extends SQLiteOpenHelper {
         switch (oldVersion){
             case 3:
                 sqLiteDatabase.execSQL("ALTER TABLE " + DBHelper.TABLE_RECIPE + " ADD COLUMN " + DBHelper.COLUMN_RECIPE_IMAGEPATH + " TEXT");
+
                 Log.i(TAG,"Updated to version 4" );
         }
 //        sqLiteDatabase.execSQL(SQL_DROP_TABLE_ITEMCART);
@@ -184,10 +191,12 @@ class DBHelper extends SQLiteOpenHelper {
 //        onCreate(sqLiteDatabase);
 
     }
+    public void clearTables(){
+        for (String tableName:tables) {
+            getWritableDatabase().delete(tableName,null,null);
+            getWritableDatabase().execSQL(SQL_INSERT_DEFAULT_CATEGORIES) ;
+        }
 
-    private void insertDefaultCategories(SQLiteDatabase sqLiteDatabase){
-        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
-            + " VALUES ('Carnes',1, " + R.drawable.meat + ")," +
-                "('Frutas',1," + R.drawable.cherries + " );");
     }
+
 }

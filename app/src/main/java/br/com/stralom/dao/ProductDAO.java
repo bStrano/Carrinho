@@ -17,19 +17,20 @@ import br.com.stralom.entities.Product;
  * Created by Bruno Strano on 30/12/2017.
  */
 
-public class ProductDAO {
+public class ProductDAO extends GenericDAO{
     private static final String TAG = "ProductDAO";
-   private SQLiteDatabase db;
+
     private final DBHelper dbHelper;
 
     public ProductDAO(Context context) {
+        super(context,DBHelper.TABLE_PRODUCT);
         dbHelper = new DBHelper(context);
     }
 
 
 
     public Long add(Product product) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db = dbHelper.getWritableDatabase();
         ContentValues contentValues = getContentValues(product);
         return db.insertOrThrow(DBHelper.TABLE_PRODUCT,null,contentValues);
     }
