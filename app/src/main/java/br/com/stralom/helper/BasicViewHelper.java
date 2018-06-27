@@ -59,10 +59,10 @@ public class BasicViewHelper {
      *  @param  layoutId Id of the Linear Layout that contains the views of the Empty View Layout
      *
      */
-    public static <E> void setUpEmptyListView(View view, ObservableArrayList<E> list, int layoutId, int imageDrawable, int imageId, int titleId, int titleStr, int descriptionId, int descriptionStr  ){
-        ImageView image = view.findViewById(imageId);
-        TextView title = view.findViewById(titleId);
-        TextView description = view.findViewById(descriptionId);
+    public static <E> void setUpEmptyListView(View view, ObservableArrayList<E> list, int layoutId, int imageDrawable, int titleStr,  int descriptionStr  ){
+        ImageView image = view.findViewById(R.id.emptyList_image);
+        TextView title = view.findViewById(R.id.emptyList_title);
+        TextView description = view.findViewById(R.id.emptyList_description);
         image.setImageResource(imageDrawable);
         title.setText(titleStr);
         description.setText(descriptionStr);

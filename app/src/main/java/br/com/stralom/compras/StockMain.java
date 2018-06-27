@@ -3,6 +3,7 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +35,7 @@ import br.com.stralom.helper.ItemStockForm;
 import br.com.stralom.helper.SwipeToDeleteCallback;
 
 import static br.com.stralom.helper.BasicViewHelper.hideSoftKeyBoard;
+import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
 
 
 /**
@@ -47,7 +49,7 @@ public class StockMain extends Fragment {
     private FloatingActionButton fabAddStock, fabUpdateStock, fabMain;
     private boolean fabPressed = false;
     private RecyclerView productsStockView;
-    private ArrayList<ItemStock> productsStock;
+    private ObservableArrayList<ItemStock> productsStock;
 
     public StockMain() {
         // Required empty public constructor
@@ -72,7 +74,9 @@ public class StockMain extends Fragment {
         //VIEWS
         View view = inflater.inflate(R.layout.fragment_stock_main, container, false);
         productsStockView = view.findViewById(R.id.list_itemStock);
-        productsStock = (ArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
+        productsStock = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
+        setUpEmptyListView(view,productsStock,R.id.stock_emptyList,R.drawable.ic_stock,R.string.stock_emptyList_title,R.string.stock_emptyList_description);
+
         StockAdapter adapter = new StockAdapter(productsStock,getActivity());
         productsStockView.setAdapter(adapter);
         productsStockView.setHasFixedSize(true);

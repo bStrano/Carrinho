@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.databinding.ObservableArrayList;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -53,7 +54,7 @@ public class ProductDAO extends GenericDAO{
     public List<Product> getAll(){
 
         db = dbHelper.getReadableDatabase();
-        ArrayList<Product> products = new ArrayList<>();
+        ObservableArrayList<Product> products = new ObservableArrayList<>();
 
 
         String sql = "SELECT p." + DBHelper.COLUMN_PRODUCT_ID + " , p." + DBHelper.COLUMN_PRODUCT_NAME + " , p." + DBHelper.COLUMN_PRODUCT_PRICE + " , p." + DBHelper.COLUMN_PRODUCT_CATEGORY +

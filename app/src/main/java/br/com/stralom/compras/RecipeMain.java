@@ -2,6 +2,7 @@ package br.com.stralom.compras;
 
 
 import android.content.Intent;
+import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,8 @@ import br.com.stralom.adapters.RecipeAdapter;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.entities.Recipe;
 import br.com.stralom.helper.SwipeToDeleteCallback;
+
+import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
 
 
 /**
@@ -40,7 +43,8 @@ public class RecipeMain extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list_recipe);
         RecipeDAO recipeDAO = new RecipeDAO(getContext());
 
-        ArrayList<Recipe> recipes = recipeDAO.getAll();
+        ObservableArrayList<Recipe> recipes = (ObservableArrayList<Recipe>) recipeDAO.getAll();
+        setUpEmptyListView(view,recipes,R.id.recipe_emptyList,R.drawable.ic_cake,R.string.recipe_emptyList_title,R.string.recipe_emptyList_description);
 
         RecipeAdapter adapter = new RecipeAdapter(recipes, Objects.requireNonNull(getActivity()));
         recyclerView.setHasFixedSize(true);

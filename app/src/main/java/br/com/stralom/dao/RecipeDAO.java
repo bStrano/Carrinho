@@ -3,9 +3,11 @@ package br.com.stralom.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.databinding.ObservableArrayList;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemRecipe;
@@ -74,9 +76,9 @@ public class RecipeDAO extends GenericDAO {
         return  recipe;
      }
 
-    public ArrayList<Recipe> getAll() {
+    public List<Recipe> getAll() {
         db = dbHelper.getReadableDatabase();
-        ArrayList<Recipe> recipes = new ArrayList<>();
+        ObservableArrayList<Recipe> recipes = new ObservableArrayList<>();
 
         try (Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_RECIPE, null)) {
             while (cursor.moveToNext()) {

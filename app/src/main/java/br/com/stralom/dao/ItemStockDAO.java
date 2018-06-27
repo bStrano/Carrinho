@@ -3,6 +3,7 @@ package br.com.stralom.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.databinding.ObservableArrayList;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -32,7 +33,7 @@ public class ItemStockDAO extends GenericDAO {
     public List<ItemStock> getAll(Long idStock){
         db = dbHelper.getReadableDatabase();
 
-        ArrayList<ItemStock> products = new ArrayList<>();
+        ObservableArrayList<ItemStock> products = new ObservableArrayList<>();
 //        String sql = "SELECT * FROM " + DBHelper.TABLE_ITEMSTOCK + " INNER JOIN " + DBHelper.TABLE_PRODUCT +
 //                " ON " + DBHelper.TABLE_ITEMSTOCK.concat("."+ DBHelper.COLUMN_ITEMSTOCK_PRODUCT) + " = " + DBHelper.TABLE_PRODUCT.concat("." + DBHelper.COLUMN_PRODUCT_ID)
 //                +" WHERE " + DBHelper.TABLE_ITEMSTOCK.concat("."+ DBHelper.COLUMN_ITEMSTOCK_STOCK)+ " = ? ";

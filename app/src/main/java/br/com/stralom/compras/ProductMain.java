@@ -2,6 +2,7 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -33,10 +34,11 @@ import br.com.stralom.helper.ProductForm;
 import br.com.stralom.helper.SwipeToDeleteCallback;
 
 import static android.content.ContentValues.TAG;
+import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
 
 
 public class ProductMain extends Fragment {
-    private List<Product> productList;
+    private ObservableArrayList<Product> productList;
     private ProductAdapter productAdapter;
     private ProductDAO productDAO;
 
@@ -56,8 +58,8 @@ public class ProductMain extends Fragment {
         RecyclerView productListView = view.findViewById(R.id.product_list);
 
         productDAO = new ProductDAO(getActivity());
-        productList = productDAO.getAll();
-        Log.e(TAG,"SIZE: " + productList);
+        productList = (ObservableArrayList<Product>) productDAO.getAll();
+        setUpEmptyListView(view,productList,R.id.product_emptyList, R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
         registerForContextMenu(productListView);
 
         // Recycler View
@@ -111,7 +113,8 @@ public class ProductMain extends Fragment {
                         if(productForm.isValidationSuccessful()){
                             Product product = productForm.getProduct();
                             try{
-                                productDAO.add(product);
+                                Long id = productDAO.add(product);
+                                product.setId(id);
                                 productList.add(product);
                                 productAdapter.notifyDataSetChanged();
                                 Toast.makeText(getActivity(),R.string.toast_produc_register,Toast.LENGTH_LONG).show();

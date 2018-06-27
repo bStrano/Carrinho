@@ -5,7 +5,9 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -15,6 +17,10 @@ import org.junit.runners.MethodSorters;
 
 import br.com.stralom.compras.MainActivity;
 import br.com.stralom.compras.R;
+import br.com.stralom.dao.CategoryDAO;
+import br.com.stralom.dao.ProductDAO;
+import br.com.stralom.entities.Category;
+import br.com.stralom.entities.Product;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -39,34 +45,49 @@ import static org.hamcrest.Matchers.not;
 public class ProductUITest {
     private static String DEFAULTPRODUCTNAME = "Register Product Test";
     private Activity activity;
-
+    private static boolean initialized = false;
+    private static ProductDAO productDAO;
+    private static CategoryDAO categoryDAO;
+    private static Product product;
+    private static Category category;
     @Before
     public void init(){
         goToProductTab();
         activity = activityActivityTestRule.getActivity();
+        if(!initialized){
+            initialized = true;
+            productDAO = new ProductDAO(activity);
+            categoryDAO = new CategoryDAO(activity);
 
+            category = categoryDAO.add("Product", "Product", R.drawable.cherries);
+            product = productDAO.add("Product", 10,category );
+        }
     }
+
 
     @Rule
     public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+
+
+
     @Test
-    public void aTestOpenRegisterProductDialog(){
+    public void TestOpenRegisterProductDialog(){
         onView(ViewMatchers.withId(R.id.product_btn_addNew)).perform(click());
         onView(withId(R.id.product_dialog_mainLayout))
                 .check(matches(isDisplayed()));
     }
 
     @Test
-    public void bTestAddingProducts() {
+    public void TestAddingProducts() {
         registerProduct(DEFAULTPRODUCTNAME,"10");
-
         onView(withText(R.string.toast_produc_register)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
     }
 
     @Test
-    public void cTestAddingProductsAlreadyRegistered(){
+    public void TestAddingProductsAlreadyRegistered(){
+        registerProduct(DEFAULTPRODUCTNAME,"10");
         registerProduct(DEFAULTPRODUCTNAME,"10");
 
         onView(withText(R.string.toast_product_alreadyRegistered)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
@@ -74,7 +95,7 @@ public class ProductUITest {
     }
 
     @Test
-    public void dTestProductValidationEmptyPrice(){
+    public void TestProductValidationEmptyPrice(){
         registerProduct("Test Validation","");
         String errorMsg = activity.getResources().getString(R.string.product_validation_price);
         //onView(withId(R.id.product_dialog_mainLayout)).check((matches(hasErrorText(errorMsg))));
@@ -82,14 +103,14 @@ public class ProductUITest {
     }
 
     @Test
-    public void dTestProductValidationEmptyName(){
+    public void TestProductValidationEmptyName(){
         registerProduct("","12");
         String errorMsg = activity.getResources().getString(R.string.product_validation_name);
         onView(withId(R.id.form_productName)).check(matches(withError(errorMsg)));
     }
 
     @Test
-    public void dTestProductValidationNameToLong(){
+    public void TestProductValidationNameToLong(){
         registerProduct("This product name is greater than the max chars permited","12");
         String errorMsg = activity.getResources().getString(R.string.validation_maxLenght);
         //onView(withId(R.id.product_dialog_mainLayout)).check((matches(hasErrorText(errorMsg))));

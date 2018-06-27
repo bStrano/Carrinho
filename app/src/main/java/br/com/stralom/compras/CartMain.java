@@ -94,7 +94,7 @@ public class CartMain extends Fragment  {
         cart = cartDAO.findById((long) 1);
         loadItemsFromCart(cart);
 
-        setUpEmptyListView(fragmentView,itemCartList,R.id.itemCart_emptyList,R.drawable.ic_cart,R.id.itemCart_emptyList_image,R.id.itemCart_emptyList_title, R.string.itemCart_emptyList_title,R.id.itemCart_emptyList_description,R.string.itemCart_emptyList_description);
+        setUpEmptyListView(fragmentView,itemCartList,R.id.itemCart_emptyList,R.drawable.ic_cart, R.string.itemCart_emptyList_title,R.string.itemCart_emptyList_description);
 
 
 
@@ -189,7 +189,7 @@ public class CartMain extends Fragment  {
         final View recipeItemCartView = getLayoutInflater().inflate(R.layout.dialog_itemcart_recipe_registration,null);
 
         final Spinner recipeSpinner = recipeItemCartView.findViewById(R.id.list_itemCart_recipe);
-        ArrayList<Recipe> recipes = recipeDAO.getAll();
+        ArrayList<Recipe> recipes = (ArrayList<Recipe>) recipeDAO.getAll();
         RecipeSpinnerAdapter recipeSpinnerAdapter = new RecipeSpinnerAdapter(recipes,getContext(),getLayoutInflater());
         recipeSpinner.setAdapter(recipeSpinnerAdapter);
 

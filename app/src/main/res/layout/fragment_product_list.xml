@@ -2,6 +2,13 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <include
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/product_emptyList"
+        layout="@layout/empty_list"/>
+
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/product_list"
             android:layout_width="match_parent"

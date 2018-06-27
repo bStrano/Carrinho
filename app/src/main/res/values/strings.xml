@@ -104,9 +104,17 @@
     <string name="recipe_validation_ingredients"> %s ( Obrigatório )</string>
     <string name="toast_itemStock_validRegistration">Produto Cadastrado !</string>
     <string name="toast_itemStock_invalidRegistration">O produto já está cadastrado.</string>
+
+    <!-- EmptyList -->
     <string name="itemCart_emptyList_title">Nenhum item cadastrado</string>
-    <string name="itemCart_emptyList_description">Os itens adicionados ao carrinho serão exibidos aqui. Para cadastrar um item clique no botão abaixo.</string>
-    <string name="emptyList_image_contentDescription">Imagem de um carrinho, indicando que a lista está vazia</string>
+    <string name="itemCart_emptyList_description">Os itens adicionados ao carrinho serão exibidos aqui.</string>
+    <string name="product_emptyList_title">Nenhum produto cadastrado</string>
+    <string name="product_emptyList_description">Os produtos serão exibidos aqui. </string>
+    <string name="recipe_emptyList_title">Nenhuma receita cadastrada.</string>
+    <string name="recipe_emptyList_description">As receitas serão exibidas aqui. </string>
+    <string name="emptyList_image_contentDescription">Imagem meramente ilustrativa</string>
+    <string name="stock_emptyList_title">Nenhum item cadastrado</string>
+    <string name="stock_emptyList_description">Os itens adicionados ao estoque serão exibidos aqui.</string>
 
 
 </resources>

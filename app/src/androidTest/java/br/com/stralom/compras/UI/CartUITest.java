@@ -7,6 +7,7 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
+import android.widget.EditText;
 
 import org.junit.After;
 import org.junit.Before;
@@ -108,13 +109,8 @@ public class CartUITest {
 
 
     @Test
-    public void TestEmptyListView(){
-        itemCartDAO.clean();
-        activity.recreate();
-        RecyclerView recyclerView = activity.findViewById(R.id.cart_list_itemCarts);
-        recyclerView.getAdapter();
-        onView(withId(R.id.itemCart_emptyList)).check(matches(isDisplayed()));
-
+    public void ATestEmptyListView(){
+        onView(withId(R.id.cart_list_itemCarts)).check(matches(isDisplayed()));
     }
 
     @Test
