@@ -3,32 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_height"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
-        <include layout="@layout/swipe_test"/>
-        <RelativeLayout
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/cart_view_foreground"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:background="#FAFAFA"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="start"
+            android:layout_height="57dp"
+            android:background="#FAFAFA"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:selectableItemBackground"
-            android:paddingTop="@dimen/list_paddingVertical"
+            android:gravity="start"
             android:paddingBottom="@dimen/list_paddingVertical"
+            android:paddingTop="@dimen/list_paddingVertical"
             >
 
+
+            <CheckBox
+                android:id="@+id/checkBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="13dp" />
 
             <TextView
                 android:id="@+id/itemCart_itemList_amount"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/itemCart_itemList_categoryIcon"
                 android:text="12x"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -37,29 +42,33 @@
                 tools:ignore="HardcodedText" />
 
 
-
             <TextView
                 android:id="@+id/itemCart_itemList_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="53dp"
                 android:text="Product Name"
-                android:layout_toRightOf="@+id/itemCart_itemList_amount"
+                android:textStyle="bold"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="@dimen/list_textMediumSize"
-                android:layout_marginLeft="10dp"
                 tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/itemCart_itemList_categoryIcon"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/cherries"
                 android:layout_alignParentEnd="true"
-                android:contentDescription="@string/contentDescription_categoryIcon"/>
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/contentDescription_categoryIcon"
+                android:src="@drawable/cherries" />
+
+
         </RelativeLayout>
 
 
-    </FrameLayout>
 
     <View
         android:background="@android:color/darker_gray"

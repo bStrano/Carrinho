@@ -20,7 +20,7 @@ import br.com.stralom.entities.Product;
 
 public class ItemCartDAO extends GenericDAO  {
     private static final String TAG = "ItemCartDAO";
-
+    private SimpleItemDAO simpleItemDAO;
 
     public ItemCartDAO(Context context) {
         super(context, DBHelper.TABLE_ITEMCART);
@@ -31,10 +31,17 @@ public class ItemCartDAO extends GenericDAO  {
         return add(getContentValues(itemCart));
     }
 
-    public void remove(Long id){
+
+    public void remove(ItemCart itemCart){
         db = dbHelper.getReadableDatabase();
-        db.delete(DBHelper.TABLE_ITEMCART,DBHelper.COLUMN_ITEMCART_ID + " = ?", new String[] {id.toString()});
+        if(itemCart.getConvertedId() != null){
+            simpleItemDAO.remove(itemCart.getConvertedId());
+        } else {
+            db.delete(DBHelper.TABLE_ITEMCART, DBHelper.COLUMN_ITEMCART_ID + " = ?", new String[]{itemCart.getId().toString()});
+            db.close();
+        }
     }
+
 
     public void update(ItemCart item) {
         db = dbHelper.getWritableDatabase();
@@ -76,8 +83,7 @@ public class ItemCartDAO extends GenericDAO  {
                 }
             }
 
-
-
+            db.close();
 
         return itemCart;
     }
@@ -129,6 +135,7 @@ public class ItemCartDAO extends GenericDAO  {
       } catch (NullPointerException e) {
             Log.e(TAG,"[NullPointerException] Carrinho vazio.");
         }
+        db.close();
         return items;
     }
 

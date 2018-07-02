@@ -3,6 +3,7 @@ package br.com.stralom.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Bruno Strano on 03/01/2018.
@@ -57,6 +58,19 @@ public class Cart implements Serializable {
         this.id = id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cart)) return false;
+        Cart cart = (Cart) o;
+        return Double.compare(cart.total, total) == 0 &&
+                Objects.equals(id, cart.id) &&
+                Objects.equals(listItemCart, cart.listItemCart);
+    }
 
+    @Override
+    public int hashCode() {
 
+        return Objects.hash(id, listItemCart, total);
+    }
 }

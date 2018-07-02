@@ -121,6 +121,15 @@
             <!--android:backgroundTint="@color/colorPrimary"-->
             <!--android:src="@drawable/ic_add"/>-->
 
+        <include
+            android:id="@+id/recipe_management_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/management_list"
+            />
     </RelativeLayout>
+
+
 
 </LinearLayout>

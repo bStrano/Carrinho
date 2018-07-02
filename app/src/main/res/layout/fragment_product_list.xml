@@ -27,6 +27,14 @@
             android:elevation="12dp"
             android:background="@drawable/ic_add_normal"
             />
+
+        <include
+            android:id="@+id/product_management_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/management_list"
+            />
         <!--<android.support.design.widget.FloatingActionButton-->
             <!--android:id="@+id/btn_newProduct"-->
             <!--android:layout_width="wrap_content"-->

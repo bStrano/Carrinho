@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +22,14 @@ import br.com.stralom.dao.ItemStockDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemStock;
-
-import static android.content.ContentValues.TAG;
+import br.com.stralom.interfaces.EditMenuInterface;
 
 /**
  * Created by Bruno Strano on 30/01/2018.
  */
 
-public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder> implements ItemTouchHelperAdapter {
-    private final ArrayList<ItemCart> products;
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder> implements ItemTouchHelperAdapter, EditMenuInterface {
+    private  ArrayList<ItemCart> itemCarts;
     private final Activity activity;
     private final ItemCartDAO itemCartDAO;
     private final SimpleItemDAO simpleItemDAO;
@@ -39,35 +37,43 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
     private boolean undoSwipe = false;
     private Resources res;
     private Snackbar snackbar;
+    private ArrayList<Integer> selectedItems;
 
-
-    public CartAdapter(ArrayList<ItemCart> products, Activity activity) {
-        this.products = products;
+    public CartAdapter(ArrayList<ItemCart> itemCarts, Activity activity) {
+        this.itemCarts = itemCarts;
         this.activity = activity;
         res = activity.getResources();
         itemCartDAO = new ItemCartDAO(activity);
         itemStockDAO = new ItemStockDAO(activity);
         simpleItemDAO = new SimpleItemDAO(activity);
+        selectedItems = new ArrayList<>();
 
     }
 
+    @Override
+    public void edit() {
 
+    }
+
+    @Override
+    public void remove() {
+
+    }
 
 
     public class cartViewHolder extends  RecyclerView.ViewHolder{
         final TextView productName;
         final TextView productAmount;
         final ImageView categoryIcon;
-        final View viewForeground;
         final View viewBackground;
+
 
         cartViewHolder(View itemView) {
             super(itemView);
 
             productName = itemView.findViewById(R.id.itemCart_itemList_name);
             productAmount = itemView.findViewById(R.id.itemCart_itemList_amount);
-            viewBackground = itemView.findViewById(R.id.view_background);
-            viewForeground = itemView.findViewById(R.id.cart_view_foreground);
+            viewBackground = itemView.findViewById(R.id.cart_view_foreground);
             categoryIcon = itemView.findViewById(R.id.itemCart_itemList_categoryIcon);
 
         }
@@ -82,10 +88,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
-        ItemCart itemCart = products.get(position);
+        ItemCart itemCart = itemCarts.get(position);
         //holder.productName.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
         holder.productName.setText(itemCart.getProduct().getName());
         holder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getAmount()));
+        holder.viewBackground.setBackgroundColor(Color.parseColor("#F8F8FF"));
+
         try{
             holder.categoryIcon.setImageResource(itemCart.getProduct().getCategory().getIconFlag());
         } catch (NullPointerException e){
@@ -97,18 +105,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return itemCarts.size();
     }
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         if(fromPosition < toPosition){
             for (int i = fromPosition ; i < toPosition ; i++){
-                Collections.swap(products,i,i+1);
+                Collections.swap(itemCarts,i,i+1);
             }
         } else {
             for (int i = fromPosition ; i > toPosition ; i--){
-                Collections.swap(products,i,i-1);
+                Collections.swap(itemCarts,i,i-1);
             }
         }
         notifyItemMoved(fromPosition,toPosition);
@@ -119,7 +127,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     @Override
     public void onItemDismiss(int position) {
-        final ItemCart itemCart = products.get(position);
+        final ItemCart itemCart = itemCarts.get(position);
         String name = itemCart.getProduct().getName();
         Snackbar snackbar = removeTemporarily(position,itemCart,  name + " removido do carrinho.",null);
         // Remover Definitivamente
@@ -145,8 +153,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     }
 
+    public ArrayList<ItemCart> getElements(){
+        return itemCarts;
+    }
+
     public void completeItem(int position, TextView textView) {
-        final ItemCart itemCart = products.get(position);
+        final ItemCart itemCart = itemCarts.get(position);
         snackbar = removeTemporarily(position, itemCart, "Concluido",textView);
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
@@ -173,7 +185,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
     }
     @Override
     public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
-        return  ((cartViewHolder) viewHolder).viewForeground;
+        return  ((cartViewHolder) viewHolder).viewBackground;
     }
 
 
@@ -181,7 +193,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
     @NonNull
     private Snackbar removeTemporarily(final int position, final ItemCart itemCart, String message, final TextView itemCartNameAmount) {
         // Remover Temporiariamente
-        products.remove(position);
+        itemCarts.remove(position);
         notifyItemRemoved(position);
         snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.BLUE);
@@ -190,7 +202,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
         snackbar.setAction(R.string.snackbar_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                products.add(position,itemCart);
+                itemCarts.add(position,itemCart);
                 notifyItemInserted(position);
                 itemCart.setRemoved(false);
                 if( itemCartNameAmount != null) {
@@ -207,6 +219,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
         }
 
     }
+
+
+
 
 
 

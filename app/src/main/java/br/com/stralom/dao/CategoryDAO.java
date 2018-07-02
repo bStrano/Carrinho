@@ -37,6 +37,7 @@ public class CategoryDAO extends GenericDAO {
         } catch (NullPointerException e) {
             Log.e(TAG,"[Null Cursor] No category found.");
         }
+        db.close();
         return categories;
     }
 

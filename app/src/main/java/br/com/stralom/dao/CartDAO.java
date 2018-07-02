@@ -38,6 +38,7 @@ public class CartDAO extends GenericDAO {
 
         }
         c.close();
+        db.close();
         return cart;
     }
 

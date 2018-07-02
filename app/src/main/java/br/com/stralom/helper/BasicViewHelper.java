@@ -2,38 +2,57 @@ package br.com.stralom.helper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.ObservableArrayList;
-import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import br.com.stralom.adapters.ItemClickListener;
 import br.com.stralom.compras.R;
+import br.com.stralom.interfaces.EditMenuInterface;
 import br.com.stralom.listeners.ListChangeListener;
+import br.com.stralom.listeners.RecyclerTouchListener;
 
 /**
  * Created by Bruno on 02/02/2018.
  */
 
-public class BasicViewHelper {
-    private final Context context;
+public abstract class BasicViewHelper extends Fragment {
+    protected ArrayList<Integer> selectedElements = new ArrayList<>()  ;
+    public boolean editMode = false;
 
-    public BasicViewHelper(Context context) {
-        this.context = context;
-    }
+    protected RecyclerView listView;
+    protected View managementMenu;
+    protected FloatingActionButton fab;
+
+    public abstract void initializeSuperAtributes();
 
     public AlertDialog createDialog(View view, DialogInterface.OnClickListener listenerPositive, DialogInterface.OnClickListener listenerNegative, int titleId){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(view);
         builder.setTitle(titleId);
         builder.setPositiveButton(R.string.save,  listenerPositive);
@@ -42,7 +61,7 @@ public class BasicViewHelper {
     }
 
     public void loadSpinner(Spinner spinner, List content){
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, content);
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, content);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
     }
@@ -71,4 +90,116 @@ public class BasicViewHelper {
     }
 
 
-}
+    /**
+     * Setup the managament menu
+     * @param mainLayoutId    The R.id of the root layout in the ViewHolder clicked.
+     * @param editMenuInterface An interface containing an implementation of buttons Edit and Remove of the managementMenu
+     */
+    public void setUpManagementMenu(final int mainLayoutId, final EditMenuInterface editMenuInterface ){
+
+        listView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), listView, new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                if(editMode){
+                    ViewGroup mainLayout = view.findViewById(mainLayoutId);
+                    changeItemBackgroundColor(mainLayout, position);
+                }
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                if (!editMode) {
+                    ViewGroup mainLayout = view.findViewById(mainLayoutId);
+                    changeItemBackgroundColor(mainLayout, position);
+                    showEditModeMenu(editMenuInterface);
+
+                }
+            }
+        }));
+    }
+
+    public  void showEditModeMenu(final EditMenuInterface editMenuInterface){
+        editMode = true;
+        fab.hide();
+        managementMenu.setVisibility(View.VISIBLE);
+
+        Button cancel = managementMenu.findViewById(R.id.editMode_cancel);
+        final Button edit = managementMenu.findViewById(R.id.editMode_edit);
+        final Button delete = managementMenu.findViewById(R.id.editMode_delete);
+
+
+
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listView.getAdapter().notifyDataSetChanged();
+                closeEditModeMenu(managementMenu);
+
+            }
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editMenuInterface.edit();
+                closeEditModeMenu(managementMenu);
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editMenuInterface.remove();
+                closeEditModeMenu(managementMenu);
+
+            }
+        });
+        }
+
+    private void closeEditModeMenu(View menuView) {
+        cleanBackGroundColor(listView.getAdapter());
+        menuView.setVisibility(View.GONE);
+        editMode = false;
+        fab.show();
+    }
+
+
+
+    public void changeItemBackgroundColor(ViewGroup mainLayout , int position) {
+        ColorDrawable colorDrawable = (ColorDrawable) mainLayout.getBackground();
+        int color  = Color.parseColor("#F8F8FF");
+        Log.e("X1", String.valueOf(colorDrawable.getColor() == color));
+
+        if(colorDrawable.getColor() == color){
+            mainLayout.setBackgroundColor(Color.parseColor("#FFCCCC"));
+            selectedElements.add(position);
+        } else {
+            mainLayout.setBackgroundColor(Color.parseColor("#F8F8FF"));
+            for(int i = 0 ;  i<selectedElements.size() ; i++ ){
+                if(position == selectedElements.get(i)){
+                    selectedElements.remove(i);
+                    break;
+                }
+            }
+            if(selectedElements.size() == 0 ){
+                closeEditModeMenu(managementMenu);
+            }
+
+        }
+
+    }
+
+
+    public void cleanBackGroundColor(RecyclerView.Adapter adapter){
+        Log.i("Teste","Cleaning View background");
+        adapter.notifyDataSetChanged();
+        selectedElements = new ArrayList<>();
+    }
+
+
+
+    }
+
+
+
