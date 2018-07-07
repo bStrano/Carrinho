@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,8 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.adapters.ItemClickListener;
 import br.com.stralom.compras.R;
+import br.com.stralom.entities.ItemCart;
 import br.com.stralom.interfaces.EditMenuInterface;
 import br.com.stralom.listeners.ListChangeListener;
 import br.com.stralom.listeners.RecyclerTouchListener;
@@ -41,13 +44,12 @@ import br.com.stralom.listeners.RecyclerTouchListener;
  * Created by Bruno on 02/02/2018.
  */
 
-public abstract class BasicViewHelper extends Fragment {
-    protected ArrayList<Integer> selectedElements = new ArrayList<>()  ;
+public abstract class BasicViewHelper<T> extends Fragment {
     public boolean editMode = false;
-
     protected RecyclerView listView;
     protected View managementMenu;
     protected FloatingActionButton fab;
+    protected ObservableArrayList<T> itemCartList;
 
     public abstract void initializeSuperAtributes();
 
@@ -61,7 +63,7 @@ public abstract class BasicViewHelper extends Fragment {
     }
 
     public void loadSpinner(Spinner spinner, List content){
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, content);
+        ArrayAdapter arrayAdapter = new ArrayAdapter<T>(getContext(), android.R.layout.simple_list_item_1, content);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
     }
@@ -97,12 +99,16 @@ public abstract class BasicViewHelper extends Fragment {
      */
     public void setUpManagementMenu(final int mainLayoutId, final EditMenuInterface editMenuInterface ){
 
+
         listView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), listView, new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
                 if(editMode){
                     ViewGroup mainLayout = view.findViewById(mainLayoutId);
-                    changeItemBackgroundColor(mainLayout, position);
+                    if(!((CartAdapter)listView.getAdapter()).changeItemBackgroundColor(mainLayout,position)){
+                        closeEditModeMenu();
+                    }
+
                 }
             }
 
@@ -110,7 +116,8 @@ public abstract class BasicViewHelper extends Fragment {
             public void onLongClick(View view, int position) {
                 if (!editMode) {
                     ViewGroup mainLayout = view.findViewById(mainLayoutId);
-                    changeItemBackgroundColor(mainLayout, position);
+                    ((CartAdapter)listView.getAdapter()).changeItemBackgroundColor(mainLayout,position);
+                    //changeItemBackgroundColor(mainLayout, position);
                     showEditModeMenu(editMenuInterface);
 
                 }
@@ -134,7 +141,7 @@ public abstract class BasicViewHelper extends Fragment {
             @Override
             public void onClick(View view) {
                 listView.getAdapter().notifyDataSetChanged();
-                closeEditModeMenu(managementMenu);
+                closeEditModeMenu();
 
             }
         });
@@ -143,7 +150,7 @@ public abstract class BasicViewHelper extends Fragment {
             @Override
             public void onClick(View view) {
                 editMenuInterface.edit();
-                closeEditModeMenu(managementMenu);
+                closeEditModeMenu();
             }
         });
 
@@ -151,55 +158,33 @@ public abstract class BasicViewHelper extends Fragment {
             @Override
             public void onClick(View view) {
                 editMenuInterface.remove();
-                closeEditModeMenu(managementMenu);
+                closeEditModeMenu();
 
             }
         });
-        }
+    }
 
-    private void closeEditModeMenu(View menuView) {
-        cleanBackGroundColor(listView.getAdapter());
-        menuView.setVisibility(View.GONE);
+    private  void closeEditModeMenu() {
+        ((CartAdapter)listView.getAdapter()).cleanBackGroundColor();
+        managementMenu.setVisibility(View.GONE);
         editMode = false;
         fab.show();
     }
 
 
 
-    public void changeItemBackgroundColor(ViewGroup mainLayout , int position) {
-        ColorDrawable colorDrawable = (ColorDrawable) mainLayout.getBackground();
-        int color  = Color.parseColor("#F8F8FF");
-        Log.e("X1", String.valueOf(colorDrawable.getColor() == color));
-
-        if(colorDrawable.getColor() == color){
-            mainLayout.setBackgroundColor(Color.parseColor("#FFCCCC"));
-            selectedElements.add(position);
-        } else {
-            mainLayout.setBackgroundColor(Color.parseColor("#F8F8FF"));
-            for(int i = 0 ;  i<selectedElements.size() ; i++ ){
-                if(position == selectedElements.get(i)){
-                    selectedElements.remove(i);
-                    break;
-                }
-            }
-            if(selectedElements.size() == 0 ){
-                closeEditModeMenu(managementMenu);
-            }
-
-        }
-
-    }
-
-
-    public void cleanBackGroundColor(RecyclerView.Adapter adapter){
-        Log.i("Teste","Cleaning View background");
-        adapter.notifyDataSetChanged();
-        selectedElements = new ArrayList<>();
-    }
 
 
 
-    }
+
+
+
+
+
+
+
+
+}
 
 
 

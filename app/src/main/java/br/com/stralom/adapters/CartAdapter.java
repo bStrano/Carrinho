@@ -2,52 +2,48 @@ package br.com.stralom.adapters;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.ItemCartDAO;
 import br.com.stralom.dao.ItemStockDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.ItemCart;
-import br.com.stralom.entities.ItemStock;
 import br.com.stralom.interfaces.EditMenuInterface;
 
 /**
  * Created by Bruno Strano on 30/01/2018.
  */
 
-public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder> implements ItemTouchHelperAdapter, EditMenuInterface {
-    private  ArrayList<ItemCart> itemCarts;
-    private final Activity activity;
+public class CartAdapter extends BaseAdapter<CartAdapter.CartViewHolder,ItemCart>  {
     private final ItemCartDAO itemCartDAO;
     private final SimpleItemDAO simpleItemDAO;
     private final ItemStockDAO itemStockDAO;
-    private boolean undoSwipe = false;
     private Resources res;
-    private Snackbar snackbar;
-    private ArrayList<Integer> selectedItems;
 
-    public CartAdapter(ArrayList<ItemCart> itemCarts, Activity activity) {
-        this.itemCarts = itemCarts;
-        this.activity = activity;
+
+
+
+    public CartAdapter(ObservableArrayList<ItemCart> itemCarts, Activity activity) {
+        super(itemCarts,activity);
         res = activity.getResources();
         itemCartDAO = new ItemCartDAO(activity);
         itemStockDAO = new ItemStockDAO(activity);
         simpleItemDAO = new SimpleItemDAO(activity);
-        selectedItems = new ArrayList<>();
-
     }
 
     @Override
@@ -55,20 +51,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     }
 
-    @Override
-    public void remove() {
 
-    }
-
-
-    public class cartViewHolder extends  RecyclerView.ViewHolder{
+    public class CartViewHolder extends  RecyclerView.ViewHolder{
         final TextView productName;
         final TextView productAmount;
         final ImageView categoryIcon;
         final View viewBackground;
 
 
-        cartViewHolder(View itemView) {
+        CartViewHolder(View itemView) {
             super(itemView);
 
             productName = itemView.findViewById(R.id.itemCart_itemList_name);
@@ -81,14 +72,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     @NonNull
     @Override
-    public cartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(activity).inflate(R.layout.list_item_cart, parent, false);
-        return new cartViewHolder(v);
+        return new CartViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
-        ItemCart itemCart = itemCarts.get(position);
+    public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
+        ItemCart itemCart = (ItemCart) list.get(position);
         //holder.productName.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
         holder.productName.setText(itemCart.getProduct().getName());
         holder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getAmount()));
@@ -105,120 +96,52 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartViewHolder
 
     @Override
     public int getItemCount() {
-        return itemCarts.size();
+        return list.size();
     }
 
     @Override
-    public void onItemMove(int fromPosition, int toPosition) {
-        if(fromPosition < toPosition){
-            for (int i = fromPosition ; i < toPosition ; i++){
-                Collections.swap(itemCarts,i,i+1);
-            }
-        } else {
-            for (int i = fromPosition ; i > toPosition ; i--){
-                Collections.swap(itemCarts,i,i-1);
-            }
+    public void removePermanently(ItemCart itemCart) {
+        Log.d("DEBUG", "24984984");
+        if(itemCart.getId() != null) {
+            itemCartDAO.remove( itemCart.getId());
+        } else if(itemCart.getConvertedId() != null){
+            simpleItemDAO.remove( itemCart.getConvertedId());
+
         }
-        notifyItemMoved(fromPosition,toPosition);
-
     }
 
 
-
-    @Override
-    public void onItemDismiss(int position) {
-        final ItemCart itemCart = itemCarts.get(position);
-        String name = itemCart.getProduct().getName();
-        Snackbar snackbar = removeTemporarily(position,itemCart,  name + " removido do carrinho.",null);
-        // Remover Definitivamente
-        snackbar.addCallback(new Snackbar.Callback(){
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(itemCart.isRemoved()) {
-                    if(itemCart.getId() != null) {
-                        itemCartDAO.remove( itemCart.getId());
-                    } else if(itemCart.getConvertedId() != null){
-                        simpleItemDAO.remove( itemCart.getConvertedId());
-
-                    }
-                }
-
-
-            }
-        });
-
-
-        snackbar.show();
-        //
-
-    }
-
-    public ArrayList<ItemCart> getElements(){
-        return itemCarts;
-    }
-
-    public void completeItem(int position, TextView textView) {
-        final ItemCart itemCart = itemCarts.get(position);
-        snackbar = removeTemporarily(position, itemCart, "Concluido",textView);
-        snackbar.addCallback(new Snackbar.Callback(){
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event){
-                if(itemCart.isRemoved()){
-                    if(itemCart.getId() != null){
-                        itemCartDAO.remove( itemCart.getId() );
-                        if(itemCart.isUpdateStock()) {
-                            ItemStock itemStock = itemStockDAO.findByProductId(itemCart.getProduct().getId());
-                            if(itemStock != null){
-                                itemStock.setActualAmount(itemCart.getAmount() + itemStock.getActualAmount());
-                                itemStock.setTotal(itemStock.getActualAmount(),itemStock.getAmount());
-                                itemStockDAO.update(itemStock);
-                            }
-                        }
-                    } else if(itemCart.getConvertedId() != null) {
-                        simpleItemDAO.remove( itemCart.getConvertedId());
-                    }
-                }
-                super.onDismissed(transientBottomBar,event);
-            }
-        });
-        snackbar.show();
-    }
-    @Override
-    public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
-        return  ((cartViewHolder) viewHolder).viewBackground;
-    }
+//    public void completeItem(int position, TextView textView) {
+//        final ItemCart itemCart = itemCarts.get(position);
+//        snackbar = removeTemporarily(position, itemCart, "Concluido",textView);
+//        snackbar.addCallback(new Snackbar.Callback(){
+//            @Override
+//            public void onDismissed(Snackbar transientBottomBar, int event){
+//                if(itemCart.isRemoved()){
+//                    if(itemCart.getId() != null){
+//                        itemCartDAO.remove( itemCart.getId() );
+//                        if(itemCart.isUpdateStock()) {
+//                            ItemStock itemStock = itemStockDAO.findByProductId(itemCart.getProduct().getId());
+//                            if(itemStock != null){
+//                                itemStock.setActualAmount(itemCart.getAmount() + itemStock.getActualAmount());
+//                                itemStock.setTotal(itemStock.getActualAmount(),itemStock.getAmount());
+//                                itemStockDAO.update(itemStock);
+//                            }
+//                        }
+//                    } else if(itemCart.getConvertedId() != null) {
+//                        simpleItemDAO.remove( itemCart.getConvertedId());
+//                    }
+//                }
+//                super.onDismissed(transientBottomBar,event);
+//            }
+//        });
+//        snackbar.show();
+//    }
 
 
 
-    @NonNull
-    private Snackbar removeTemporarily(final int position, final ItemCart itemCart, String message, final TextView itemCartNameAmount) {
-        // Remover Temporiariamente
-        itemCarts.remove(position);
-        notifyItemRemoved(position);
-        snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), message, Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.BLUE);
-        itemCart.setRemoved(true);
-        // Desfazer remoção
-        snackbar.setAction(R.string.snackbar_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemCarts.add(position,itemCart);
-                notifyItemInserted(position);
-                itemCart.setRemoved(false);
-                if( itemCartNameAmount != null) {
-                    itemCartNameAmount.setPaintFlags( (itemCartNameAmount.getPaintFlags()) & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                }
-            }
-        });
-        return snackbar;
-    }
 
-    public void dismissSnackbar(){
-        if(snackbar != null){
-            snackbar.dismiss();
-        }
 
-    }
 
 
 

@@ -35,6 +35,7 @@ import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Cart;
+import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Product;
@@ -51,7 +52,7 @@ import br.com.stralom.listeners.RecyclerTouchListener;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CartMain extends BasicViewHelper {
+public class CartMain extends BasicViewHelper<ItemCart> {
     private View mainView;
     private ProductDAO productDAO;
     private ItemCartDAO itemCartDAO;
@@ -60,7 +61,7 @@ public class CartMain extends BasicViewHelper {
     private CartDAO cartDAO;
     private Cart cart;
     private SimpleItemDAO simpleItemDAO;
-    private ObservableArrayList<ItemCart> itemCartList ;
+
     private CartAdapter adapter;
 
     private static final String TAG = "CartMainTAG";
@@ -73,6 +74,7 @@ public class CartMain extends BasicViewHelper {
         listView = mainView.findViewById(R.id.cart_list_itemCarts);
         managementMenu = mainView.findViewById(R.id.cart_management_list);
         fab = mainView.findViewById(R.id.itemCart_btn_registerProduct);
+        itemCartList = new ObservableArrayList<>();
     }
 
     @Override
@@ -105,13 +107,15 @@ public class CartMain extends BasicViewHelper {
         listView.setAdapter(adapter);
 
 
+        setUpManagementMenu(R.id.cart_view_foreground, adapter);
 
 
 
 
-        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(listView);
+
+//        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
+//        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+//        touchHelper.attachToRecyclerView(listView);
 
 
 
@@ -168,12 +172,12 @@ public class CartMain extends BasicViewHelper {
                 for (ItemRecipe itemRecipe :itemRecipes){
                     addItemFromRecipe(itemRecipe);
                 }
-               // reloadItemsFromCart(cart,fragmentView);
+                // reloadItemsFromCart(cart,fragmentView);
 
             }
         };
 
-        
+
         DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) { }
@@ -207,7 +211,7 @@ public class CartMain extends BasicViewHelper {
             @Override
             public void onClick(View view) {
                 if(addItemFromProduct(itemCartView)){
-                   dialog.dismiss();
+                    dialog.dismiss();
                 }
             }
         });
@@ -287,7 +291,7 @@ public class CartMain extends BasicViewHelper {
             itemCartList.get(index).setAmount(updatedAmount);
             listView.getAdapter().notifyDataSetChanged();
         }
-   }
+    }
     /**
      * Add a new item to the cart, from a Product.
      * @param itemCartView an Dialog that contains the form

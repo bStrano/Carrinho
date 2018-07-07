@@ -115,6 +115,7 @@
     <string name="emptyList_image_contentDescription">Imagem meramente ilustrativa</string>
     <string name="stock_emptyList_title">Nenhum item cadastrado</string>
     <string name="stock_emptyList_description">Os itens adicionados ao estoque serão exibidos aqui.</string>
+    <string name="list_removedItems">%d items removidos.</string>
 
 
 </resources>
