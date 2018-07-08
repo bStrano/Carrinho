@@ -79,11 +79,11 @@ public class CartAdapter extends BaseAdapter<CartAdapter.CartViewHolder,ItemCart
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        ItemCart itemCart = (ItemCart) list.get(position);
+        ItemCart itemCart = list.get(position);
         //holder.productName.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
         holder.productName.setText(itemCart.getProduct().getName());
         holder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getAmount()));
-        holder.viewBackground.setBackgroundColor(Color.parseColor("#F8F8FF"));
+        holder.viewBackground.setBackgroundColor(Color.parseColor("#FAFAFA"));
 
         try{
             holder.categoryIcon.setImageResource(itemCart.getProduct().getCategory().getIconFlag());

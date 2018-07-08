@@ -29,7 +29,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
     protected ObservableArrayList<U> list;
     private Snackbar snackbar;
     protected  Activity activity;
-    //private  ArrayList<ItemCart> items;
+
 
     public BaseAdapter(ObservableArrayList<U> list, Activity activity) {
         this.selectedElements = new HashMap<>();
@@ -55,21 +55,19 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
      * @return If the list have any selected elements.
      */
     public boolean changeItemBackgroundColor(ViewGroup mainLayout , int position) {
-        ColorDrawable colorDrawable = (ColorDrawable) mainLayout.getBackground();
-        int color  = Color.parseColor("#F8F8FF");
-        Log.e("X1", String.valueOf(colorDrawable.getColor() == color));
 
-        if(colorDrawable.getColor() == color){
-            mainLayout.setBackgroundColor(Color.parseColor("#FFCCCC"));
+    Log.d("DEBUG", String.valueOf(position));
+        ColorDrawable colorDrawable = (ColorDrawable) mainLayout.getBackground();
+        int defaultColor  = Color.parseColor("#FAFAFA");
+        // F8F8FF
+        int selectedColor = Color.parseColor("#FFCCCC");
+        Log.e("DEBUG", String.valueOf(colorDrawable.getColor() == defaultColor));
+
+        if(colorDrawable.getColor() == defaultColor){
+            mainLayout.setBackgroundColor(selectedColor);
             selectedElements.put(position,list.get(position));
         } else {
-            mainLayout.setBackgroundColor(Color.parseColor("#F8F8FF"));
-//            for(Map.Entry<Integer, Object> hash : selectedElements.entrySet()){
-//                if(hash.getKey() == position){
-//                    selectedElements.remove(hash.getKey());
-//                    break;
-//                }
-//            }
+            mainLayout.setBackgroundColor(defaultColor);
             selectedElements.remove(position);
 
             if(selectedElements.size() == 0 ){
@@ -91,7 +89,13 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
     public void remove() {
         hashClone = (HashMap<Integer, U>) selectedElements.clone();
         removeTemporaly();
-        String itemsRemoved = activity.getResources().getString(R.string.list_removedItems,selectedElements.size());
+        String itemsRemoved;
+        if(selectedElements.size() == 1) {
+             itemsRemoved = activity.getResources().getString(R.string.list_oneRemovedItems,selectedElements.size());
+        } else {
+             itemsRemoved = activity.getResources().getString(R.string.list_removedItems,selectedElements.size());
+        }
+
         createUndoSnakbar(itemsRemoved ,null);
         // Remover Definitivamente
         snackbar.addCallback(new Snackbar.Callback(){
@@ -111,7 +115,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
     }
 
 
-    public void removeTemporaly(){
+    private void removeTemporaly(){
 
         int removedElements = 0;
         for (Map.Entry<Integer, U> hash : selectedElements.entrySet()) {
@@ -123,7 +127,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
         }
     }
 
-    public void createUndoSnakbar(String message, final TextView itemCartNameAmount){
+    private void createUndoSnakbar(String message, final TextView itemCartNameAmount){
 
         snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), message, Snackbar.LENGTH_LONG);
             snackbar.setActionTextColor(Color.BLUE);

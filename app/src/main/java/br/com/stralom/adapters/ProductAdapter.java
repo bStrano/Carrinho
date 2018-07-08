@@ -2,9 +2,9 @@ package br.com.stralom.adapters;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,19 +22,14 @@ import br.com.stralom.entities.Product;
  * Created by Bruno on 24/02/2018.
  */
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> implements ItemTouchHelperAdapter {
-    private final List<Product> products;
-    private final Activity activity;
+public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder,Product> {
     private final ProductDAO productDAO;
-    private boolean undoSwipe;
     private Resources res;
 
-    public ProductAdapter(List<Product> products, Activity activity) {
-        this.products = products;
-        this.activity = activity;
+    public ProductAdapter(ObservableArrayList<Product> products, Activity activity) {
+        super(products,activity);
         res = activity.getResources();
         productDAO = new ProductDAO(activity);
-        this.undoSwipe = false;
     }
 
     @NonNull
@@ -46,64 +41,28 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = products.get(position);
+        Product product = list.get(position);
         holder.name.setText(product.getName());
         holder.price.setText(String.format(res.getString(R.string.product_itemList_price), product.getPrice()));
          holder.categoryIcon.setImageResource(product.getCategory().getIconFlag());
+        holder.viewForeground.setBackgroundColor(Color.parseColor("#FAFAFA"));
         //holder.categoryIcon.setImageDrawable(R.drawable.ic_add);
     }
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return list.size();
     }
 
     @Override
-    public void onItemMove(int fromPosition, int toPosition) {
+    public void removePermanently(Product item) {
+        productDAO.remove(item.getId());
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-        final Product product = products.get(position);
-        final int deletedIndex = position;
-
-        String name = product.getName();
-
-        // Remover Temporiariamente
-        products.remove(position);
-        notifyItemRemoved(position);
-
-        Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), name + " removido!", Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.BLUE);
-
-        // Desfazer remoção
-        snackbar.setAction("DESFAZER", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                products.add(deletedIndex,product);
-                notifyItemInserted(deletedIndex);
-                undoSwipe = true;
-            }
-        });
-
-        // Remover Definitivamente
-        snackbar.addCallback(new Snackbar.Callback(){
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(!undoSwipe) {
-                    productDAO.remove(product.getId());
-                }
-            }
-        });
-
-        snackbar.show();
-        //
-
-    }
 
     @Override
-    public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
-        return  ((ProductViewHolder) viewHolder).viewForeground;
+    public void edit() {
+
     }
 
     public class ProductViewHolder extends  RecyclerView.ViewHolder{
@@ -111,7 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         final TextView name;
         final TextView price;
         final View viewForeground;
-        final View backgroundView;
+
 
 
 
@@ -121,7 +80,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             price = itemView.findViewById(R.id.product_itemList_price);
             categoryIcon = itemView.findViewById(R.id.product_itemList_categoryIcon);
             viewForeground = itemView.findViewById(R.id.product_view_foreground);
-            backgroundView = itemView.findViewById(R.id.view_background);
+
 
 
         }

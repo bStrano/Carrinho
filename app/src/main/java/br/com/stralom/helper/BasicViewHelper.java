@@ -2,40 +2,26 @@ package br.com.stralom.helper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.ObservableArrayList;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.adapters.ItemClickListener;
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.ItemCart;
 import br.com.stralom.interfaces.EditMenuInterface;
 import br.com.stralom.listeners.ListChangeListener;
 import br.com.stralom.listeners.RecyclerTouchListener;
@@ -49,9 +35,12 @@ public abstract class BasicViewHelper<T> extends Fragment {
     protected RecyclerView listView;
     protected View managementMenu;
     protected FloatingActionButton fab;
-    protected ObservableArrayList<T> itemCartList;
+    protected ObservableArrayList<T> list = new ObservableArrayList<>();
+    public abstract boolean callChangeItemBackgroundColor(View view, int position);
+    public abstract void callCleanBackgroundColor();
 
-    public abstract void initializeSuperAtributes();
+
+    public abstract void initializeSuperAttributes();
 
     public AlertDialog createDialog(View view, DialogInterface.OnClickListener listenerPositive, DialogInterface.OnClickListener listenerNegative, int titleId){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -94,18 +83,17 @@ public abstract class BasicViewHelper<T> extends Fragment {
 
     /**
      * Setup the managament menu
-     * @param mainLayoutId    The R.id of the root layout in the ViewHolder clicked.
+
      * @param editMenuInterface An interface containing an implementation of buttons Edit and Remove of the managementMenu
      */
-    public void setUpManagementMenu(final int mainLayoutId, final EditMenuInterface editMenuInterface ){
+    public void setUpManagementMenu(final EditMenuInterface editMenuInterface ){
 
 
         listView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), listView, new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
                 if(editMode){
-                    ViewGroup mainLayout = view.findViewById(mainLayoutId);
-                    if(!((CartAdapter)listView.getAdapter()).changeItemBackgroundColor(mainLayout,position)){
+                    if(!callChangeItemBackgroundColor(view, position)){
                         closeEditModeMenu();
                     }
 
@@ -115,8 +103,9 @@ public abstract class BasicViewHelper<T> extends Fragment {
             @Override
             public void onLongClick(View view, int position) {
                 if (!editMode) {
-                    ViewGroup mainLayout = view.findViewById(mainLayoutId);
-                    ((CartAdapter)listView.getAdapter()).changeItemBackgroundColor(mainLayout,position);
+                    Log.d("DEBUG", "OnLongClick editmode OFF");
+                    callChangeItemBackgroundColor(view,  position);
+                    //((T)listView.getAdapter()).changeItemBackgroundColor(mainLayout,position);
                     //changeItemBackgroundColor(mainLayout, position);
                     showEditModeMenu(editMenuInterface);
 
@@ -165,7 +154,7 @@ public abstract class BasicViewHelper<T> extends Fragment {
     }
 
     private  void closeEditModeMenu() {
-        ((CartAdapter)listView.getAdapter()).cleanBackGroundColor();
+        callCleanBackgroundColor();
         managementMenu.setVisibility(View.GONE);
         editMode = false;
         fab.show();

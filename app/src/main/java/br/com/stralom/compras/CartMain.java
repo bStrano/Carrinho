@@ -7,26 +7,18 @@ import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import br.com.stralom.adapters.CartAdapter;
-import br.com.stralom.adapters.ItemClickListener;
 import br.com.stralom.adapters.RecipeSpinnerAdapter;
 import br.com.stralom.dao.CartDAO;
 import br.com.stralom.dao.ItemCartDAO;
@@ -35,7 +27,6 @@ import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Cart;
-import br.com.stralom.entities.Item;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Product;
@@ -44,9 +35,6 @@ import br.com.stralom.entities.SimpleItem;
 import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ItemCartForm;
 import br.com.stralom.helper.SimpleItemForm;
-import br.com.stralom.helper.SwipeToDeleteCallback;
-import br.com.stralom.interfaces.EditMenuInterface;
-import br.com.stralom.listeners.RecyclerTouchListener;
 
 
 /**
@@ -70,11 +58,21 @@ public class CartMain extends BasicViewHelper<ItemCart> {
     }
 
     @Override
-    public void initializeSuperAtributes() {
+    public void initializeSuperAttributes() {
         listView = mainView.findViewById(R.id.cart_list_itemCarts);
         managementMenu = mainView.findViewById(R.id.cart_management_list);
         fab = mainView.findViewById(R.id.itemCart_btn_registerProduct);
-        itemCartList = new ObservableArrayList<>();
+    }
+
+    @Override
+    public boolean callChangeItemBackgroundColor(View view, int position) {
+        ViewGroup background = view.findViewById(R.id.cart_view_foreground);
+        return ((CartAdapter) listView.getAdapter()).changeItemBackgroundColor(background,position);
+    }
+
+    @Override
+    public void callCleanBackgroundColor() {
+        ((CartAdapter)listView.getAdapter()).cleanBackGroundColor();
     }
 
     @Override
@@ -82,7 +80,7 @@ public class CartMain extends BasicViewHelper<ItemCart> {
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_cart_main, container, false);
 
-        initializeSuperAtributes();
+        initializeSuperAttributes();
 
         //DAO
         cartDAO = new CartDAO(getContext());
@@ -100,14 +98,14 @@ public class CartMain extends BasicViewHelper<ItemCart> {
         cart = cartDAO.findById((long) 1);
         loadItemsFromCart(cart);
 
-        setUpEmptyListView(mainView,itemCartList,R.id.itemCart_emptyList,R.drawable.ic_cart, R.string.itemCart_emptyList_title,R.string.itemCart_emptyList_description);
+        setUpEmptyListView(mainView, list,R.id.itemCart_emptyList,R.drawable.ic_cart, R.string.itemCart_emptyList_title,R.string.itemCart_emptyList_description);
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CartAdapter(itemCartList,getActivity());
+        adapter = new CartAdapter(list,getActivity());
         listView.setAdapter(adapter);
 
 
-        setUpManagementMenu(R.id.cart_view_foreground, adapter);
+        setUpManagementMenu(adapter);
 
 
 
@@ -148,8 +146,8 @@ public class CartMain extends BasicViewHelper<ItemCart> {
      * @param cart
      */
     private void loadItemsFromCart(Cart cart) {
-        itemCartList = (ObservableArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
-        cart.setListItemCart(itemCartList);
+        list = (ObservableArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
+        cart.setListItemCart(list);
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
         addSimpleProducts(simpleItemList);
     }
@@ -254,7 +252,7 @@ public class CartMain extends BasicViewHelper<ItemCart> {
             Long id = itemCartDAO.add(newItemCart);
             newItemCart.setId(id);
             Toast.makeText(getContext(),R.string.itemCart_toast_productAdded,Toast.LENGTH_LONG).show();
-            itemCartList.add(newItemCart);
+            list.add(newItemCart);
             listView.getAdapter().notifyDataSetChanged();
         } else {
             Toast.makeText(getContext(),R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
@@ -272,9 +270,9 @@ public class CartMain extends BasicViewHelper<ItemCart> {
         //ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
         int index = -1;
         ItemCart itemCart = null;
-        for(int i = 0 ; i< itemCartList.size() ; i++){
-            if(itemCartList.get(i).getProduct().getName().equals(itemRecipe.getProduct().getName())){
-                itemCart = itemCartList.get(i);
+        for(int i = 0; i< list.size() ; i++){
+            if(list.get(i).getProduct().getName().equals(itemRecipe.getProduct().getName())){
+                itemCart = list.get(i);
                 index = i;
             }
         }
@@ -284,11 +282,11 @@ public class CartMain extends BasicViewHelper<ItemCart> {
         } else {
             int updatedAmount = itemCart.getAmount() + itemRecipe.getAmount();
             itemCart.setAmount(updatedAmount);
-            itemCartList.get(index).setAmount(updatedAmount);
+            list.get(index).setAmount(updatedAmount);
 
 
             itemCartDAO.update(itemCart);
-            itemCartList.get(index).setAmount(updatedAmount);
+            list.get(index).setAmount(updatedAmount);
             listView.getAdapter().notifyDataSetChanged();
         }
     }
@@ -345,12 +343,12 @@ public class CartMain extends BasicViewHelper<ItemCart> {
     }
 
     /**
-     *  Search for a product with a specific name in the itemCartList
+     *  Search for a product with a specific name in the list
      * @param name
      * @return if the list contains a product with name = @param name
      */
     private boolean checkForItemWithName(String name){
-        for (ItemCart itemCart:itemCartList) {
+        for (ItemCart itemCart: list) {
             if(itemCart.getProduct().getName().equals(name)){
                 return true;
             }

@@ -2,10 +2,11 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -21,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import br.com.stralom.adapters.CategorySpinnerAdapter;
@@ -30,49 +30,60 @@ import br.com.stralom.dao.CategoryDAO;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
+import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ProductForm;
 import br.com.stralom.helper.SwipeToDeleteCallback;
 
-import static android.content.ContentValues.TAG;
-import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
 
-
-public class ProductMain extends Fragment {
-    private ObservableArrayList<Product> productList;
+public class ProductMain extends BasicViewHelper<Product> {
     private ProductAdapter productAdapter;
     private ProductDAO productDAO;
+    private View mainView;
 
-
-
-    public ProductMain() {
-        // Required empty public constructor
+    @Override
+    public void initializeSuperAttributes() {
+        listView = mainView.findViewById(R.id.product_list);
+        managementMenu = mainView.findViewById(R.id.product_management_list);
+        fab = mainView.findViewById(R.id.product_btn_addNew);
     }
+
+    @Override
+    public boolean callChangeItemBackgroundColor(View view, int position) {
+        Log.d("DEBUG", "CALL CHANGE ITEM");
+        ViewGroup background = view.findViewById(R.id.product_view_foreground);
+        return ((ProductAdapter) listView.getAdapter()).changeItemBackgroundColor(background,position);
+    }
+
+    @Override
+    public void callCleanBackgroundColor() {
+        ((ProductAdapter)listView.getAdapter()).cleanBackGroundColor();
+    }
+
+
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_list, container, false);
+        mainView = inflater.inflate(R.layout.fragment_product_list, container, false);
 
-        Button buttonView = view.findViewById(R.id.product_btn_addNew);
-        RecyclerView productListView = view.findViewById(R.id.product_list);
+        initializeSuperAttributes();
+
+
 
         productDAO = new ProductDAO(getActivity());
-        productList = (ObservableArrayList<Product>) productDAO.getAll();
-        setUpEmptyListView(view,productList,R.id.product_emptyList, R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
-        registerForContextMenu(productListView);
+        list = (ObservableArrayList<Product>) productDAO.getAll();
+        setUpEmptyListView(mainView, list,R.id.product_emptyList, R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
+        //registerForContextMenu(listView);
 
-        // Recycler View
-       productAdapter = new ProductAdapter(productList,getActivity());
-        productListView.setAdapter(productAdapter);
-        productListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        productListView.setHasFixedSize(true);
-        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(productAdapter);
-        ItemTouchHelper itemTouch = new ItemTouchHelper(callback);
-        itemTouch.attachToRecyclerView(productListView);
+       productAdapter = new ProductAdapter(list,getActivity());
+        listView.setLayoutManager(new LinearLayoutManager(getContext()));
+        listView.setHasFixedSize(true);
+        listView.setAdapter(productAdapter);
 
+        setUpManagementMenu(productAdapter);
 
-        buttonView.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -115,10 +126,10 @@ public class ProductMain extends Fragment {
                             try{
                                 Long id = productDAO.add(product);
                                 product.setId(id);
-                                productList.add(product);
+                                list.add(product);
                                 productAdapter.notifyDataSetChanged();
                                 Toast.makeText(getActivity(),R.string.toast_produc_register,Toast.LENGTH_LONG).show();
-                            }catch (android.database.sqlite.SQLiteConstraintException e){
+                            }catch (SQLiteConstraintException e){
                                 Toast.makeText(getActivity(),R.string.toast_product_alreadyRegistered,Toast.LENGTH_LONG).show();
                             }
                             dialog.dismiss();
@@ -129,28 +140,14 @@ public class ProductMain extends Fragment {
 
             }
         });
-        return view;
+        return mainView;
 
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        MenuInflater inflater = Objects.requireNonNull(getActivity()).getMenuInflater();
-        inflater.inflate(R.menu.main_context_menu, menu);
-    }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.menu_editId:
-                Toast.makeText(getActivity(),"Produto editado!",Toast.LENGTH_LONG).show();
-                break;
-            case R.id.menu_deleteId:
-                Toast.makeText(getActivity(),"Produto deletado.", Toast.LENGTH_LONG).show();
-                break;
-        }
-        return super.onContextItemSelected(item);
-    }
+
+
+
 
 
 }
