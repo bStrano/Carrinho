@@ -31,16 +31,21 @@ import br.com.stralom.listeners.RecyclerTouchListener;
  */
 
 public abstract class BasicViewHelper<T> extends Fragment {
-    public boolean editMode = false;
+    private boolean editMode = false;
+
+    protected abstract boolean callChangeItemBackgroundColor(View view, int position);
+    protected abstract void callCleanBackgroundColor();
+
+
+    protected View mainView;
     protected RecyclerView listView;
     protected View managementMenu;
     protected FloatingActionButton fab;
     protected ObservableArrayList<T> list = new ObservableArrayList<>();
-    public abstract boolean callChangeItemBackgroundColor(View view, int position);
-    public abstract void callCleanBackgroundColor();
-
 
     public abstract void initializeSuperAttributes();
+
+
 
     public AlertDialog createDialog(View view, DialogInterface.OnClickListener listenerPositive, DialogInterface.OnClickListener listenerNegative, int titleId){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

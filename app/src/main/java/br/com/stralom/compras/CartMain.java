@@ -40,8 +40,7 @@ import br.com.stralom.helper.SimpleItemForm;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CartMain extends BasicViewHelper<ItemCart> {
-    private View mainView;
+public class CartMain extends BasicViewHelper<ItemCart>{
     private ProductDAO productDAO;
     private ItemCartDAO itemCartDAO;
     private ItemRecipeDAO itemRecipeDAO;

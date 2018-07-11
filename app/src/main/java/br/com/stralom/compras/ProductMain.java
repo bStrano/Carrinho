@@ -6,23 +6,15 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import br.com.stralom.adapters.CategorySpinnerAdapter;
 import br.com.stralom.adapters.ProductAdapter;
@@ -32,13 +24,11 @@ import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
 import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ProductForm;
-import br.com.stralom.helper.SwipeToDeleteCallback;
 
 
 public class ProductMain extends BasicViewHelper<Product> {
     private ProductAdapter productAdapter;
     private ProductDAO productDAO;
-    private View mainView;
 
     @Override
     public void initializeSuperAttributes() {
@@ -65,10 +55,8 @@ public class ProductMain extends BasicViewHelper<Product> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_product_list, container, false);
-
+        mainView = inflater.inflate(R.layout.fragment_product_main, container, false);
         initializeSuperAttributes();
-
 
 
         productDAO = new ProductDAO(getActivity());

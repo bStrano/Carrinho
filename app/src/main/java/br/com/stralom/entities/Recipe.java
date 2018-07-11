@@ -1,5 +1,8 @@
 package br.com.stralom.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,7 +10,7 @@ import java.util.List;
  * Created by Bruno Strano on 11/01/2018.
  */
 
-public class Recipe implements Serializable {
+public class Recipe implements Parcelable {
     private Long id;
     private String name;
     private double total;
@@ -17,6 +20,7 @@ public class Recipe implements Serializable {
 
     public Recipe(){
     }
+
 
 
     public Recipe(Long id, String name, List<ItemRecipe> ingredients) {
@@ -34,6 +38,30 @@ public class Recipe implements Serializable {
         this.igredientCount = ingredients.size();
         this.imagePath = imagePath;
     }
+
+    protected Recipe(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readLong();
+        }
+        name = in.readString();
+        total = in.readDouble();
+        igredientCount = in.readInt();
+        imagePath = in.readString();
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 
     private double calculateTotal(){
         double total = 0;
@@ -103,5 +131,24 @@ public class Recipe implements Serializable {
                 ", ingredients=" + ingredients +
                 ", imagePath='" + imagePath + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        if (id == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeLong(id);
+        }
+        parcel.writeString(name);
+        parcel.writeDouble(total);
+        parcel.writeInt(igredientCount);
+        parcel.writeString(imagePath);
     }
 }

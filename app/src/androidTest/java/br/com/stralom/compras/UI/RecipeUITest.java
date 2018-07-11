@@ -78,7 +78,7 @@ public class RecipeUITest {
         price = String.format(price,total);
 
         registerRecipe(recipeName, product.getName(),productAmount);
-        onView(withId(R.id.recipe_view_main)).check(matches(isDisplayed()));
+//        onView(withId(R.id.recipe_view_main)).check(matches(isDisplayed()));
         onView(withId(R.id.list_recipe))
                 .perform(RecyclerViewActions.scrollToHolder(withRecipeHolder(recipeName,ingredientsCount,price)))
                 .check(matches(isDisplayed()));

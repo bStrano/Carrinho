@@ -7,28 +7,46 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import br.com.stralom.adapters.RecipeAdapter;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.entities.Recipe;
-import br.com.stralom.helper.SwipeToDeleteCallback;
+import br.com.stralom.helper.BasicViewHelper;
 
-import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecipeMain extends Fragment {
+public class RecipeMain extends BasicViewHelper<Recipe>{
+    private static final int REGISTER_RECIPE_REQUEST = 1;
+
+    @Override
+    public void initializeSuperAttributes() {
+        listView = mainView.findViewById(R.id.list_recipe);
+        managementMenu = mainView.findViewById(R.id.recipe_management_list);
+        fab = mainView.findViewById(R.id.btn_newRecipe);
+    }
+
+    @Override
+    public boolean callChangeItemBackgroundColor(View view, int position) {
+        ViewGroup background = view.findViewById(R.id.recipe_view_foreground);
+        return ((RecipeAdapter) listView.getAdapter()).changeItemBackgroundColor(background,position);
+
+    }
+
+    @Override
+    public void callCleanBackgroundColor() {
+        ((RecipeAdapter)listView.getAdapter()).cleanBackGroundColor();
+    }
+
 
     public RecipeMain() {
         // Required empty public constructor
@@ -39,36 +57,46 @@ public class RecipeMain extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recipe_main, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.list_recipe);
+        mainView = inflater.inflate(R.layout.fragment_recipe_main, container, false);
+
+        initializeSuperAttributes();
+
         RecipeDAO recipeDAO = new RecipeDAO(getContext());
 
-        ObservableArrayList<Recipe> recipes = (ObservableArrayList<Recipe>) recipeDAO.getAll();
-        setUpEmptyListView(view,recipes,R.id.recipe_emptyList,R.drawable.ic_cake,R.string.recipe_emptyList_title,R.string.recipe_emptyList_description);
+        list = (ObservableArrayList<Recipe>) recipeDAO.getAll();
+        setUpEmptyListView(mainView,list,R.id.recipe_emptyList,R.drawable.ic_cake,R.string.recipe_emptyList_title,R.string.recipe_emptyList_description);
 
-        RecipeAdapter adapter = new RecipeAdapter(recipes, Objects.requireNonNull(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        RecipeAdapter adapter = new RecipeAdapter(list, Objects.requireNonNull(getActivity()));
+        listView.setHasFixedSize(true);
+        listView.setLayoutManager(new LinearLayoutManager(getContext()));
+        listView.setAdapter(adapter);
 
-        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        setUpManagementMenu(adapter);
 
 //        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
-        Button btn_newRecipe = view.findViewById(R.id.btn_newRecipe);
-        btn_newRecipe.setOnClickListener(new View.OnClickListener() {
+
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(),SecundaryActivity.class);
-                String fragment = RecipeRegistration.class.getSimpleName();
-                intent.putExtra(fragment,fragment);
-                startActivity(intent);
+                Intent intent = new Intent(getContext(),RecipeRegistration.class);
+                startActivityForResult(intent,REGISTER_RECIPE_REQUEST);
 
             }
         });
 
-        return view;
+        return mainView;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if( requestCode == REGISTER_RECIPE_REQUEST ){
+            if(resultCode == RESULT_OK){
+                Recipe recipe = data.getParcelableExtra("recipe");
+                list.add(recipe);
+                listView.getAdapter().notifyDataSetChanged();
+            }
+        }
+    }
+
 
 }

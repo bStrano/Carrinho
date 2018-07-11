@@ -5,32 +5,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,10 +44,7 @@ import br.com.stralom.entities.Recipe;
 import br.com.stralom.helper.ItemRecipeForm;
 import br.com.stralom.helper.RecipeForm;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class RecipeRegistration extends Fragment {
+public class RecipeRegistration extends AppCompatActivity {
     private static final String TAG = "RecipeRegistration";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private String mCurrentPhotoPath;
@@ -63,42 +55,35 @@ public class RecipeRegistration extends Fragment {
     private ArrayAdapter<ItemRecipe> itemRecipeArrayAdapter;
 
 
-    public RecipeRegistration() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recipe_registration, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_recipe_registration);
 
 
-        Button btn_newImage = view.findViewById(R.id.form_recipe_btn_newImage);
-        Button btn_newIngredient = view.findViewById(R.id.form_recipe_btn_newIngredient);
-        ListView list_ingredients = view.findViewById(R.id.form_recipe_ingredients);
+        Button btn_newImage = findViewById(R.id.form_recipe_btn_newImage);
+        Button btn_newIngredient = findViewById(R.id.form_recipe_btn_newIngredient);
+        ListView list_ingredients = findViewById(R.id.form_recipe_ingredients);
 
-        recipeDAO = new RecipeDAO(getContext());
-        itemRecipeDAO = new ItemRecipeDAO(getActivity());
-         ingredients = new ArrayList<>();
+        recipeDAO = new RecipeDAO(this);
+        itemRecipeDAO = new ItemRecipeDAO(this);
+        ingredients = new ArrayList<>();
 
-        recipeForm = new RecipeForm(getActivity(),view,ingredients);
+        recipeForm = new RecipeForm(this, ingredients);
 
         // Toolbar
-        Toolbar mToolbar = view.findViewById(R.id.toolbar3);
+        Toolbar mToolbar = findViewById(R.id.toolbar3);
         mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setNavigationIcon(R.drawable.ic_back);
         mToolbar.setTitle(R.string.title_RecipeRegistration);
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
-        setHasOptionsMenu(true);
+        Objects.requireNonNull(this).setSupportActionBar(mToolbar);
+        //setHasOptionsMenu(true);
 
         // Toolbar - Back
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(),MainActivity.class);
-                intent.putExtra(RecipeRegistration.class.getSimpleName(),RecipeRegistration.class.getSimpleName());
-                startActivity(intent);
+                finish();
             }
         });
 
@@ -120,21 +105,17 @@ public class RecipeRegistration extends Fragment {
             }
         });
         // Update Ingredient List
-        itemRecipeArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_list_item_1, ingredients);
+        itemRecipeArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(this), android.R.layout.simple_list_item_1, ingredients);
         list_ingredients.setAdapter(itemRecipeArrayAdapter);
 
-        // Save Recipe
-
-
-        return view;
     }
 
     private AlertDialog loadAlertDialogNewItemRecipe() {
-        View newItemRecipeLayout = getLayoutInflater().inflate(R.layout.dialog_itemrecipe_registration,null);
+        View newItemRecipeLayout = getLayoutInflater().inflate(R.layout.dialog_itemrecipe_registration, null);
         loadProductsSpinner(newItemRecipeLayout);
 
         final ItemRecipeForm itemRecipeForm = new ItemRecipeForm(newItemRecipeLayout);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.form_title_ItemRecipeRegistration);
 
         builder.setView(newItemRecipeLayout);
@@ -142,20 +123,20 @@ public class RecipeRegistration extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ingredients.add(itemRecipeForm.getItemRecipe());
-                Toast.makeText(getActivity(),"Ingrediente adicionado!",Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Ingrediente adicionado!", Toast.LENGTH_LONG).show();
 
                 itemRecipeArrayAdapter.notifyDataSetChanged();
             }
         });
-        builder.setNegativeButton(R.string.cancel,null);
+        builder.setNegativeButton(R.string.cancel, null);
         return builder.create();
     }
 
     private void loadProductsSpinner(View newItemRecipeLayout) {
         Spinner list_products = newItemRecipeLayout.findViewById(R.id.form_itemRecipe_products);
-        ProductDAO productDAO = new ProductDAO(getContext());
+        ProductDAO productDAO = new ProductDAO(this);
         ArrayList<Product> products = (ArrayList<Product>) productDAO.getAll();
-        ArrayAdapter<Product> productArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_spinner_item, products);
+        ArrayAdapter<Product> productArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(this), android.R.layout.simple_spinner_item, products);
         productArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         list_products.setAdapter(productArrayAdapter);
     }
@@ -167,20 +148,20 @@ public class RecipeRegistration extends Fragment {
 //        list_ingredients.setAdapter(adapter);
 //    }
 
-    private void capturePhotoIntent(){
+    private void capturePhotoIntent() {
         Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intentCamera.resolveActivity(Objects.requireNonNull(getActivity()).getPackageManager()) != null){
+        if (intentCamera.resolveActivity(Objects.requireNonNull(this).getPackageManager()) != null) {
             File photo = null;
-            try{
+            try {
                 photo = createImageFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if(photo != null){
-                Uri photoURI = FileProvider.getUriForFile(getActivity(),"br.com.stralom.compras",photo);
+            if (photo != null) {
+                Uri photoURI = FileProvider.getUriForFile(this, "br.com.stralom.compras", photo);
                 intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(intentCamera,REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(intentCamera, REQUEST_IMAGE_CAPTURE);
             }
         }
     }
@@ -188,8 +169,8 @@ public class RecipeRegistration extends Fragment {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Objects.requireNonNull(getActivity()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName,".jpg",storageDir);
+        File storageDir = Objects.requireNonNull(this).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -197,9 +178,9 @@ public class RecipeRegistration extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_IMAGE_CAPTURE:
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     recipeForm.loadImage(mCurrentPhotoPath);
                 }
                 break;
@@ -210,30 +191,31 @@ public class RecipeRegistration extends Fragment {
 
     }
 
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.secundary_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.secundary_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.recipeRegistration_save:
                 recipeForm.getValidator().validate();
                 Recipe recipe = recipeForm.getRecipe();
+                if (recipeForm.isValidationSuccessful()) {
+                    if(registerRecipe(recipe)){
+                        Intent data = new Intent();
+                        data.putExtra("recipe",recipe);
+                        setResult(RESULT_OK,data);
+                        finish();
 
-                boolean registered = false;
-                if(recipeForm.isValidationSuccessful()){
-                    registered = registerRecipe(recipe);
+
+                    }
                 }
 
-                if(registered){
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.putExtra(RecipeRegistration.class.getSimpleName(),RecipeRegistration.class.getSimpleName());
-                    startActivity(intent);
-                }
 
         }
 
@@ -241,18 +223,18 @@ public class RecipeRegistration extends Fragment {
     }
 
     private boolean registerRecipe(Recipe recipe) {
-        if( recipeDAO.findByName(recipe.getName()) == null){
+        if (recipeDAO.findByName(recipe.getName()) == null) {
             Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
             recipe.setId(idRecipe);
-            for (ItemRecipe ingredient: ingredients) {
+            for (ItemRecipe ingredient : ingredients) {
                 ingredient.setRecipe(recipe);
                 itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
             }
             return true;
         } else {
-            Toast.makeText(getContext(), R.string.toast_recipe_alreadyRegistered,Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.toast_recipe_alreadyRegistered, Toast.LENGTH_LONG).show();
             return false;
         }
     }
-
 }
+

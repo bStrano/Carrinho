@@ -31,25 +31,42 @@ import br.com.stralom.dao.StockDAO;
 import br.com.stralom.entities.ItemStock;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Stock;
+import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ItemStockForm;
 import br.com.stralom.helper.SwipeToDeleteCallback;
-
-import static br.com.stralom.helper.BasicViewHelper.hideSoftKeyBoard;
-import static br.com.stralom.helper.BasicViewHelper.setUpEmptyListView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StockMain extends Fragment {
+public class StockMain extends BasicViewHelper<ItemStock> {
     private static final String TAG = "StockMain";
     private ItemStockDAO itemStockDAO;
     private ProductDAO productDAO;
     private Stock stock;
-    private FloatingActionButton fabAddStock, fabUpdateStock, fabMain;
+    private FloatingActionButton fabAddStock, fabUpdateStock;
     private boolean fabPressed = false;
-    private RecyclerView productsStockView;
-    private ObservableArrayList<ItemStock> productsStock;
+
+
+    @Override
+    public boolean callChangeItemBackgroundColor(View view, int position) {
+        ViewGroup background = view.findViewById(R.id.stock_itemList_foregroundView);
+        return ((StockAdapter) listView.getAdapter()).changeItemBackgroundColor(background,position);
+
+    }
+
+    @Override
+    public void callCleanBackgroundColor() {
+        ((StockAdapter)listView.getAdapter()).cleanBackGroundColor();
+    }
+
+    @Override
+    public void initializeSuperAttributes() {
+        list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
+        listView = mainView.findViewById(R.id.list_itemStock);
+        fab = mainView.findViewById(R.id.fab_stock);
+        managementMenu = mainView.findViewById(R.id.stock_management_list);
+    }
 
     public StockMain() {
         // Required empty public constructor
@@ -60,6 +77,9 @@ public class StockMain extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mainView = inflater.inflate(R.layout.fragment_stock_main, container, false);
+
+
 
         //DAOS
         itemStockDAO = new ItemStockDAO(getContext());
@@ -71,31 +91,33 @@ public class StockMain extends Fragment {
             stock = new Stock((long) 1);
             stockDAO.add(stockDAO.getContentValues(stock));
         }
+        initializeSuperAttributes();
+
+
         //VIEWS
         View view = inflater.inflate(R.layout.fragment_stock_main, container, false);
-        productsStockView = view.findViewById(R.id.list_itemStock);
-        productsStock = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
-        setUpEmptyListView(view,productsStock,R.id.stock_emptyList,R.drawable.ic_stock,R.string.stock_emptyList_title,R.string.stock_emptyList_description);
-
-        StockAdapter adapter = new StockAdapter(productsStock,getActivity());
-        productsStockView.setAdapter(adapter);
-        productsStockView.setHasFixedSize(true);
-        productsStockView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-        ItemTouchHelper.Callback callback = new SwipeToDeleteCallback(adapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(productsStockView);
 
+
+        list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
+        setUpEmptyListView(mainView, list,R.id.stock_emptyList,R.drawable.ic_stock,R.string.stock_emptyList_title,R.string.stock_emptyList_description);
+
+        StockAdapter adapter = new StockAdapter(list,getActivity());
+        listView.setAdapter(adapter);
+        listView.setHasFixedSize(true);
+        listView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        setUpManagementMenu(adapter);
 
 
 
          // Button newItemStock = view.findViewById(R.id.btn_newItemStock);
 
-        fabAddStock = view.findViewById(R.id.fab_addStock);
-        fabUpdateStock = view.findViewById(R.id.fab_addRecipe);
-        fabMain = view.findViewById(R.id.fab_stock);
-        fabMain.setOnClickListener(new View.OnClickListener() {
+        fabAddStock = mainView.findViewById(R.id.fab_addStock);
+        fabUpdateStock = mainView.findViewById(R.id.fab_addRecipe);
+
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!fabPressed){
@@ -107,9 +129,7 @@ public class StockMain extends Fragment {
         });
 
 
-
-
-        productsStockView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if(dy>0){
@@ -158,7 +178,7 @@ public class StockMain extends Fragment {
             }
         });
 
-        return view;
+        return mainView;
     }
 
     /**
@@ -176,8 +196,8 @@ public class StockMain extends Fragment {
             if(itemStockDAO.findByProductName(itemStock.getProduct().getName()) == null) {
                 Long id = itemStockDAO.add(itemStockDAO.getContentValues(itemStock));
                 itemStock.setId(id);
-                productsStock.add(itemStock);
-                productsStockView.getAdapter().notifyDataSetChanged();
+                list.add(itemStock);
+                listView.getAdapter().notifyDataSetChanged();
                 Toast.makeText(getContext(),R.string.toast_itemStock_validRegistration, Toast.LENGTH_LONG).show();
                 return  true;
             } else {
@@ -197,14 +217,14 @@ public class StockMain extends Fragment {
     }
 
     private void closeFabMenu() {
-        fabMain.animate().rotation(-0F);
+        fab.animate().rotation(-0F);
         fabPressed = false;
         fabUpdateStock.animate().translationY(0);
         fabAddStock.animate().translationY(0);
     }
 
     private void openFabMenu() {
-        fabMain.animate().rotation(135.0F);
+        fab.animate().rotation(135.0F);
         fabPressed = true;
         fabAddStock.animate().translationY(-getResources().getDimension(R.dimen.fab_61));
         fabUpdateStock.animate().translationY(-getResources().getDimension(R.dimen.fab_111));
@@ -212,14 +232,16 @@ public class StockMain extends Fragment {
     }
 
     private void hideFabs(){
-        fabMain.hide();
+        fab.hide();
         fabAddStock.hide();
         fabUpdateStock.hide();
     }
 
     private void showFabs(){
-        fabMain.show();
+        fab.show();
         fabUpdateStock.show();
         fabAddStock.show();
     }
+
+
 }

@@ -1,8 +1,8 @@
-<RelativeLayout
-    android:id="@+id/recipe_view_main"
+<RelativeLayout android:id="@+id/recipe_view_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         android:layout_height="match_parent"
@@ -14,17 +14,21 @@
             android:id="@+id/list_recipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
+
             />
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/btn_newRecipe"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            app:fabSize="normal"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="16dp"
-            android:elevation="12dp"
-            android:background="@drawable/ic_add_normal"
+            android:src="@drawable/ic_add"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:backgroundTint="@color/colorPrimaryDark"
+
             />
 
         <include
@@ -34,15 +38,5 @@
             android:layout_alignParentBottom="true"
             layout="@layout/management_list"
             />
-
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/btn_newRecipe"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_margin="16dp"-->
-            <!--android:backgroundTint="@color/colorPrimary"-->
-            <!--android:src="@drawable/ic_add"/>-->
 
     </RelativeLayout>

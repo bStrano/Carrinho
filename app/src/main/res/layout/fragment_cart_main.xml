@@ -27,11 +27,10 @@
             android:src="@drawable/ic_add_itemcart"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:backgroundTint="@color/colorPrimaryDark"/>
+            app:backgroundTint="@color/colorPrimaryDark"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/itemCart_btn_registerRecipe"
-            app:fabSize="normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -39,7 +38,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="76dp"
             android:src="@drawable/ic_add_recipe"
-            android:backgroundTint="@color/colorSecundary"
+            app:backgroundTint="@color/colorSecundary"
             />
 
         <android.support.design.widget.FloatingActionButton
@@ -52,7 +51,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="136dp"
             android:src="@drawable/ic_add_mini"
-            android:backgroundTint="@color/colorPrimaryLight"
+            app:backgroundTint="@color/colorPrimaryLight"
             />
 
         <include

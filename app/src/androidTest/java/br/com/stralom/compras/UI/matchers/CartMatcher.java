@@ -14,14 +14,14 @@ import br.com.stralom.compras.R;
 public class CartMatcher {
 
     public static Matcher<RecyclerView.ViewHolder> withCartHolder(final String text) {
-        return new BoundedMatcher<RecyclerView.ViewHolder, CartAdapter.cartViewHolder>(CartAdapter.cartViewHolder.class) {
+        return new BoundedMatcher<RecyclerView.ViewHolder, CartAdapter.CartViewHolder>(CartAdapter.CartViewHolder.class) {
             @Override
             public void describeTo(Description description) {
                 description.appendText("No ViewHolder found [" + text + "]");
             }
 
             @Override
-            protected boolean matchesSafely(CartAdapter.cartViewHolder item) {
+            protected boolean matchesSafely(CartAdapter.CartViewHolder item) {
                 TextView name = item.itemView.findViewById(R.id.itemCart_itemList_name);
                 if (name == null) {
                     return false;
@@ -32,14 +32,14 @@ public class CartMatcher {
     }
 
     public static Matcher<RecyclerView.ViewHolder> withCartHolder(final String name, final String amount) {
-        return new BoundedMatcher<RecyclerView.ViewHolder, CartAdapter.cartViewHolder>(CartAdapter.cartViewHolder.class) {
+        return new BoundedMatcher<RecyclerView.ViewHolder, CartAdapter.CartViewHolder>(CartAdapter.CartViewHolder.class) {
             @Override
             public void describeTo(Description description) {
                 description.appendText("No ViewHolder found [" + name + "/" + amount + "]");
             }
 
             @Override
-            protected boolean matchesSafely(CartAdapter.cartViewHolder item) {
+            protected boolean matchesSafely(CartAdapter.CartViewHolder item) {
                 TextView nameView = item.itemView.findViewById(R.id.itemCart_itemList_name);
                 TextView amountView = item.itemView.findViewById(R.id.itemCart_itemList_amount);
                 if ((name == null)) {

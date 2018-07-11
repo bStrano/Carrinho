@@ -2,11 +2,11 @@ package br.com.stralom.adapters;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.databinding.ObservableArrayList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,23 +18,19 @@ import java.util.List;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.RecipeDAO;
+import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Recipe;
 
 /**
  * Created by Bruno Strano on 11/01/2018.
  */
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> implements ItemTouchHelperAdapter {
-    private final List<Recipe> recipeList;
-    private final Activity activity ;
-    private boolean undoSwipe;
+public class RecipeAdapter extends BaseAdapter<RecipeAdapter.RecipeViewHolder,Recipe> {
     private final RecipeDAO recipeDAO;
     private final Resources res ;
 
-    public RecipeAdapter(List<Recipe> recipeList, Activity activity) {
-        this.recipeList = recipeList;
-        this.activity = activity;
-        this.undoSwipe = false;
+    public RecipeAdapter(ObservableArrayList<Recipe> recipeList, Activity activity) {
+        super(recipeList,activity);
         res = activity.getResources();
         recipeDAO = new RecipeDAO(activity);
     }
@@ -48,11 +44,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-        Recipe recipe = recipeList.get(position);
+        Recipe recipe = list.get(position);
         holder.name.setText(String.format(res.getString(R.string.recipe_itemList_name),recipe.getName()));
         holder.price.setText(String.format(res.getString(R.string.recipe_itemList_price), recipe.getTotal()));
         holder.ingredientCount.setText(String.format(res.getString(R.string.recipe_itemList_ingredientCount),recipe.getIgredientCount()));
-
+        holder.foregroundView.setBackgroundColor(Color.parseColor("#FAFAFA"));
 
         String imagePath = recipe.getImagePath();
         if(imagePath != null) {
@@ -65,61 +61,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public int getItemCount() {
-        return recipeList.size();
+        return list.size();
     }
 
     @Override
-    public void onItemMove(int fromPosition, int toPosition) {
+    public void removePermanently(Recipe item) {
+        recipeDAO.remove(item.getId());
     }
+
+
+
 
     @Override
-    public void onItemDismiss(int position) {
-        final Recipe recipe = recipeList.get(position);
-        final int deletedIndex = position;
-
-        String name = recipe.getName();
-
-        // Remover Temporiariamente
-        recipeList.remove(position);
-        notifyItemRemoved(position);
-
-        Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.recipe_view_main), name + " removido do carrinho!", Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.BLUE);
-
-        // Desfazer remoção
-        snackbar.setAction("DESFAZER", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recipeList.add(deletedIndex,recipe);
-                notifyItemInserted(deletedIndex);
-                undoSwipe = true;
-            }
-        });
-
-        // Remover Definitivamente
-        snackbar.addCallback(new Snackbar.Callback(){
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event) {
-                if(!undoSwipe) {
-                     recipeDAO.remove(recipe.getId());
-                } else {
-                    undoSwipe = false;
-                }
-
-
-            }
-        });
-
-        snackbar.show();
-        //
+    public void edit() {
 
     }
-
-    @Override
-    public View getForegroundView(RecyclerView.ViewHolder viewHolder) {
-        return ((RecipeViewHolder) viewHolder).foregroundView;
-    }
-
 
 
     public class RecipeViewHolder extends RecyclerView.ViewHolder{
@@ -137,14 +93,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             price = itemView.findViewById(R.id.recipe_price);
             ingredientCount = itemView.findViewById(R.id.recipe_ingredientCount);
             image = itemView.findViewById(R.id.recipe_image);
-            foregroundView = itemView.findViewById(R.id.product_view_foreground);
+            foregroundView = itemView.findViewById(R.id.recipe_view_foreground);
         }
     }
 
 
 //    @Override
 //    public View getView(int position, View convertView, ViewGroup parent) {
-//        Recipe recipe = recipeList.get(position);
+//        Recipe recipe = list.get(position);
 //
 //        LayoutInflater inflater = LayoutInflater.from(context);
 //        View view = convertView;

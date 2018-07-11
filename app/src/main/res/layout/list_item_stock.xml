@@ -5,39 +5,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_height">
 
         <RelativeLayout
-           android:id="@+id/stock_itemList_backgroundView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bg_swapDelete"
-            android:paddingTop="@dimen/list_paddingVertical"
-            android:paddingBottom="@dimen/list_paddingVertical"
-            android:gravity="end">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/list_textMediumSize"
-                android:text="@string/swipe_remove"
-                android:layout_toStartOf="@+id/stock_icon_swapRemove"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"/>
-
-            <ImageView
-                android:id="@+id/stock_icon_swapRemove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_delete"
-                android:layout_alignParentEnd="true"
-                android:contentDescription="@string/contentDescription_iconDelete" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:foreground="?android:selectableItemBackground"
             android:id="@+id/stock_itemList_foregroundView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -46,6 +16,7 @@
             android:paddingBottom="@dimen/list_paddingVertical"
             android:background="#FAFAFA"
             android:layout_gravity="end"
+            android:clickable="true"
             >
 
             <TextView
@@ -86,7 +57,6 @@
 
         </RelativeLayout>
 
-    </FrameLayout>
 
 
 

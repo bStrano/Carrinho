@@ -1,9 +1,11 @@
 package br.com.stralom.compras;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
 
 
 
@@ -50,19 +55,12 @@ public class MainActivity extends AppCompatActivity
 
         TabLayout mTabLayout = findViewById(R.id.mTabLayout);
         ViewPager mViewPager = findViewById(R.id.mViewPager);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(2);
 
         mViewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles)));
         mTabLayout.setupWithViewPager(mViewPager);
 
 
-        if(bundle != null) {
-            Log.e("Bundle", "Not null");
-            if ((bundle.getString(RecipeRegistration.class.getSimpleName()) != null)) {
-                Log.e("Bundle 2", "Not Null");
-                mViewPager.setCurrentItem(2);
-            }
-        }
     }
 
     @Override

@@ -35,11 +35,11 @@ public class RecipeForm extends BasicFormValidation {
     private final Activity activity;
     private boolean validationSuccessful;
 
-    public RecipeForm(Activity activity, View view, ArrayList<ItemRecipe> ingredients) {
+    public RecipeForm(Activity activity, ArrayList<ItemRecipe> ingredients) {
         super(activity);
         this.activity = activity;
-        this.name = view.findViewById(R.id.form_recipe_name);
-        this.image = view.findViewById(R.id.form_recipe_image);
+        this.name = activity.findViewById(R.id.form_recipe_name);
+        this.image = activity.findViewById(R.id.form_recipe_image);
         this.ingredients = ingredients;
         this.validationSuccessful = false;
         recipe = null;
