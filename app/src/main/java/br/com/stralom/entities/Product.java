@@ -1,6 +1,7 @@
 package br.com.stralom.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by Bruno Strano on 30/12/2017.
@@ -62,6 +63,21 @@ public class Product implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product2 = (Product) o;
+        return Objects.equals(name, product2.name);
+    }
+
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name);
     }
 
     @Override

@@ -3,6 +3,7 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -119,7 +120,9 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         btn_newItemCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadItemCartDialog();
+                //loadItemCartDialog();
+                Intent intent = new Intent(getActivity(), ItemCartRegistration.class);
+                startActivityForResult(intent,1);
             }
         });
         btn_addRecipe.setOnClickListener(new View.OnClickListener() {

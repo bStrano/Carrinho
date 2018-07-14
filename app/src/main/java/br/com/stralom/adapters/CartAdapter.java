@@ -101,7 +101,6 @@ public class CartAdapter extends BaseAdapter<CartAdapter.CartViewHolder,ItemCart
 
     @Override
     public void removePermanently(ItemCart itemCart) {
-        Log.d("DEBUG", "24984984");
         if(itemCart.getId() != null) {
             itemCartDAO.remove( itemCart.getId());
         } else if(itemCart.getConvertedId() != null){

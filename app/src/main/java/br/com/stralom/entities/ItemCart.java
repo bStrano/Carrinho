@@ -26,7 +26,12 @@ public class ItemCart extends Item {
         updateStock = false;
     }
 
+    public ItemCart(Product product, int amount){
+        super(amount,product);
+    }
+
     public ItemCart() {
+        this.amount = 1;
         isRemoved = false;
         updateStock = false;
     }

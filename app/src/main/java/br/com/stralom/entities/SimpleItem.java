@@ -58,7 +58,7 @@ public class SimpleItem {
         return "SimpleItem{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", amount=" + amount +
+                ", productAmount=" + amount +
                 '}';
     }
 
