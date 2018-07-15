@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -18,52 +17,53 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.Product;
 
 /**
- * Created by Bruno Strano on 12/07/2018.
+ * Created by Bruno Strano on 14/07/2018.
  */
-public class ItemCartProductAdapter extends RecyclerView.Adapter<ItemCartProductAdapter.ViewHolder> implements Filterable {
-    private ArrayList<Product> products;
-    private ArrayList<Product> productsClone;
-    private Activity activity;
-    private static boolean filtering = false;
-    // <Index,Amount>
-    private HashMap<Product,Integer> selectedPositions;
+public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapter<ItemCartRegistrationAdapter.ViewHolder> implements Filterable{
+    private ArrayList<T> list;
+    private ArrayList<T> listClone;
+    protected Activity activity;
+    protected static boolean filtering = false;
+    private HashMap<T,Integer> selectedPositions;
 
-    public ItemCartProductAdapter(ArrayList<Product> products, Activity activity) {
-        this.products = products;
-        productsClone = (ArrayList<Product>) this.products.clone();
+    public ItemCartRegistrationAdapter(ArrayList<T> list, Activity activity) {
+        this.list = list;
         this.activity = activity;
+        listClone = (ArrayList<T>) this.list.clone();
         selectedPositions = new HashMap<>();
     }
+
+    public abstract String getName(T t);
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(activity).inflate(R.layout.list_item_itemcartregistration_product,parent,false);
+        View view = LayoutInflater.from(activity).inflate(R.layout.list_item_itemcartregistration,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final Product product = products.get(position);
-        holder.productName.setText(product.getName());
+        final T object = getObject(position);
+        holder.productName.setText(getName(object));
+        //holder.productName.setText(product.getName());
         holder.productAmount.setText("");
 
-        Product product1 = products.get(position);
-        if(selectedPositions.containsKey(product1)){
+
+        if(selectedPositions.containsKey(object)){
             setAddButtonChecked(holder);
             holder.manageButton.setEnabled(true);
-           if(selectedPositions.get(product1) ==  1){
+            if(selectedPositions.get(object) ==  1){
                 holder.manageButton.setBackgroundResource(R.drawable.ic_cancel);
             } else {
                 holder.manageButton.setBackgroundResource(R.drawable.ic_remove);
             }
 
 
-            holder.productAmount.setText(String.valueOf(selectedPositions.get(product1)));
+            holder.productAmount.setText(String.valueOf(selectedPositions.get(object)));
         } else {
             holder.manageButton.setChecked(false);
             holder.addButton.setChecked(false);
@@ -77,27 +77,25 @@ public class ItemCartProductAdapter extends RecyclerView.Adapter<ItemCartProduct
             @Override
             public void onClick(View view) {
                 setAddButtonChecked(holder);
-                Product product = getProduct(position);
-                if(!selectedPositions.containsKey(product)){
-                    selectedPositions.put(product,1);
+               // Product product = getProduct(position);
+                if(!selectedPositions.containsKey(object)){
+                    selectedPositions.put(object,1);
                 } else {
-                    selectedPositions.put(product,selectedPositions.get(product) + 1);
+                    selectedPositions.put(object,selectedPositions.get(object) + 1);
                     //selectedPositions.put(position, selectedPositions.get(position).getAmount() +1);
 
                 }
                 notifyDataSetChanged();
-                Toast.makeText(activity,"Teste: " + selectedPositions.get(product),Toast.LENGTH_LONG).show();
             }
         });
         holder.manageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Product product = getProduct(position);
-                if(selectedPositions.get(product)== 1){
+                if(selectedPositions.get(object)== 1){
 
-                    selectedPositions.remove(product);
+                    selectedPositions.remove(object);
                 } else {
-                    selectedPositions.put(product, selectedPositions.get(product) -1);
+                    selectedPositions.put(object, selectedPositions.get(object) -1);
                 }
                 notifyDataSetChanged();
             }
@@ -106,60 +104,9 @@ public class ItemCartProductAdapter extends RecyclerView.Adapter<ItemCartProduct
 
     }
 
-    private Product getProduct(int position) {
-        if(filtering){
-            return  products.get(position);
-        } else {
-            return productsClone.get(position);
-        }
-    }
-
-
-    private void setAddButtonChecked(@NonNull ViewHolder holder) {
-        holder.addButton.setChecked(true);
-        holder.addButton.setBackgroundResource(R.drawable.ic_added_with_circle);
-    }
-
     @Override
     public int getItemCount() {
-        return products.size();
-    }
-
-    @Override
-    public Filter getFilter() {
-
-        Filter filter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                ArrayList<Product> filteredList = new ArrayList<>();
-
-                if (charSequence == null || charSequence.length() == 0) {
-                    filtering = false;
-                    filteredList.addAll(productsClone);
-                } else {
-                    filtering = true;
-                    for (Product product : productsClone) {
-                        if (product.getName().toLowerCase().trim().contains(charSequence.toString().toLowerCase().trim())) {
-                            filteredList.add(product);
-                        }
-                    }
-                }
-
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = filteredList;
-                return filterResults;
-
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                products.clear();
-                products.addAll((Collection<? extends Product>) filterResults.values);
-                notifyDataSetChanged();
-            }
-        };
-        return filter;
+        return list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -177,4 +124,68 @@ public class ItemCartProductAdapter extends RecyclerView.Adapter<ItemCartProduct
             this.productAmount = itemView.findViewById(R.id.registration_itemCart_txtProductAmount);
         }
     }
+
+    private void setAddButtonChecked(@NonNull ViewHolder holder) {
+        holder.addButton.setChecked(true);
+        holder.addButton.setBackgroundResource(R.drawable.ic_added_with_circle);
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                ArrayList<T> filteredList = new ArrayList<>();
+
+                if (charSequence == null || charSequence.length() == 0) {
+                    filtering = false;
+                    filteredList.addAll(listClone);
+                } else {
+                    filtering = true;
+                    for (T object : listClone) {
+                        if (getName(object).toLowerCase().trim().contains(charSequence.toString().toLowerCase().trim())) {
+                            filteredList.add(object);
+                        }
+                    }
+                }
+
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                list.clear();
+                list.addAll((Collection<? extends T>) filterResults.values);
+                notifyDataSetChanged();
+            }
+        };
+        return filter;
+    }
+
+    private T getObject(int position){
+        if(filtering){
+            return  list.get(position);
+        } else {
+            return listClone.get(position);
+        }
+    }
+
+    public void restoreList(){
+        list.clear();
+        list.addAll(listClone);
+    }
+
+    public HashMap<T, Integer> getSelectedPositions() {
+        return selectedPositions;
+    }
+
+    public void setSelectedPositions(HashMap<T, Integer> selectedPositions) {
+        this.selectedPositions = selectedPositions;
+    }
 }
+

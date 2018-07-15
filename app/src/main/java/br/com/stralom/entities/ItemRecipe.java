@@ -34,5 +34,9 @@ public class ItemRecipe extends Item {
         return product.getName() + " (" + this.amount + ") - " + this.total + " R$";
     }
 
+    public ItemCart convertToItemCart(Cart cart){
+        return new ItemCart(product, amount, cart);
+    }
+
 
 }

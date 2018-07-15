@@ -6,7 +6,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorPrimaryLight">#0a8cf7</color>
     <color name="colorAccent">#FF4081</color>
-
+    <color name="colorGreen">#06fa2f</color>
 
     <color name="bg_swapDelete">#fa315b</color>
 </resources>

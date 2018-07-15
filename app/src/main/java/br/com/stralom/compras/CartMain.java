@@ -76,6 +76,14 @@ public class CartMain extends BasicViewHelper<ItemCart>{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        list.clear();
+        list.addAll(itemCartDAO.getAll(cart.getId()));
+        listView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_cart_main, container, false);
@@ -259,9 +267,6 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         } else {
             Toast.makeText(getContext(),R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
         }
-
-
-
     }
     /**
      * Add a ingredient of a Recipe to the cart.

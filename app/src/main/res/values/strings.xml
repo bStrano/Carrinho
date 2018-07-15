@@ -117,5 +117,8 @@
     <string name="stock_emptyList_description">Os itens adicionados ao estoque serão exibidos aqui.</string>
     <string name="list_removedItems">%d items removidos.</string>
     <string name="list_oneRemovedItems">%d item removido.</string>
+    <string name="itemCart_registration_products">Produtos</string>
+    <string name="itemCart_registration_recipes">Receitas</string>
+    <string name="itemCart_registration_save">Salvar</string>
 
 </resources>
