@@ -21,6 +21,22 @@ public class SimpleItem {
         this.cart = cart;
     }
 
+
+    public ItemCart convertToItemCart(SimpleItem simpleItem){
+        Product product = new Product();
+        product.setName(simpleItem.getName());
+        ItemCart itemCart = new ItemCart(product,simpleItem.getAmount(),simpleItem.getCart());
+        itemCart.setConvertedId(simpleItem.getId());
+
+        return itemCart;
+    }
+
+    public Product convertToProduct(){
+        Product product = new Product();
+        product.setName(name);
+        return product;
+    }
+
     public String getName() {
         return name;
     }

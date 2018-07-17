@@ -88,7 +88,7 @@ public class ItemCart extends Item {
      * @param simpleItem
      * @return
      */
-    public static ItemCart convertToItemCart(SimpleItem simpleItem){
+    public ItemCart convertToItemCart(SimpleItem simpleItem){
         Product product = new Product();
         product.setName(simpleItem.getName());
         ItemCart itemCart = new ItemCart(product,simpleItem.getAmount(),simpleItem.getCart());

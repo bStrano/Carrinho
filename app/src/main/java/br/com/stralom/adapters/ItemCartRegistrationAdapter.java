@@ -23,10 +23,10 @@ import br.com.stralom.entities.Product;
  * Created by Bruno Strano on 14/07/2018.
  */
 public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapter<ItemCartRegistrationAdapter.ViewHolder> implements Filterable{
-    private ArrayList<T> list;
+    protected ArrayList<T> list;
     private ArrayList<T> listClone;
     protected Activity activity;
-    protected static boolean filtering = false;
+    private boolean filtering = false;
     private HashMap<T,Integer> selectedPositions;
 
     public ItemCartRegistrationAdapter(ArrayList<T> list, Activity activity) {
@@ -186,6 +186,10 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
 
     public void setSelectedPositions(HashMap<T, Integer> selectedPositions) {
         this.selectedPositions = selectedPositions;
+    }
+
+    public boolean isFiltering() {
+        return filtering;
     }
 }
 

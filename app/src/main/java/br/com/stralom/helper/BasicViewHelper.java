@@ -166,7 +166,13 @@ public abstract class BasicViewHelper<T> extends Fragment {
     }
 
 
-
+    private boolean isListEmpty(){
+        if(list.size() == 0 ){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
 

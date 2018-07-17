@@ -42,9 +42,7 @@ import br.com.stralom.helper.SimpleItemForm;
  * A simple {@link Fragment} subclass.
  */
 public class CartMain extends BasicViewHelper<ItemCart>{
-    private ProductDAO productDAO;
     private ItemCartDAO itemCartDAO;
-    private ItemRecipeDAO itemRecipeDAO;
     private RecipeDAO recipeDAO;
     private CartDAO cartDAO;
     private Cart cart;
@@ -93,18 +91,16 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         //DAO
         cartDAO = new CartDAO(getContext());
         itemCartDAO = new ItemCartDAO(getContext());
-        productDAO = new ProductDAO(getContext());
         recipeDAO = new RecipeDAO(getContext());
-        itemRecipeDAO = new ItemRecipeDAO(getContext());
         simpleItemDAO = new SimpleItemDAO(getContext());
 
-        // Views
-        FloatingActionButton btn_addRecipe = mainView.findViewById(R.id.itemCart_btn_registerRecipe);
+
         FloatingActionButton btn_addSimpleItem = mainView.findViewById(R.id.itemcart_btn_registerSimpleProduct);
         FloatingActionButton btn_newItemCart = mainView.findViewById(R.id.itemCart_btn_registerProduct);
 
         cart = cartDAO.findById((long) 1);
         loadItemsFromCart(cart);
+
 
         setUpEmptyListView(mainView, list,R.id.itemCart_emptyList,R.drawable.ic_cart, R.string.itemCart_emptyList_title,R.string.itemCart_emptyList_description);
         listView.setHasFixedSize(true);
@@ -133,12 +129,6 @@ public class CartMain extends BasicViewHelper<ItemCart>{
                 startActivityForResult(intent,1);
             }
         });
-        btn_addRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadRecipeItemCartDialog();
-            }
-        });
         btn_addSimpleItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {loadSimpleProductItemCartDialog();
@@ -164,72 +154,9 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
 
-    private void loadRecipeItemCartDialog() {
-        final View recipeItemCartView = getLayoutInflater().inflate(R.layout.dialog_itemcart_recipe_registration,null);
-
-        final Spinner recipeSpinner = recipeItemCartView.findViewById(R.id.list_itemCart_recipe);
-        ArrayList<Recipe> recipes = (ArrayList<Recipe>) recipeDAO.getAll();
-        RecipeSpinnerAdapter recipeSpinnerAdapter = new RecipeSpinnerAdapter(recipes,getContext(),getLayoutInflater());
-        recipeSpinner.setAdapter(recipeSpinnerAdapter);
-
-        DialogInterface.OnClickListener confirmListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Recipe recipe = (Recipe) recipeSpinner.getSelectedItem();
-                List<ItemRecipe> itemRecipes = itemRecipeDAO.getAllByRecipe(recipe.getId());
-                for (ItemRecipe itemRecipe :itemRecipes){
-                    addItemFromRecipe(itemRecipe);
-                }
-                // reloadItemsFromCart(cart,fragmentView);
-
-            }
-        };
-
-
-        DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) { }
-        };
-
-        createDialog(recipeItemCartView,confirmListener,cancelListener,R.string.cart_dialogTitle_addRecipe).show();
 
 
 
-    }
-    private void loadItemCartDialog() {
-        final View itemCartView = getLayoutInflater().inflate(R.layout.dialog_itemcart_registration,null);
-
-        DialogInterface.OnClickListener confirmListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //addItemFromProduct(itemCartView);
-            }
-        };
-
-        DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(getActivity(),R.string.cancel,Toast.LENGTH_LONG).show();
-            }
-        };
-
-        final AlertDialog dialog = createDialog(itemCartView,confirmListener,cancelListener,R.string.cart_dialogTitle_addProduct);
-        dialog.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(addItemFromProduct(itemCartView)){
-                    dialog.dismiss();
-                }
-            }
-        });
-
-
-        Spinner productSpinner = itemCartView.findViewById(R.id.itemcart_form_product);
-        List<Product> products = productDAO.getAll();
-        loadSpinner(productSpinner, products);
-
-    }
     private void loadSimpleProductItemCartDialog(){
         final View simpleProductView = getLayoutInflater().inflate(R.layout.dialog_itemcart_simpleproduct_registration,null);
         DialogInterface.OnClickListener confirmListener = new DialogInterface.OnClickListener() {
@@ -256,62 +183,8 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         });
     }
 
-    private void addItem(ItemCart newItemCart){
-        ItemCart itemCartdb =itemCartDAO.getByProductName(newItemCart.getProduct().getName());
-        if(itemCartdb == null){
-            Long id = itemCartDAO.add(newItemCart);
-            newItemCart.setId(id);
-            Toast.makeText(getContext(),R.string.itemCart_toast_productAdded,Toast.LENGTH_LONG).show();
-            list.add(newItemCart);
-            listView.getAdapter().notifyDataSetChanged();
-        } else {
-            Toast.makeText(getContext(),R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
-        }
-    }
-    /**
-     * Add a ingredient of a Recipe to the cart.
-     * Update the ingredient if it already was on the cart.
-     * @param itemRecipe    Ingredient of a Recipe
-     */
-    private void addItemFromRecipe(ItemRecipe itemRecipe) {
-        //ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
-        int index = -1;
-        ItemCart itemCart = null;
-        for(int i = 0; i< list.size() ; i++){
-            if(list.get(i).getProduct().getName().equals(itemRecipe.getProduct().getName())){
-                itemCart = list.get(i);
-                index = i;
-            }
-        }
-        if(index == -1){
-            ItemCart convertedItemCart = new ItemCart(itemRecipe.getProduct(), itemRecipe.getAmount(), cart);
-            addItem(convertedItemCart);
-        } else {
-            int updatedAmount = itemCart.getAmount() + itemRecipe.getAmount();
-            itemCart.setAmount(updatedAmount);
-            list.get(index).setAmount(updatedAmount);
 
 
-            itemCartDAO.update(itemCart);
-            list.get(index).setAmount(updatedAmount);
-            listView.getAdapter().notifyDataSetChanged();
-        }
-    }
-    /**
-     * Add a new item to the cart, from a Product.
-     * @param itemCartView an Dialog that contains the form
-     * @return if the values are valid
-     */
-    private boolean addItemFromProduct(View itemCartView) {
-        ItemCartForm itemCartForm = new ItemCartForm(getActivity(),itemCartView, cart);
-        itemCartForm.getValidator().validate();
-        if(itemCartForm.isValidationSuccessful()){
-            ItemCart itemCart = itemCartForm.getItemCart();
-            addItem(itemCart);
-            return true;
-        }
-        return  false;
-    }
     /**
      * -> Add a new item to the cart, from a Temporary Product.
      * -> Checks if the list already have a product with the Temporary Product name.
@@ -328,7 +201,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
                 Long id = simpleItemDAO.add(simpleItemDAO.getContentValues(simpleItem));
                 simpleItem.setId(id);
 
-                ItemCart simpleItemConverted = ItemCart.convertToItemCart(simpleItem);
+                ItemCart simpleItemConverted = simpleItem.convertToItemCart(simpleItem);
 
 
                 cart.getListItemCart().add(simpleItemConverted);
@@ -343,7 +216,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
     private void addSimpleProducts(ArrayList<SimpleItem> simpleItemList){
         if(simpleItemList.size() > 0) {
             for (SimpleItem simpleItem:simpleItemList) {
-                cart.getListItemCart().add(ItemCart.convertToItemCart(simpleItem));
+                cart.getListItemCart().add(simpleItem.convertToItemCart(simpleItem));
             }
 
         }

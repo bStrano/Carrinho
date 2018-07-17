@@ -28,6 +28,7 @@ import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
+import br.com.stralom.entities.SimpleItem;
 import br.com.stralom.helper.ItemCartForm;
 
 
@@ -39,8 +40,10 @@ public class ItemCartRegistration extends AppCompatActivity {
 
     private ArrayList<Product> products;
     private ArrayList<Recipe> recipes;
+    private ArrayList<SimpleItem> temporaryProducts;
 
     private Cart cart;
+    private SimpleItem temporaryProduct;
 
     private SearchView searchView;
     private RecyclerView listView;
@@ -69,6 +72,8 @@ public class ItemCartRegistration extends AppCompatActivity {
 
         products = (ArrayList<Product>) productDAO.getAll();
         recipes = (ArrayList<Recipe>) recipeDAO.getAll();
+        temporaryProducts = new ArrayList<>();
+        temporaryProduct = null;
 
         searchView = findViewById(R.id.search_itemCartRegistration);
         listView = findViewById(R.id.listView_itemCartRegistration);
@@ -119,7 +124,6 @@ public class ItemCartRegistration extends AppCompatActivity {
 
                 for (Map.Entry<Product, Integer> entry: productAdapter.getSelectedPositions().entrySet()) {
                     addItemFromProduct(entry);
-
                 }
 
                 for (Map.Entry<Recipe, Integer> entry: recipeAdapter.getSelectedPositions().entrySet()) {

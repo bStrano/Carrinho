@@ -34,7 +34,7 @@ public class ListChangeListener<T> extends ObservableList.OnListChangedCallback<
 
     @Override
     public void onItemRangeInserted(ObservableList<T> sender, int positionStart, int itemCount) {
-        if(sender.size() == 1 ){
+        if(sender.size() > 1 ){
             layout.setVisibility(View.INVISIBLE);
         }
     }
