@@ -73,13 +73,13 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         ((CartAdapter)listView.getAdapter()).cleanBackGroundColor();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        list.clear();
-        list.addAll(itemCartDAO.getAll(cart.getId()));
-        listView.getAdapter().notifyDataSetChanged();
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        list.clear();
+//        list.addAll(itemCartDAO.getAll(cart.getId()));
+//        listView.getAdapter().notifyDataSetChanged();
+//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

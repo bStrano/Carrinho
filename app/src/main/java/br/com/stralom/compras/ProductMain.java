@@ -2,6 +2,7 @@ package br.com.stralom.compras;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import br.com.stralom.helper.ProductForm;
 
 
 public class ProductMain extends BasicViewHelper<Product> {
+    private static final int REGISTRATION_REQUEST = 1;
     private ProductAdapter productAdapter;
     private ProductDAO productDAO;
 
@@ -74,64 +76,77 @@ public class ProductMain extends BasicViewHelper<Product> {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                final View newProductView = getLayoutInflater().inflate(R.layout.product_registration,null);
-                final Spinner spinner = newProductView.findViewById(R.id.form_productCategory);
-                CategoryDAO categoryDAO = new CategoryDAO(getContext());
-                final ArrayList<Category> categories = categoryDAO.getAll();
-
-
-                CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getContext(),categories);
-
-                //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
-
-                final ProductForm productForm = new ProductForm(getActivity(),newProductView);
-
-
-                builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getActivity(), "Registro cancelado", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-                builder.setView(newProductView);
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        productForm.getValidator().validate();
-                        if(productForm.isValidationSuccessful()){
-                            Product product = productForm.getProduct();
-                            try{
-                                Long id = productDAO.add(product);
-                                product.setId(id);
-                                list.add(product);
-                                productAdapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(),R.string.toast_produc_register,Toast.LENGTH_LONG).show();
-                            }catch (SQLiteConstraintException e){
-                                Toast.makeText(getActivity(),R.string.toast_product_alreadyRegistered,Toast.LENGTH_LONG).show();
-                            }
-                            dialog.dismiss();
-                        }
-                    }
-
-                });
-
+                Intent intent = new Intent(getActivity(), ProductRegistration.class);
+                startActivityForResult(intent,REGISTRATION_REQUEST);
             }
+
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                final View newProductView = getLayoutInflater().inflate(R.layout.product_registration,null);
+//                final Spinner spinner = newProductView.findViewById(R.id.form_productCategory);
+//                CategoryDAO categoryDAO = new CategoryDAO(getContext());
+//                final ArrayList<Category> categories = categoryDAO.getAll();
+//
+//
+//                CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getContext(),categories);
+//
+//                //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinner.setAdapter(adapter);
+//
+//                final ProductForm productForm = new ProductForm(getActivity(),newProductView);
+//
+//
+//                builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                    }
+//                });
+//                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Toast.makeText(getActivity(), "Registro cancelado", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//
+//
+//                builder.setView(newProductView);
+//                final AlertDialog dialog = builder.create();
+//                dialog.show();
+//                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        productForm.getValidator().validate();
+//                        if(productForm.isValidationSuccessful()){
+//                            Product product = productForm.getProduct();
+//                            try{
+//                                Long id = productDAO.add(product);
+//                                product.setId(id);
+//                                list.add(product);
+//                                productAdapter.notifyDataSetChanged();
+//                                Toast.makeText(getActivity(),R.string.toast_produc_register,Toast.LENGTH_LONG).show();
+//                            }catch (SQLiteConstraintException e){
+//                                Toast.makeText(getActivity(),R.string.toast_product_alreadyRegistered,Toast.LENGTH_LONG).show();
+//                            }
+//                            dialog.dismiss();
+//                        }
+//                    }
+//
+//                });
+//
+//            }
         });
         return mainView;
-
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+            Product product = data.getParcelableExtra("product");
+            if(product != null){
+                list.add(product);
+                listView.getAdapter().notifyDataSetChanged();
+            }
+    }
 
 
 

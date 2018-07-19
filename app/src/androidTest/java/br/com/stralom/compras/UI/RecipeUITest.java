@@ -109,7 +109,7 @@ public class RecipeUITest {
         onView(withId(R.id.btn_newRecipe)).perform(click());
         onView(withId(R.id.form_recipe_name)).perform(replaceText("No Ingredients"));
 
-        onView(withId(R.id.recipeRegistration_save)).perform(click());
+        onView(withId(R.id.registration_save)).perform(click());
         onView(withId(R.id.form_recipe_txtAddIngredient)).check(matches(withText(errorMessage)));
     }
 
@@ -128,7 +128,7 @@ public class RecipeUITest {
         onView(withId(R.id.form_recipe_name)).perform(replaceText(name));
 
         addIngredient(productName);
-        onView(withId(R.id.recipeRegistration_save)).perform(click());
+        onView(withId(R.id.registration_save)).perform(click());
     }
 
     public static void goToRecipeTab(){

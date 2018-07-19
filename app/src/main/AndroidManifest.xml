@@ -40,7 +40,8 @@
         </provider>
 
         <activity android:name=".RecipeRegistration" />
-        <activity android:name=".ItemCartRegistration"/>
+        <activity android:name=".ItemCartRegistration" />
+        <activity android:name=".ProductRegistration"></activity>
     </application>
 
 </manifest>

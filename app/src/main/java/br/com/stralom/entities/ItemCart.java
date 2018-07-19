@@ -12,21 +12,21 @@ public class ItemCart extends Item {
     private boolean isRemoved;
     private boolean updateStock;
 
-    public ItemCart(Product product, int amount, Cart cart) {
+    public ItemCart(Product product, double amount, Cart cart) {
         super(amount,product);
         this.cart = cart;
         isRemoved = false;
         updateStock = false;
     }
 
-    public ItemCart(Long id, Product product,int amount, double total,  Cart cart) {
+    public ItemCart(Long id, Product product,double amount, double total,  Cart cart) {
         super(id, amount, total, product);
         this.cart = cart;
         isRemoved = false;
         updateStock = false;
     }
 
-    public ItemCart(Product product, int amount){
+    public ItemCart(Product product, double amount){
         super(amount,product);
     }
 

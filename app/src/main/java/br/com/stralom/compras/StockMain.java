@@ -244,4 +244,12 @@ public class StockMain extends BasicViewHelper<ItemStock> {
     }
 
 
+
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        if(isVisibleToUser){
+            listView.getAdapter().notifyDataSetChanged();
+        }
+
+    }
 }

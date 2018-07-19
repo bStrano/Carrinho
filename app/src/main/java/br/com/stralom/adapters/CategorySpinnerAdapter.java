@@ -7,23 +7,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.entities.Category;
 
-public class CategorySpinnerAdapter extends BaseAdapter {
+public class CategorySpinnerAdapter extends BaseAdapter implements Filterable{
     private Context context;
     private ArrayList<Category> categories;
+    private ArrayList<Category> categoriesClone;
     private LayoutInflater inflater;
     private Resources res;
 
     public CategorySpinnerAdapter(Context context,ArrayList<Category> categories) {
         this.context = context;
         this.categories = categories;
+        this.categoriesClone = (ArrayList<Category>) categories.clone();
         inflater = LayoutInflater.from(context);
         res = context.getResources();
     }
@@ -53,5 +58,40 @@ public class CategorySpinnerAdapter extends BaseAdapter {
         icon.setImageDrawable(ResourcesCompat.getDrawable(res,category.getIconFlag(),null));
         name.setText(category.getName());
         return convertView;
+    }
+
+    @Override
+    public Filter getFilter() {
+            return new Filter() {
+
+
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    ArrayList<Category> filteredList = new ArrayList<>();
+                    if (charSequence == null || charSequence.length() == 0) {
+                        filteredList.addAll(categoriesClone);
+                    } else {
+                        String input = charSequence.toString().toLowerCase();
+                        for (Category category : categoriesClone) {
+                            if (category.getName().toLowerCase().startsWith(input)) {
+                                filteredList.add(category);
+                            }
+                        }
+                    }
+
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = filteredList;
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    categories.clear();
+                    categories.addAll((Collection<? extends Category>) filterResults.values);
+                    notifyDataSetChanged();
+                }
+            };
+
+
     }
 }

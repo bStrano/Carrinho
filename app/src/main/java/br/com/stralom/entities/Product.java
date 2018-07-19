@@ -1,5 +1,8 @@
 package br.com.stralom.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -7,7 +10,7 @@ import java.util.Objects;
  * Created by Bruno Strano on 30/12/2017.
  */
 
-public class Product implements Serializable {
+public class Product implements Parcelable {
     private Long id;
     private String name;
     private double price;
@@ -32,6 +35,30 @@ public class Product implements Serializable {
         this.price = price;
         this.category = category;
     }
+
+
+    protected Product(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readLong();
+        }
+        name = in.readString();
+        price = in.readDouble();
+        category = in.readParcelable(Category.class.getClassLoader());
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -65,13 +92,7 @@ public class Product implements Serializable {
         this.category = category;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product2 = (Product) o;
-        return Objects.equals(name, product2.name);
-    }
+
 
 
     @Override
@@ -83,6 +104,25 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return getName();
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        if (id == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeLong(id);
+        }
+        parcel.writeString(name);
+        parcel.writeDouble(price);
+        parcel.writeParcelable(category, i);
     }
 }
 

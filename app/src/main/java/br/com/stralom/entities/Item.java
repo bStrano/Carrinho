@@ -7,18 +7,18 @@ import java.io.Serializable;
  */
 
 public class Item implements Serializable {
-    Long id;
-    int amount;
-    double total;
-    Product product;
+    protected Long id;
+    protected double amount;
+    protected double total;
+    protected Product product;
 
-    Item(int amount, Product product) {
+    Item(double amount, Product product) {
         this.amount = amount;
         setTotal(amount,product.getPrice());
         this.product = product;
     }
 
-    Item(Long id, int amount, double total, Product product) {
+    Item(Long id, double amount, double total, Product product) {
         this.id = id;
         this.amount = amount;
         this.total = total;
@@ -40,12 +40,15 @@ public class Item implements Serializable {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -57,7 +60,7 @@ public class Item implements Serializable {
         this.total = total;
     }
 
-    public void setTotal(int amount, double productPrice){
+    public void setTotal(double amount, double productPrice){
         this.total =  amount * productPrice;
     }
 

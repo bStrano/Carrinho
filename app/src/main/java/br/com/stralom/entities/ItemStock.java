@@ -35,6 +35,8 @@ public class ItemStock extends Item {
         setStatus();
     }
 
+
+
     /**
      * This method cheks the value of the stockPercentage attribute and updates the status with the correspondent value
      */
@@ -56,6 +58,14 @@ public class ItemStock extends Item {
     private void setStockPercentage(int amount, int actualAmount) {
         this.stockPercentage = ((100 * actualAmount)/amount);
     }
+
+    public void setAmounts( int actualAmount, int maxAmount){
+        this.actualAmount = actualAmount;
+        this.amount = maxAmount;
+        setStockPercentage((int) this.amount,this.actualAmount);
+        setStatus();
+    }
+
 
     public Stock getStock() {
         return stock;

@@ -5,20 +5,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -72,9 +67,8 @@ public class RecipeRegistration extends AppCompatActivity {
         recipeForm = new RecipeForm(this, ingredients);
 
         // Toolbar
-        Toolbar mToolbar = findViewById(R.id.toolbar3);
-        mToolbar.setTitleTextColor(Color.WHITE);
-        mToolbar.setNavigationIcon(R.drawable.ic_back);
+        Toolbar mToolbar = findViewById(R.id.registration_toolbar);
+
         mToolbar.setTitle(R.string.title_RecipeRegistration);
         Objects.requireNonNull(this).setSupportActionBar(mToolbar);
         //setHasOptionsMenu(true);
@@ -202,7 +196,7 @@ public class RecipeRegistration extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.recipeRegistration_save:
+            case R.id.registration_save:
                 recipeForm.getValidator().validate();
                 Recipe recipe = recipeForm.getRecipe();
                 if (recipeForm.isValidationSuccessful()) {

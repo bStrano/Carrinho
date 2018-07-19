@@ -26,6 +26,10 @@ public class ItemStockDAO extends GenericDAO {
         super(context, DBHelper.TABLE_ITEMSTOCK);
     }
 
+    public void add(ItemStock itemStock){
+        super.add(getContentValues(itemStock));
+    }
+
     public void update(ItemStock itemStock){
         super.update(DBHelper.COLUMN_ITEMSTOCK_ID, itemStock.getId(),getContentValues(itemStock));
     }
@@ -53,9 +57,11 @@ public class ItemStockDAO extends GenericDAO {
                 itemStock.getProduct().setName(productName);
                 products.add(itemStock);
             }
+            cursor.close();
         } catch (NullPointerException e) {
             Log.i(TAG, "[NullPointerException] Products not found.");
         }
+        db.close();
         return  products;
     }
 
@@ -87,6 +93,7 @@ public class ItemStockDAO extends GenericDAO {
         Cursor cursor = db.rawQuery(sql,new String[] { Long.toString(productId)});
         ItemStock itemStock =  find(cursor);
         cursor.close();
+        db.close();
         return itemStock;
     }
 
@@ -109,6 +116,7 @@ public class ItemStockDAO extends GenericDAO {
         }
         itemStock.getProduct().setName(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_PRODUCT_NAME)));
         cursor.close();
+        db.close();
         return itemStock;
     }
 
@@ -130,8 +138,6 @@ public class ItemStockDAO extends GenericDAO {
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_ACTUALAMOUNT, itemStock.getActualAmount());
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_PRODUCT, itemStock.getProduct().getId());
         contentValues.put(DBHelper.COLUMN_ITEMSTOCK_STOCK, itemStock.getStock().getId());
-
-
         return contentValues;
     }
 

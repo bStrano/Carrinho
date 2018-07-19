@@ -26,7 +26,7 @@
     <!-- ItemCart -->
     <string name="itemCartAmount">Quantidade</string>
     <string name="itemcart_itemList_name"> %s </string>
-    <string name="itemcart_itemList_amount"> %dx  </string>
+    <string name="itemcart_itemList_amount"> %sx  </string>
 
     <!-- Stock -->
     <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
@@ -120,5 +120,16 @@
     <string name="itemCart_registration_products">Produtos</string>
     <string name="itemCart_registration_recipes">Receitas</string>
     <string name="itemCart_registration_save">Salvar</string>
+    <string name="product_registration_title">Novo Produto</string>
+    <string name="registration_product_price">Preço</string>
+    <string name="registration_product_name">Nome</string>
+    <string name="registration_product_categoryTitle">Categoria</string>
+    <string name="registration_product_addStockTitle">Adicionar ao Estoque</string>
+    <string name="registration_stock_actualAmount">Quantidade atual</string>
+    <string name="registration_stock_maxAmount">Quantidade máxima</string>
+    <string name="registration_product_addCartTitle">Adicionar ao Carrinho</string>
+    <string name="image_addCart">Add to cart Icon</string>
+    <string name="registration_product_amount">Quantidade</string>
+    <string name="registration_product_imageNewCategory">Botão - Adicionar nova categoria.</string>
 
 </resources>
