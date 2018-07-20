@@ -2,6 +2,7 @@ package br.com.stralom.compras.UI.matchers;
 
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.test.espresso.Root;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -21,6 +23,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.v4.util.Preconditions.checkNotNull;
 
 public class CustomMatcher {
+
+
 
     // https://stackoverflow.com/questions/21045509/check-if-a-dialog-is-displayed-with-espresso/34465170
     public static Matcher<Root> isToast() {
@@ -117,6 +121,30 @@ public class CustomMatcher {
             public void describeTo(Description description) {
                 description.appendText("Not found  [" + expectedName + "]");
             }
+        };
+    }
+
+    public static Matcher withTextInputError(final String expectedError){
+        return new BoundedMatcher<View,TextInputLayout>(TextInputLayout.class) {
+
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Invalid error message: expected: ").appendValue(expectedError);
+            }
+
+            @Override
+            protected boolean matchesSafely(TextInputLayout item) {
+                return item.getError().equals(expectedError);
+            }
+
+            @Override
+            public void describeMismatch(Object item, Description description) {
+                TextInputLayout textInputLayout = (TextInputLayout) item;
+
+                description.appendText(" found: ").appendValue(textInputLayout.getError().toString());
+            }
+
         };
     }
 

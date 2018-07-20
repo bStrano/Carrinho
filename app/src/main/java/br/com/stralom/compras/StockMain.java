@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,6 @@ import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Stock;
 import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.ItemStockForm;
-import br.com.stralom.helper.SwipeToDeleteCallback;
 
 
 /**
@@ -245,11 +243,14 @@ public class StockMain extends BasicViewHelper<ItemStock> {
 
 
 
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-
-        if(isVisibleToUser){
-            listView.getAdapter().notifyDataSetChanged();
-        }
+    public void onResume() {
+        //Temporary
+        super.onResume();
+        list.clear();
+        list.addAll(itemStockDAO.getAll((long) 1));
+        listView.getAdapter().notifyDataSetChanged();
 
     }
+
+
 }

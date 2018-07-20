@@ -88,7 +88,7 @@ public class CartUITest {
             category = categoryDAO.add("Cart Category","Cart Category", R.drawable.cherries);
             product = productDAO.add("Cart Product",12,category);
             ArrayList<ItemRecipe> itemRecipes = new ArrayList<>();
-            ItemRecipe itemRecipe = new ItemRecipe(2,product);
+            ItemRecipe itemRecipe = new ItemRecipe(2.0,product);
             itemRecipes.add(itemRecipe);
             recipe = recipeDAO.add("Cart Recipe",itemRecipes,null);
             itemRecipeDAO.add(itemRecipe.getAmount(),product,recipe);

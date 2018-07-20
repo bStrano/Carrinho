@@ -80,9 +80,9 @@ public class ProductForm {
         }
     }
 
-    public Pair<Integer,Integer> getValidStockAmounts(){
+    public Pair<Double,Double> getValidStockAmounts(){
         if(validation.validateEmpty(Pair.create(stockActualAmountLayout,stockActualAmountView), Pair.create(stockMaxAmountLayout,stockMaxAmountView))){
-            return Pair.create(Integer.valueOf(stockActualAmountView.getText().toString()),Integer.valueOf(stockMaxAmountView.getText().toString()));
+            return Pair.create(Double.valueOf(stockActualAmountView.getText().toString()),Double.valueOf(stockMaxAmountView.getText().toString()));
         } else {
             return null;
         }

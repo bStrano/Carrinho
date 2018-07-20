@@ -9,11 +9,11 @@ public class ItemRecipe extends Item {
 
     public ItemRecipe(){}
 
-    public ItemRecipe(int amount, Product product) {
+    public ItemRecipe(double amount, Product product) {
         super(amount, product);
     }
 
-    public ItemRecipe(int amount, Product product, Recipe recipe) {
+    public ItemRecipe(double amount, Product product, Recipe recipe) {
         super(amount, product);
         this.recipe = recipe;
     }

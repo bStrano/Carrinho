@@ -13,28 +13,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import br.com.stralom.adapters.CartAdapter;
-import br.com.stralom.adapters.RecipeSpinnerAdapter;
 import br.com.stralom.dao.CartDAO;
 import br.com.stralom.dao.ItemCartDAO;
-import br.com.stralom.dao.ItemRecipeDAO;
-import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Cart;
 import br.com.stralom.entities.ItemCart;
-import br.com.stralom.entities.ItemRecipe;
-import br.com.stralom.entities.Product;
-import br.com.stralom.entities.Recipe;
 import br.com.stralom.entities.SimpleItem;
 import br.com.stralom.helper.BasicViewHelper;
-import br.com.stralom.helper.ItemCartForm;
 import br.com.stralom.helper.SimpleItemForm;
 
 
@@ -48,12 +39,14 @@ public class CartMain extends BasicViewHelper<ItemCart>{
     private Cart cart;
     private SimpleItemDAO simpleItemDAO;
 
+
     private CartAdapter adapter;
 
     private static final String TAG = "CartMainTAG";
 
     public CartMain() {
     }
+
 
     @Override
     public void initializeSuperAttributes() {
@@ -73,13 +66,14 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         ((CartAdapter)listView.getAdapter()).cleanBackGroundColor();
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        list.clear();
-//        list.addAll(itemCartDAO.getAll(cart.getId()));
-//        listView.getAdapter().notifyDataSetChanged();
-//    }
+    @Override
+    public void onResume() {
+            list.clear();
+            list.addAll(itemCartDAO.getAll(cart.getId()));
+            listView.getAdapter().notifyDataSetChanged();
+
+        super.onResume();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -141,10 +135,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
 
-    /**
-     * Obtem todos os item contidos no {@code cart}
-     * @param cart
-     */
+
     private void loadItemsFromCart(Cart cart) {
         list = (ObservableArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
         cart.setListItemCart(list);
@@ -222,11 +213,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         }
     }
 
-    /**
-     *  Search for a product with a specific name in the list
-     * @param name
-     * @return if the list contains a product with name = @param name
-     */
+
     private boolean checkForItemWithName(String name){
         for (ItemCart itemCart: list) {
             if(itemCart.getProduct().getName().equals(name)){

@@ -7,9 +7,9 @@ package br.com.stralom.entities;
 
 public class ItemStock extends Item {
     private Stock stock;
-    private int stockPercentage;
+    private double stockPercentage;
     private Status status;
-    private int actualAmount;
+    private double actualAmount;
 
 
     public ItemStock() {
@@ -20,7 +20,7 @@ public class ItemStock extends Item {
         EMPTY,BAD,NEUTRAL,GOOD,FULL
     }
 
-    public ItemStock(Long id, int amount, double total, Product product, int stockPercentage, Status status, int actualAmount, Stock stock) {
+    public ItemStock(Long id, double amount, double total, Product product, int stockPercentage, Status status, double actualAmount, Stock stock) {
         super(id, amount, total, product);
         this.stockPercentage = stockPercentage;
         this.status = status;
@@ -28,7 +28,7 @@ public class ItemStock extends Item {
         this.stock = stock;
     }
 
-    public ItemStock(int amount, Product product, int actualAmount) {
+    public ItemStock(double amount, Product product, int actualAmount) {
         super(amount, product);
         this.actualAmount = actualAmount;
         setStockPercentage(amount, actualAmount);
@@ -55,11 +55,11 @@ public class ItemStock extends Item {
 
     }
 
-    private void setStockPercentage(int amount, int actualAmount) {
+    private void setStockPercentage(double amount, double actualAmount) {
         this.stockPercentage = ((100 * actualAmount)/amount);
     }
 
-    public void setAmounts( int actualAmount, int maxAmount){
+    public void setAmounts( double actualAmount, double maxAmount){
         this.actualAmount = actualAmount;
         this.amount = maxAmount;
         setStockPercentage((int) this.amount,this.actualAmount);
@@ -75,7 +75,7 @@ public class ItemStock extends Item {
         this.stock = stock;
     }
 
-    public int getActualAmount() {
+    public double getActualAmount() {
         return actualAmount;
     }
 
@@ -83,7 +83,7 @@ public class ItemStock extends Item {
         this.actualAmount = atualAmount;
     }
 
-    public int getStockPercentage() {
+    public double getStockPercentage() {
         return stockPercentage;
     }
 

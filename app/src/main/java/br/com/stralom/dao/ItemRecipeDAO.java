@@ -32,7 +32,7 @@ public class ItemRecipeDAO extends GenericDAO {
 
 
 
-    public ItemRecipe add(int amount, Product product, Recipe recipe){
+    public ItemRecipe add(double amount, Product product, Recipe recipe){
         ItemRecipe itemRecipe = new ItemRecipe(amount,product,recipe);
         Long id = add(itemRecipe);
         itemRecipe.setId(id);

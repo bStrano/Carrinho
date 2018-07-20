@@ -1,9 +1,6 @@
 package br.com.stralom.compras;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,19 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import br.com.stralom.adapters.CategorySpinnerAdapter;
 import br.com.stralom.adapters.ProductAdapter;
-import br.com.stralom.dao.CategoryDAO;
 import br.com.stralom.dao.ProductDAO;
-import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
 import br.com.stralom.helper.BasicViewHelper;
-import br.com.stralom.helper.ProductForm;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class ProductMain extends BasicViewHelper<Product> {
@@ -139,14 +130,18 @@ public class ProductMain extends BasicViewHelper<Product> {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-            Product product = data.getParcelableExtra("product");
-            if(product != null){
-                list.add(product);
-                listView.getAdapter().notifyDataSetChanged();
+        if(requestCode == REGISTRATION_REQUEST){
+            if(resultCode == RESULT_OK){
+                Product product = data.getParcelableExtra("product");
+                if(product != null){
+                    list.add(product);
+                    listView.getAdapter().notifyDataSetChanged();
+                }
             }
+        }
+
     }
+
 
 
 

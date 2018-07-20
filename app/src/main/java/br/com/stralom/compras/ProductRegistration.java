@@ -1,6 +1,7 @@
 package br.com.stralom.compras;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemStock;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Stock;
+import br.com.stralom.helper.TriplePair;
 import br.com.stralom.helper.forms.ProductForm;
 
 public class ProductRegistration extends AppCompatActivity {
@@ -140,11 +143,12 @@ public class ProductRegistration extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.registration_save:
-                Product product = register();
-                if(product !=  null){
+                TriplePair triplePair = register();
+                if(triplePair !=  null){
                     Intent intent = new Intent();
-                    intent.putExtra("product",product);
+                    intent.putExtra("product", (Product) triplePair.first);
                     setResult(RESULT_OK,intent);
+
                     finish();
                 }
 
@@ -154,17 +158,18 @@ public class ProductRegistration extends AppCompatActivity {
 
 
 
-    private Product register(){
+    private TriplePair<Product,ItemStock,ItemCart> register(){
         Product product = productForm.getValidProduct();
         ItemCart itemCart = null;
         ItemStock itemStock = null;
+
         boolean isValid = true;
         if(product == null){
             isValid = false;
         }
 
         if(addStock.isChecked()){
-            Pair<Integer,Integer> validStockAmounts = productForm.getValidStockAmounts();
+            Pair<Double,Double> validStockAmounts = productForm.getValidStockAmounts();
             if(validStockAmounts == null){
                 isValid = false;
             } else {
@@ -196,8 +201,20 @@ public class ProductRegistration extends AppCompatActivity {
         if(!isValid){
             return null;
         } else {
-            Long id = productDAO.add(product);
-            product.setId(id);
+            try{
+                Long id = productDAO.add(product);
+                product.setId(id);
+            } catch (SQLiteConstraintException e){
+                // coode 2067 - UNIQUE error code
+                if(e.getMessage().contains("code 2067")){
+                    Toast.makeText(this,R.string.error_product_alreadyRegistered, Toast.LENGTH_LONG).show();
+                    return null;
+                }
+
+
+            }
+
+
 
 
             if(itemStock != null){
@@ -208,7 +225,8 @@ public class ProductRegistration extends AppCompatActivity {
                 itemCart.setProduct(product);
                 itemCartDAO.add(itemCart);
             }
-            return product;
+
+            return new TriplePair<>(product,itemStock,itemCart);
         }
 
     }
