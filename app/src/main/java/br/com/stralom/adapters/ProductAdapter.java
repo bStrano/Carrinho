@@ -45,6 +45,7 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
         holder.name.setText(product.getName());
         holder.price.setText(String.format(res.getString(R.string.product_itemList_price), product.getPrice()));
          holder.categoryIcon.setImageResource(product.getCategory().getIconFlag());
+         holder.categoryIcon.setTag(product.getCategory().getIconFlag());
         holder.viewForeground.setBackgroundColor(Color.parseColor("#FAFAFA"));
         //holder.categoryIcon.setImageDrawable(R.drawable.ic_add);
     }

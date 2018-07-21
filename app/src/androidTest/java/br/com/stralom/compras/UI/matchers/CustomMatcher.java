@@ -1,5 +1,7 @@
 package br.com.stralom.compras.UI.matchers;
 
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -7,16 +9,23 @@ import android.support.test.espresso.Root;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import br.com.stralom.compras.R;
 import br.com.stralom.entities.Product;
 
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
@@ -146,6 +155,38 @@ public class CustomMatcher {
             }
 
         };
+    }
+
+    public static Matcher withEmptyList(final String title , final String description, final Drawable drawable){
+        return new BoundedMatcher<View,LinearLayout>(LinearLayout.class) {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Invalid values. Expected Values: [" + title + " / " + description + " / " + drawable + " ]");
+            }
+
+
+            @Override
+            public void describeMismatch(Object item, Description description) {
+                description.appendText("Was: " ).appendValue(title).appendText(" / ").appendValue(description).appendText(" / ").appendValue(drawable);
+                super.describeMismatch(item, description);
+            }
+
+            @Override
+            protected boolean matchesSafely(LinearLayout item) {
+                TextView titleView = item.findViewById(R.id.emptyList_title);
+                TextView descriptionView = item.findViewById(R.id.emptyList_description);
+                ImageView imageView = item.findViewById(R.id.emptyList_image);
+
+
+                if(titleView == null || descriptionView == null  || imageView == null){
+                    return false;
+                } else {
+                    return (titleView.getText().toString().equals(title) && descriptionView.getText().toString().equals(description) && imageView.getDrawable().getConstantState().equals(drawable.getConstantState()));
+                }
+            }
+        };
+
     }
 
 

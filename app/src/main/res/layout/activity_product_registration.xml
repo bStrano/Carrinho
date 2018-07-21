@@ -74,34 +74,37 @@
                 android:id="@+id/frameLayout2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/registration_product_priceLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/registration_product_priceLayout"
                 app:layout_constraintTop_toBottomOf="@+id/registration_product_nameLayout">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                    android:layout_height="wrap_content">
 
                     <ImageButton
                         android:id="@+id/imageButton"
                         android:layout_width="31dp"
-                        android:layout_height="26dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/image_addCart"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/registration_product_addCartAmountLayout"
                         app:srcCompat="@drawable/ic_cart_black" />
 
                     <CheckBox
                         android:id="@+id/registration_product_addCart"
-                        android:layout_width="wrap_content"
+                        android:layout_width="32dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:checked="false"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imageButton" />
+                        app:layout_constraintStart_toEndOf="@+id/imageButton"
+                        app:layout_constraintTop_toTopOf="@+id/registration_product_addCartAmountLayout" />
 
                     <TextView
                         android:id="@+id/registration_product_addCartTitle"
@@ -115,10 +118,10 @@
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/registration_product_addCartAmountLayout"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/registration_product_addCart"
                         app:layout_constraintTop_toTopOf="parent">
@@ -129,7 +132,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/registration_product_amount"
                             android:inputType="number"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:visibility="visible" />
                     </android.support.design.widget.TextInputLayout>
 
                 </android.support.constraint.ConstraintLayout>

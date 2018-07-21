@@ -1,6 +1,7 @@
 package br.com.stralom.listeners;
 
 import android.databinding.ObservableList;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -16,6 +17,7 @@ public class ListChangeListener<T> extends ObservableList.OnListChangedCallback<
 
     @Override
     public void onChanged(ObservableList<T> sender) {
+        Log.e("DEBUG","onchanged");
         updateIfNecessary(sender.size());
     }
 
@@ -29,23 +31,27 @@ public class ListChangeListener<T> extends ObservableList.OnListChangedCallback<
 
     @Override
     public void onItemRangeChanged(ObservableList<T> sender, int positionStart, int itemCount) {
-
+        Log.e("DEBUG","onItemRangeChanged");
     }
 
     @Override
     public void onItemRangeInserted(ObservableList<T> sender, int positionStart, int itemCount) {
-        if(sender.size() > 1 ){
+        Log.e("DEBUG","onItemRangeInserted");
+        Log.e("DEBUG","onItemRangeInserted: " + sender.size());
+
+        if(sender.size() >= 1 ){
             layout.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
     public void onItemRangeMoved(ObservableList<T> sender, int fromPosition, int toPosition, int itemCount) {
-
+        Log.e("DEBUG","onItemRangeMoved");
     }
 
     @Override
     public void onItemRangeRemoved(ObservableList<T> sender, int positionStart, int itemCount) {
+        Log.e("DEBUG","onItemRangeRemoved");
         if(sender.size() == 0){
             layout.setVisibility(View.VISIBLE);
         }

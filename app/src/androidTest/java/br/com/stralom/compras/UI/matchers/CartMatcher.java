@@ -49,12 +49,6 @@ public class CartMatcher {
                 if(amount == null){
                     return (nameView.getText().toString().equals(name));
                 }else{
-                    Log.e("TESTEX", String.valueOf(nameView.getText().toString().equals(name)));
-                    Log.e("TESTEX",nameView.getText().toString());
-                    Log.e("TESTEX",name);
-                    Log.e("TESTEX", String.valueOf(amountView.getText().toString().equals(amount)));
-                    Log.e("TESTEX",amountView.getText().toString());
-                    Log.e("TESTEX",amount);
                     return (nameView.getText().toString().equals(name) && amountView.getText().toString().equals(amount +"x"));
                 }
 

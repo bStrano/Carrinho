@@ -56,6 +56,7 @@ public class CategorySpinnerAdapter extends BaseAdapter implements Filterable{
 
         Category category = categories.get(position);
         icon.setImageDrawable(ResourcesCompat.getDrawable(res,category.getIconFlag(),null));
+
         name.setText(category.getName());
         return convertView;
     }
