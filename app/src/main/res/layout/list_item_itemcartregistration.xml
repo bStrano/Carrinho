@@ -6,7 +6,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="57dp">
+        android:layout_height="57dp"
+        android:id="@+id/registration_itemcart_mainView">
 
         <ToggleButton
             android:id="@+id/registration_itemCart_btnManagement"

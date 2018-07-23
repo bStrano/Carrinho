@@ -29,30 +29,7 @@
             android:layout_width="wrap_content"
             app:backgroundTint="@color/colorPrimaryDark"/>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/itemCart_btn_registerRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="76dp"
-            android:src="@drawable/ic_add_recipe"
-            app:backgroundTint="@color/colorSecundary"
-            />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/itemcart_btn_registerSimpleProduct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabSize="mini"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="24dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="136dp"
-            android:src="@drawable/ic_add_mini"
-            app:backgroundTint="@color/colorPrimaryLight"
-            />
 
         <include
             android:id="@+id/cart_management_list"

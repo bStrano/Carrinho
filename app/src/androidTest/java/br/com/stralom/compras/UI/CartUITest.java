@@ -87,10 +87,12 @@ public class CartUITest {
 
             category = categoryDAO.add("Cart Category","Cart Category", R.drawable.cherries);
             product = productDAO.add("Cart Product",12,category);
+            productDAO.add("Product Cart",22,category);
             ArrayList<ItemRecipe> itemRecipes = new ArrayList<>();
             ItemRecipe itemRecipe = new ItemRecipe(2.0,product);
             itemRecipes.add(itemRecipe);
             recipe = recipeDAO.add("Cart Recipe",itemRecipes,null);
+            recipeDAO.add("Recipe Cart",itemRecipes,null);
             itemRecipeDAO.add(itemRecipe.getAmount(),product,recipe);
 
         }
@@ -111,6 +113,14 @@ public class CartUITest {
     @Test
     public void ATestEmptyListView(){
         onView(withId(R.id.cart_list_itemCarts)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void TestOpenRegistrationActivity(){
+        onView(withId(R.id.itemCart_btn_registerProduct)).perform(click());
+        onView(withId(R.id.search_itemCartRegistration)).perform(replaceText(product.getName()));
+
+
     }
 
     @Test

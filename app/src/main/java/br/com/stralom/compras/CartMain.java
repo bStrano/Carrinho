@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
     public void onResume() {
             list.clear();
             list.addAll(itemCartDAO.getAll(cart.getId()));
+            addSimpleProducts((ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId()));
             listView.getAdapter().notifyDataSetChanged();
 
         super.onResume();
@@ -89,8 +91,6 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         simpleItemDAO = new SimpleItemDAO(getContext());
 
 
-        FloatingActionButton btn_addSimpleItem = mainView.findViewById(R.id.itemcart_btn_registerSimpleProduct);
-        FloatingActionButton btn_newItemCart = mainView.findViewById(R.id.itemCart_btn_registerProduct);
 
         cart = cartDAO.findById((long) 1);
         loadItemsFromCart(cart);
@@ -115,7 +115,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
 
-        btn_newItemCart.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //loadItemCartDialog();
@@ -123,11 +123,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
                 startActivityForResult(intent,1);
             }
         });
-        btn_addSimpleItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {loadSimpleProductItemCartDialog();
-            }
-        });
+
 
         return mainView;
     }
@@ -140,6 +136,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         list = (ObservableArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
         cart.setListItemCart(list);
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
+        Log.d("SIMPLE LIST SIZE", String.valueOf(simpleItemList.size()));
         addSimpleProducts(simpleItemList);
     }
 
@@ -148,64 +145,10 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
 
-    private void loadSimpleProductItemCartDialog(){
-        final View simpleProductView = getLayoutInflater().inflate(R.layout.dialog_itemcart_simpleproduct_registration,null);
-        DialogInterface.OnClickListener confirmListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //addItemFromSimpleProduct(view);
-            }
-        };
-        DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(getActivity(),R.string.cancel,Toast.LENGTH_LONG).show();
-            }
-        };
-        final AlertDialog dialog = createDialog(simpleProductView,confirmListener,null, R.string.cart_dialogTitle_addSimpleProduct);
-        dialog.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(addItemFromSimpleProduct(simpleProductView)){
-                    dialog.dismiss();
-                }
-            }
-        });
-    }
 
-
-
-    /**
-     * -> Add a new item to the cart, from a Temporary Product.
-     * -> Checks if the list already have a product with the Temporary Product name.
-     *  Temporary Product - When removed of the list, he's completely removed of the application.
-     * @param view an Dialog that contains the form
-     * @return if the validation was successful
-     */
-    private boolean addItemFromSimpleProduct(View view){
-        SimpleItemForm simpleItemForm = new SimpleItemForm(getActivity(),view,cart);
-        simpleItemForm.getValidator().validate();
-        if ( simpleItemForm.isValidationSuccessful()){
-            SimpleItem simpleItem = simpleItemForm.getSimpleItem();
-            if(!checkForItemWithName(simpleItem.getName())){
-                Long id = simpleItemDAO.add(simpleItemDAO.getContentValues(simpleItem));
-                simpleItem.setId(id);
-
-                ItemCart simpleItemConverted = simpleItem.convertToItemCart(simpleItem);
-
-
-                cart.getListItemCart().add(simpleItemConverted);
-                listView.getAdapter().notifyDataSetChanged();
-                return true;
-            } else {
-                Toast.makeText(getActivity(),R.string.itemCart_validation_simpleItemAlreadyExists,Toast.LENGTH_LONG).show();
-            }
-        }
-        return false;
-    }
     private void addSimpleProducts(ArrayList<SimpleItem> simpleItemList){
         if(simpleItemList.size() > 0) {
+            Log.d(TAG,"ITEMaDICONADO");
             for (SimpleItem simpleItem:simpleItemList) {
                 cart.getListItemCart().add(simpleItem.convertToItemCart(simpleItem));
             }

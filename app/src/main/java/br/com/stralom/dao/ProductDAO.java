@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.stralom.entities.Cart;
 import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
 
@@ -48,6 +49,8 @@ public class ProductDAO extends GenericDAO{
         db = dbHelper.getReadableDatabase();
         db.delete(DBHelper.TABLE_PRODUCT,DBHelper.COLUMN_PRODUCT_ID + " = ?", new String[] {id.toString()});
     }
+
+
 
 
 

@@ -4,11 +4,20 @@ package br.com.stralom.entities;
  * Created by Bruno on 05/02/2018.
  */
 
-public class SimpleItem {
+public class SimpleItem implements Cloneable{
     private Long id;
     private String name;
     private int amount;
     private Cart cart;
+
+    public SimpleItem getClone(){
+        try {
+            return (SimpleItem) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public SimpleItem(String name, int amount) {
         this.name = name;

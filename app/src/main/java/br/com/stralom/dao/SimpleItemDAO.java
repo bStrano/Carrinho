@@ -19,6 +19,11 @@ public class SimpleItemDAO extends GenericDAO {
         super(context, DBHelper.TABLE_SIMPLEITEM);
     }
 
+
+    public Long add(SimpleItem simpleItem) {
+        return super.add(getContentValues(simpleItem));
+    }
+
     public List<SimpleItem> getAll(Long cartId){
         db = dbHelper.getReadableDatabase();
         ArrayList<SimpleItem> items = new ArrayList<>();

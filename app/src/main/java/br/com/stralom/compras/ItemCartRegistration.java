@@ -12,24 +12,22 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import br.com.stralom.adapters.ItemCartRegistrationAdapter;
 import br.com.stralom.adapters.ItemCartRegistrationProductAdapter;
 import br.com.stralom.adapters.ItemCartRegistrationRecipeAdapter;
-import br.com.stralom.adapters.RecipeAdapter;
 import br.com.stralom.dao.ItemCartDAO;
 import br.com.stralom.dao.ItemRecipeDAO;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
+import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Cart;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemRecipe;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
 import br.com.stralom.entities.SimpleItem;
-import br.com.stralom.helper.ItemCartForm;
 
 
 public class ItemCartRegistration extends AppCompatActivity {
@@ -37,6 +35,7 @@ public class ItemCartRegistration extends AppCompatActivity {
     private RecipeDAO recipeDAO;
     private ItemCartDAO itemCartDAO;
     private ItemRecipeDAO itemRecipeDAO;
+    private SimpleItemDAO simpleItemDAO;
 
     private ArrayList<Product> products;
     private ArrayList<Recipe> recipes;
@@ -69,8 +68,10 @@ public class ItemCartRegistration extends AppCompatActivity {
         recipeDAO = new RecipeDAO(this);
         itemCartDAO = new ItemCartDAO(this);
         itemRecipeDAO = new ItemRecipeDAO(this);
+        simpleItemDAO = new SimpleItemDAO(this);
 
         products = (ArrayList<Product>) productDAO.getAll();
+        //products = productDAO.getAllProductsNotInsertedInTheCart(cart);
         recipes = (ArrayList<Recipe>) recipeDAO.getAll();
         temporaryProducts = new ArrayList<>();
         temporaryProduct = null;
@@ -100,6 +101,7 @@ public class ItemCartRegistration extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 if(rbtnProducts.isChecked()){
+                    productAdapter.ifNecessaryCreateOrUpdateSimpleProduct(s,cart);
                     productAdapter.getFilter().filter(s);
                 } else if ( rbtnRecipes.isChecked()){
                     recipeAdapter.getFilter().filter(s);
@@ -135,6 +137,8 @@ public class ItemCartRegistration extends AppCompatActivity {
 
     }
 
+
+
     public void onRadioButtonClicked(View view){
         boolean checked = ((RadioButton) view).isChecked();
         searchView.setQuery(null,true);
@@ -156,12 +160,15 @@ public class ItemCartRegistration extends AppCompatActivity {
     }
 
 
-    /**
-     * Add a new item to the cart, from a Product.
-     */
     private void addItemFromProduct(Map.Entry<Product,Integer> entry) {
-        ItemCart itemCart = new ItemCart(entry.getKey(),entry.getValue(),cart);
-        addItem(itemCart);
+        if(entry.getKey().getCategory() == null){
+            SimpleItem simpleItem = new SimpleItem(entry.getKey().getName(), entry.getValue(), cart);
+            simpleItemDAO.add(simpleItem);
+        } else {
+            ItemCart itemCart = new ItemCart(entry.getKey(), entry.getValue(), cart);
+            addItem(itemCart);
+        }
+
     }
 
 

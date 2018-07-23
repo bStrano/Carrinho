@@ -10,7 +10,7 @@ import java.util.Objects;
  * Created by Bruno Strano on 30/12/2017.
  */
 
-public class Product implements Parcelable {
+public class Product implements Parcelable, Cloneable {
     private Long id;
     private String name;
     private double price;
@@ -22,6 +22,15 @@ public class Product implements Parcelable {
     }
 
 
+    public Product getClone(){
+        try {
+            return (Product) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
     public Product(Long id, String name, double price, Category category) {
         this.id = id;
