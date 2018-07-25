@@ -41,6 +41,7 @@ public class SimpleItemDAO extends GenericDAO {
             }
             c.close();
         }
+
         return items;
 
     }

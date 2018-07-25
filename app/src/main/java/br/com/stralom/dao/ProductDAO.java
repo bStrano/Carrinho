@@ -51,7 +51,36 @@ public class ProductDAO extends GenericDAO{
     }
 
 
+    public ArrayList<Product> getAllProductsNotInsertedInTheCart(Cart cart){
 
+        db = dbHelper.getReadableDatabase();
+        ArrayList<Product> products = new ArrayList<>();
+
+
+        // SELECT  * FROM tb_product LEFT JOIN tb_itemCart ON tb_itemCart.product_id == tb_product.id  LEFT JOIN tb_category ON tb_category.category_name = tb_product.category WHERE tb_itemCart.product_id IS NULL
+        String sql =
+                "SELECT  p." + DBHelper.COLUMN_PRODUCT_ID + " , p." + DBHelper.COLUMN_PRODUCT_NAME + " , p." + DBHelper.COLUMN_PRODUCT_PRICE + " , p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
+                        " , c." + DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL + " , c." + DBHelper.COLUMN_CATEGORY_ICON + " , c." + DBHelper.COLUMN_CATEGORY_DEFAULT + " , c." + DBHelper.COLUMN_CATEGORY_NAME +
+                        " FROM " + DBHelper.TABLE_PRODUCT + " p " +
+                        " LEFT JOIN " + DBHelper.TABLE_ITEMCART + " ic " +
+                        " ON p." + DBHelper.COLUMN_PRODUCT_ID + " = ic." + DBHelper.COLUMN_ITEMCART_PRODUCT + " AND ic." + DBHelper.COLUMN_ITEMCART_CART + " = ?" +
+                        " JOIN " + DBHelper.TABLE_CATEGORY  + " c " +
+                        "  ON c. " + DBHelper.COLUMN_CATEGORY_NAME + " = p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
+                        " WHERE ic." + DBHelper.COLUMN_ITEMCART_PRODUCT + " IS NULL ";
+
+        Cursor cursor = db.rawQuery(sql,new String[]{String.valueOf(cart.getId())});
+        if(cursor != null){
+            while (cursor.moveToNext()){
+                Product product = getProduct(cursor);
+
+                products.add(product);
+            }
+
+            cursor.close();
+        }
+        return products;
+
+    }
 
 
     public List<Product> getAll(){

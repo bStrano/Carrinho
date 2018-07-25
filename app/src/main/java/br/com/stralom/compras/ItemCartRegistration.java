@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.SearchView;
 import android.view.View;
@@ -60,7 +61,7 @@ public class ItemCartRegistration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_cart_registration);
 
-
+        Log.d("DEBUG", "ONCREATE");
         // ****************** Temporary ********************
         cart = new Cart((long) 1);
 
@@ -70,8 +71,9 @@ public class ItemCartRegistration extends AppCompatActivity {
         itemRecipeDAO = new ItemRecipeDAO(this);
         simpleItemDAO = new SimpleItemDAO(this);
 
-        products = (ArrayList<Product>) productDAO.getAll();
-        //products = productDAO.getAllProductsNotInsertedInTheCart(cart);
+       // products = (ArrayList<Product>) productDAO.getAll();
+        products = productDAO.getAllProductsNotInsertedInTheCart(cart);
+        Log.e("DEBUG", products.toString());
         recipes = (ArrayList<Recipe>) recipeDAO.getAll();
         temporaryProducts = new ArrayList<>();
         temporaryProduct = null;
@@ -122,7 +124,6 @@ public class ItemCartRegistration extends AppCompatActivity {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<ItemCart> itemCarts  = new ArrayList<>();
 
                 for (Map.Entry<Product, Integer> entry: productAdapter.getSelectedPositions().entrySet()) {
                     addItemFromProduct(entry);
@@ -202,4 +203,6 @@ public class ItemCartRegistration extends AppCompatActivity {
         }
 
     }
+
+
 }
