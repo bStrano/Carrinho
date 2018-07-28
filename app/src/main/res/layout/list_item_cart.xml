@@ -1,79 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+
+    android:id="@+id/cart_view_foreground"
+    android:background="#FAFAFA"
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cart_view_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FAFAFA"
 
-            android:gravity="start"
-            android:paddingBottom="@dimen/list_paddingVertical"
-            android:paddingTop="@dimen/list_paddingVertical"
-            >
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/itemCart_itemList_amount"
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
 
-            <CheckBox
-                android:id="@+id/checkBox2"
-                android:layout_width="wrap_content"
-                android:layout_height="49dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="13dp" />
-
-            <TextView
-                android:id="@+id/itemCart_itemList_amount"
-                android:layout_width="65dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/itemCart_itemList_categoryIcon"
-                android:text="12x"
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="@dimen/list_textMediumSize"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+        android:text="12x"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="@dimen/list_textMediumSize"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
 
-            <TextView
-                android:id="@+id/itemCart_itemList_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="53dp"
-                android:text="Product Name"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="@dimen/list_textMediumSize"
-                tools:ignore="HardcodedText" />
-
-            <ImageView
-                android:id="@+id/itemCart_itemList_categoryIcon"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="8dp"
-                android:contentDescription="@string/contentDescription_categoryIcon"
-                android:src="@drawable/cherries" />
-
-
-        </RelativeLayout>
-
+    <TextView
+        android:id="@+id/itemCart_itemList_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginTop="12dp"
+        android:text="Product Name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="@dimen/list_textMediumSize"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/itemCart_itemList_amount"
+        app:layout_constraintStart_toEndOf="@+id/checkBox2"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
 
     <View
-        android:background="@android:color/darker_gray"
-        android:layout_width="match_parent"
+        android:id="@+id/view2"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        />
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
 
 
 
-</LinearLayout>
+
+

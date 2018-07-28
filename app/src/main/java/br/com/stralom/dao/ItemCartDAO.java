@@ -22,9 +22,11 @@ public class ItemCartDAO extends GenericDAO  {
     private static final String TAG = "ItemCartDAO";
     private SimpleItemDAO simpleItemDAO;
 
+
     public ItemCartDAO(Context context) {
         super(context, DBHelper.TABLE_ITEMCART);
     }
+
 
 
     public Long add(ItemCart itemCart) {
@@ -88,7 +90,12 @@ public class ItemCartDAO extends GenericDAO  {
         return itemCart;
     }
 
-    public List<ItemCart> getAll(Long cartId){
+    public List<ItemCart> getAllOrderedByCategory(Long cartId){
+        String extraConditions = " ORDER BY c." + DBHelper.COLUMN_CATEGORY_NAME;
+        return getAll(cartId,extraConditions);
+    }
+
+    public List<ItemCart> getAll(Long cartId, String extraConditions){
         db = dbHelper.getReadableDatabase();
         ObservableArrayList<ItemCart> items = new ObservableArrayList<>();
         try {
@@ -100,7 +107,7 @@ public class ItemCartDAO extends GenericDAO  {
                     " ON i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = " + " p." + DBHelper.COLUMN_PRODUCT_ID +
                     " JOIN " + DBHelper.TABLE_CATEGORY + " c " +
                     " ON c." + DBHelper.COLUMN_CATEGORY_NAME + " = " + " p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
-                            " WHERE i." + DBHelper.COLUMN_ITEMCART_CART + " = ?";
+                    " WHERE i." + DBHelper.COLUMN_ITEMCART_CART + " = ? " + extraConditions;
             Cursor c = db.rawQuery(sql, new String[] {cartId.toString()});
 
 

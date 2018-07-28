@@ -97,26 +97,31 @@ public abstract class BasicViewHelper<T> extends Fragment {
         listView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), listView, new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                if(editMode){
-                    if(!callChangeItemBackgroundColor(view, position)){
-                        closeEditModeMenu();
-                    }
-
-                }
+                onClickManagementMenu(view, position);
             }
 
             @Override
             public void onLongClick(View view, int position) {
-                if (!editMode) {
-                    Log.d("DEBUG", "OnLongClick editmode OFF");
-                    callChangeItemBackgroundColor(view,  position);
-                    //((T)listView.getAdapter()).changeItemBackgroundColor(mainLayout,position);
-                    //changeItemBackgroundColor(mainLayout, position);
-                    showEditModeMenu(editMenuInterface);
-
-                }
+                onLongClickManagementMenu(view, position, editMenuInterface);
             }
         }));
+    }
+
+    protected void onLongClickManagementMenu(View view, int position, EditMenuInterface editMenuInterface) {
+        if (!editMode) {
+            callChangeItemBackgroundColor(view,  position);
+            showEditModeMenu(editMenuInterface);
+
+        }
+    }
+
+    protected void onClickManagementMenu(View view, int position) {
+        if(editMode){
+            if(!callChangeItemBackgroundColor(view, position)){
+                closeEditModeMenu();
+            }
+
+        }
     }
 
     public  void showEditModeMenu(final EditMenuInterface editMenuInterface){

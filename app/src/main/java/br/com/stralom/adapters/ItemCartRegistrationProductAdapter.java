@@ -23,7 +23,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import br.com.stralom.compras.R;
+import br.com.stralom.dao.DBHelper;
 import br.com.stralom.entities.Cart;
+import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.SimpleItem;
 
@@ -43,16 +45,20 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
     @Override
     protected void setUpViewHolderLayout(@NonNull ViewHolder holder, Product product) {
         super.setUpViewHolderLayout(holder, product);
-        if(product.getCategory() == null){
+        if(isTemporaryProduct(product)){
             holder.background.setBackgroundColor(Color.parseColor("#FFFFE0"));
         } else {
             holder.background.setBackgroundColor(Color.WHITE);
         }
     }
 
+    private boolean isTemporaryProduct(Product product) {
+        return product.getCategory().getName().equals(DBHelper.TEMPORARY_PRODUCT_CATEGORY ) ;
+    }
+
     @Override
     protected void removeAmount(Product product){
-        if(product.getCategory() == null){
+        if(isTemporaryProduct(product)){
             if(selectedPositions.get(product) == 1){
                 selectedPositions.remove(product);
                 listClone.remove(product);
@@ -72,7 +78,7 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
 
     @Override
     protected void addAmount(Product product) {
-        if(product.getCategory() == null) {
+        if(isTemporaryProduct(product)) {
             if (product == temporaryProduct) {
                 Product productClone = temporaryProduct.getClone();
                 listClone.remove(temporaryProduct);
@@ -101,6 +107,7 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
 
         if(temporaryProduct == null){
             temporaryProduct = new Product();
+            temporaryProduct.setCategory(new Category(DBHelper.TEMPORARY_PRODUCT_CATEGORY,"",R.drawable.ic_help));
             temporaryProduct.setName(filterInput);
             listClone.add(0,temporaryProduct);
 

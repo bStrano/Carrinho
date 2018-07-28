@@ -151,8 +151,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String SQL_INSERT_DEFAULT_CATEGORIES = "INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
             + " VALUES ('Carnes',1, " + R.drawable.meat + ")," +
-            "('Frutas',1," + R.drawable.cherries + " ) ";
-
+            "('Frutas',1," + R.drawable.cherries + " )," +
+            "('" + DBHelper.TEMPORARY_PRODUCT_CATEGORY + "' , 1 ,"  + R.drawable.ic_help + ")";
+    public static  final String TEMPORARY_PRODUCT_CATEGORY = "Produtos Temporários";
 
     // private String getDropTableString(String tableName){
     //    return "DROP TABLE IF EXISTS " + tableName;

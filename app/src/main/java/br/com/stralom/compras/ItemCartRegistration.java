@@ -18,6 +18,7 @@ import java.util.Map;
 import br.com.stralom.adapters.ItemCartRegistrationAdapter;
 import br.com.stralom.adapters.ItemCartRegistrationProductAdapter;
 import br.com.stralom.adapters.ItemCartRegistrationRecipeAdapter;
+import br.com.stralom.dao.DBHelper;
 import br.com.stralom.dao.ItemCartDAO;
 import br.com.stralom.dao.ItemRecipeDAO;
 import br.com.stralom.dao.ProductDAO;
@@ -162,7 +163,7 @@ public class ItemCartRegistration extends AppCompatActivity {
 
 
     private void addItemFromProduct(Map.Entry<Product,Integer> entry) {
-        if(entry.getKey().getCategory() == null){
+        if(isTemporaryProduct(entry)){
             SimpleItem simpleItem = new SimpleItem(entry.getKey().getName(), entry.getValue(), cart);
             simpleItemDAO.add(simpleItem);
         } else {
@@ -170,6 +171,10 @@ public class ItemCartRegistration extends AppCompatActivity {
             addItem(itemCart);
         }
 
+    }
+
+    private boolean isTemporaryProduct(Map.Entry<Product, Integer> entry) {
+        return entry.getKey().getCategory().getName().equals(DBHelper.TEMPORARY_PRODUCT_CATEGORY);
     }
 
 
@@ -203,6 +208,8 @@ public class ItemCartRegistration extends AppCompatActivity {
         }
 
     }
+
+
 
 
 }

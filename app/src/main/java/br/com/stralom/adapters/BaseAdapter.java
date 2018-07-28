@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.ItemCart;
 import br.com.stralom.interfaces.EditMenuInterface;
 
 /**
@@ -29,6 +28,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
     protected ObservableArrayList<U> list;
     private Snackbar snackbar;
     protected  Activity activity;
+
 
 
     public BaseAdapter(ObservableArrayList<U> list, Activity activity) {
@@ -48,6 +48,10 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
     public abstract int getItemCount() ;
     public abstract void removePermanently(U item);
 
+    public int getItemPosition(int position){
+        return position;
+    }
+
     /**
      * Change the background when the item is Selected or Deselected
      * @param mainLayout The background of the element that was clicked;
@@ -55,7 +59,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
      * @return If the list have any selected elements.
      */
     public boolean changeItemBackgroundColor(ViewGroup mainLayout , int position) {
-
+        position = getItemPosition(position);
     Log.d("DEBUG", String.valueOf(position));
         ColorDrawable colorDrawable = (ColorDrawable) mainLayout.getBackground();
         int defaultColor  = Color.parseColor("#FAFAFA");
@@ -70,7 +74,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
             mainLayout.setBackgroundColor(defaultColor);
             selectedElements.remove(position);
 
-            if(selectedElements.size() == 0 ){
+            if(selectedElements.isEmpty()){
                 return false;
                 // closeEditModeMenu(managementMenu);
             }

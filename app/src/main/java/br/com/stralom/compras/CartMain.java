@@ -20,14 +20,18 @@ import java.util.ArrayList;
 
 import br.com.stralom.adapters.CartAdapter;
 import br.com.stralom.dao.CartDAO;
+import br.com.stralom.dao.CategoryDAO;
+import br.com.stralom.dao.DBHelper;
 import br.com.stralom.dao.ItemCartDAO;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Cart;
+import br.com.stralom.entities.Category;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.SimpleItem;
 import br.com.stralom.helper.BasicViewHelper;
 import br.com.stralom.helper.SimpleItemForm;
+import br.com.stralom.interfaces.EditMenuInterface;
 
 
 /**
@@ -37,8 +41,11 @@ public class CartMain extends BasicViewHelper<ItemCart>{
     private ItemCartDAO itemCartDAO;
     private RecipeDAO recipeDAO;
     private CartDAO cartDAO;
+    private CategoryDAO categoryDAO;
     private Cart cart;
     private SimpleItemDAO simpleItemDAO;
+    private Category temporyProductsCategory;
+    private boolean setUpSections = true;
 
 
     private CartAdapter adapter;
@@ -48,6 +55,24 @@ public class CartMain extends BasicViewHelper<ItemCart>{
     public CartMain() {
     }
 
+
+    @Override
+    protected void onClickManagementMenu(View view, int position) {
+        int viewType = adapter.getItemViewType(position);
+        if(viewType == 1 ){
+            super.onClickManagementMenu(view, position);
+        }
+
+    }
+
+    @Override
+    protected void onLongClickManagementMenu(View view, int position, EditMenuInterface editMenuInterface) {
+        int viewType = adapter.getItemViewType(position);
+        if(viewType == 1 ){
+            super.onLongClickManagementMenu(view, position, editMenuInterface);
+        }
+
+    }
 
     @Override
     public void initializeSuperAttributes() {
@@ -69,18 +94,26 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
     @Override
     public void onResume() {
+        Log.d(TAG,"ONRESUME");
+        if(setUpSections){
             list.clear();
-            list.addAll(itemCartDAO.getAll(cart.getId()));
             addSimpleProducts((ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId()));
-            listView.getAdapter().notifyDataSetChanged();
+            list.addAll(itemCartDAO.getAllOrderedByCategory(cart.getId()));
 
+            adapter.customNotifyDataSetChanged();
+
+        }
         super.onResume();
     }
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_cart_main, container, false);
+
+        setUpSections = false;
 
         initializeSuperAttributes();
 
@@ -89,7 +122,10 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         itemCartDAO = new ItemCartDAO(getContext());
         recipeDAO = new RecipeDAO(getContext());
         simpleItemDAO = new SimpleItemDAO(getContext());
+        categoryDAO = new CategoryDAO(getContext());
 
+
+        temporyProductsCategory = categoryDAO.findByName(DBHelper.TEMPORARY_PRODUCT_CATEGORY);
 
 
         cart = cartDAO.findById((long) 1);
@@ -133,10 +169,10 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
     private void loadItemsFromCart(Cart cart) {
-        list = (ObservableArrayList<ItemCart>) itemCartDAO.getAll(cart.getId());
+
+        list = (ObservableArrayList<ItemCart>) itemCartDAO.getAllOrderedByCategory(cart.getId());
         cart.setListItemCart(list);
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
-        Log.d("SIMPLE LIST SIZE", String.valueOf(simpleItemList.size()));
         addSimpleProducts(simpleItemList);
     }
 
@@ -148,9 +184,11 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
     private void addSimpleProducts(ArrayList<SimpleItem> simpleItemList){
         if(simpleItemList.size() > 0) {
-            Log.d(TAG,"ITEMaDICONADO");
+
             for (SimpleItem simpleItem:simpleItemList) {
-                cart.getListItemCart().add(simpleItem.convertToItemCart(simpleItem));
+                ItemCart itemCart = simpleItem.convertToItemCart(simpleItem);
+                itemCart.getProduct().setCategory(temporyProductsCategory);
+                list.add(itemCart);
             }
 
         }
