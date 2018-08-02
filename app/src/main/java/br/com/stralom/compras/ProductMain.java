@@ -37,12 +37,6 @@ public class ProductMain extends BasicViewHelper<Product> {
         return ((ProductAdapter) listView.getAdapter()).changeItemBackgroundColor(background,position);
     }
 
-    @Override
-    public void callCleanBackgroundColor() {
-        ((ProductAdapter)listView.getAdapter()).cleanBackGroundColor();
-    }
-
-
 
 
     @Override

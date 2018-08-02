@@ -74,7 +74,6 @@ public class CartUITest {
     @Before
     public void init(){
         activity = activityActivityTestRule.getActivity();
-        registerSimpleProductBtn = onView(withId(R.id.itemcart_btn_registerSimpleProduct));
         cartViewMain = onView(withId(R.id.cart_view_main));
         goToCartTab();
         if(!initialized){
@@ -149,7 +148,7 @@ public class CartUITest {
 
     @Test
     public void TestOpenSimpleItemRegisterDialog(){
-        onView(withId(R.id.itemcart_btn_registerSimpleProduct)).perform(click());
+        //onView(withId(R.id.itemcart_btn_registerSimpleProduct)).perform(click());
         onView(withId(R.id.itemcart_dialog_simpleProduct)).check(matches(isDisplayed()));
     }
 
@@ -256,7 +255,7 @@ public class CartUITest {
 
     private void registerItemCartRecipe(String name) {
 
-        onView(withId(R.id.itemCart_btn_registerRecipe)).perform(click());
+        //onView(withId(R.id.itemCart_btn_registerRecipe)).perform(click());
 
         onView(withId(R.id.list_itemCart_recipe)).perform(click());
         onData(recipeSpinnerWithText(name)).inRoot(isPlatformPopup()).perform(click());

@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.ItemCartDAO;
@@ -37,6 +39,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
     private ArrayList<Pair<Category,Integer>> holderSections  = new ArrayList<>();
     private ArrayList<Object> listWithSections;
+    private ArrayList<Object> listWithSectionsClone;
 
 
 
@@ -47,10 +50,11 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
         itemCartDAO = new ItemCartDAO(activity);
         itemStockDAO = new ItemStockDAO(activity);
         simpleItemDAO = new SimpleItemDAO(activity);
-        Log.d("DEBUG",list.toString());
         if(list.size() > 0){
             setUpSections();
+            listWithSectionsClone = (ArrayList<Object>) listWithSections.clone();
         }
+
 
 
     }
@@ -61,7 +65,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     }
 
 
-    class CartViewHolder extends  RecyclerView.ViewHolder{
+    public class CartViewHolder extends  RecyclerView.ViewHolder{
         final TextView productName;
         final TextView productAmount;
         final View viewBackground;
@@ -93,6 +97,11 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
 
     public void customNotifyDataSetChanged(){
+        if(listWithSections != null){
+            listWithSections.clear();
+            holderSections.clear();
+        }
+
         if(list.size() > 0){
             setUpSections();
         }
@@ -105,25 +114,19 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
 
         if(position == 0){
-            Log.d("DEBUGA", "POSITION 0 ");
             return 0;
 
         } else if (position == 1 ){
-            Log.d("DEBUGA", "POSITION 1 ");
             return 1;
         } else if (position >1){
             ItemCart itemCart = list.get(getItemPosition(position));
             String categoryName = itemCart.getProduct().getCategory().getName();
 
             String previousCategoryName = list.get(getItemPosition(position-1)).getProduct().getCategory().getName();
-            //Log.d("DEBUGAo - 2", position + " / " + categoryName + " / " + previousCategoryName ) ;
             if(!categoryName.equals(previousCategoryName)){
-                Log.d("DEBUGA", " RETURN 0 CATEGORIA DIFERENTE  " + position + " / " + list.get(getItemPosition(position)).getProduct().getCategory());
                 return 0;
             }
         }
-            Log.d("DEBUGA", "RETURN 1" + position + " / " + list.get(getItemPosition(position)).getProduct().getCategory());
-            //Log.d("DEBUGAX - X", position + " / " + list.toString());
             return 1;
 
 
@@ -141,7 +144,6 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
     @Override
     public int getItemPosition(int position){
-        Log.d("ABAA22","X");
         int categories = 0;
         if(position == 0 || position == 1){
             return  0;
@@ -149,7 +151,6 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
         for (Pair pair: holderSections) {
             if((int) pair.second < position ){
                 categories++;
-                Log.d("ABAA23",pair.second + " / " + position);
             }  else {
                 break;
             }
@@ -183,18 +184,14 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()){
             case 0:
-                Log.d("ABAC", position + " / " + getItemPosition(position));
-               // Log.d("ABAC", position + " / " + list.get(getItemPosition(position)).getProduct().getCategory());
                 Category category =  list.get(getItemPosition(position)).getProduct().getCategory();
                 CartSectionViewHolder sectionHolder = (CartSectionViewHolder) holder;
                 sectionHolder.sectionName.setText(category.getName());
                 sectionHolder.sectionIcon.setImageResource(category.getIconFlag());
                 break;
             case 1:
-                Log.d("ABAD", position + " / " + getItemPosition(position)+  " / " + list.get(getItemPosition(position)).getProduct());
                 ItemCart itemCart =  list.get(getItemPosition(position));
                 CartViewHolder cartViewHolder = (CartViewHolder) holder;
-                //holder.productName.setText(res.getString(R.string.itemcart_itemList_nameAmount,itemCart.getAmount(),itemCart.getProduct().getName()));
                 cartViewHolder.productName.setText(itemCart.getProduct().getName());
                 cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getAmount()));
                 cartViewHolder.viewBackground.setBackgroundColor(Color.parseColor("#FAFAFA"));
@@ -202,7 +199,6 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
 
         }
-        Log.d("ABAX", position + " / " + list);
 
 
 
@@ -210,7 +206,6 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
     @Override
     public int getItemCount() {
-        Log.d("DEBUGSIZE", String.valueOf(list.size()) + " / "+ String.valueOf(holderSections.size()));
         return list.size()+holderSections.size();
     }
 
@@ -223,6 +218,30 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
         }
     }
+
+    @Override
+    public void removeTemporally() {
+        int removeElements = 0;
+        for (Map.Entry hash:selectedElements.entrySet())
+        {
+            list.remove(getItemPosition((int) hash.getKey() - removeElements));
+            removeElements++;
+        }
+
+        customNotifyDataSetChanged();
+
+    }
+
+    @Override
+    protected void undoRemove(){
+        Log.d("DEBUG - List before", list.toString());
+        for (Map.Entry hash: selectedElementsClone.entrySet()) {
+            list.add(getItemPosition((Integer) hash.getKey()), (ItemCart) hash.getValue());
+            Log.d("DEBUG - List",  list.toString());
+        }
+        customNotifyDataSetChanged();
+    }
+
 
 
     private void setUpSections(){
@@ -252,11 +271,6 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     }
 
 
-    public void recreateList(){
-        setUpSections();
-        super.notifyDataSetChanged();
-
-    }
 
 
 //    public void completeItem(int position, TextView textView) {

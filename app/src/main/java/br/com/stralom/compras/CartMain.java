@@ -76,6 +76,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
     @Override
     public void initializeSuperAttributes() {
+        list = new ObservableArrayList<>();
         listView = mainView.findViewById(R.id.cart_list_itemCarts);
         managementMenu = mainView.findViewById(R.id.cart_management_list);
         fab = mainView.findViewById(R.id.itemCart_btn_registerProduct);
@@ -87,27 +88,27 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         return ((CartAdapter) listView.getAdapter()).changeItemBackgroundColor(background,position);
     }
 
-    @Override
-    public void callCleanBackgroundColor() {
-        ((CartAdapter)listView.getAdapter()).cleanBackGroundColor();
-    }
+
+
 
     @Override
     public void onResume() {
         Log.d(TAG,"ONRESUME");
         if(setUpSections){
+            Log.d(TAG,"ONRESUME2");
             list.clear();
-            addSimpleProducts((ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId()));
-            list.addAll(itemCartDAO.getAllOrderedByCategory(cart.getId()));
-
-            adapter.customNotifyDataSetChanged();
-
+            loadItemsFromCart();
+            setUpSections = false;
         }
         super.onResume();
     }
 
 
+    public void onPause() {
 
+        setUpSections = true;
+        super.onPause();
+    }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,7 +130,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
         cart = cartDAO.findById((long) 1);
-        loadItemsFromCart(cart);
+
 
 
         setUpEmptyListView(mainView, list,R.id.itemCart_emptyList,R.drawable.ic_cart, R.string.itemCart_emptyList_title,R.string.itemCart_emptyList_description);
@@ -138,6 +139,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         adapter = new CartAdapter(list,getActivity());
         listView.setAdapter(adapter);
 
+        loadItemsFromCart();
 
         setUpManagementMenu(adapter);
 
@@ -168,14 +170,15 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
 
 
-    private void loadItemsFromCart(Cart cart) {
+    private void loadItemsFromCart() {
 
-        list = (ObservableArrayList<ItemCart>) itemCartDAO.getAllOrderedByCategory(cart.getId());
-        cart.setListItemCart(list);
         ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
         addSimpleProducts(simpleItemList);
-    }
+        list.addAll(itemCartDAO.getAllOrderedByCategory(cart.getId()));
+        cart.setListItemCart(list);
+        adapter.customNotifyDataSetChanged();
 
+    }
 
 
 

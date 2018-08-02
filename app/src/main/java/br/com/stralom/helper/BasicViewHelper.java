@@ -34,7 +34,7 @@ public abstract class BasicViewHelper<T> extends Fragment {
     private boolean editMode = false;
 
     protected abstract boolean callChangeItemBackgroundColor(View view, int position);
-    protected abstract void callCleanBackgroundColor();
+
 
 
     protected View mainView;
@@ -164,7 +164,7 @@ public abstract class BasicViewHelper<T> extends Fragment {
     }
 
     private  void closeEditModeMenu() {
-        callCleanBackgroundColor();
+
         managementMenu.setVisibility(View.GONE);
         editMode = false;
         fab.show();

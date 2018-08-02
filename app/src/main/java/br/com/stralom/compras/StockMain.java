@@ -53,10 +53,7 @@ public class StockMain extends BasicViewHelper<ItemStock> {
 
     }
 
-    @Override
-    public void callCleanBackgroundColor() {
-        ((StockAdapter)listView.getAdapter()).cleanBackGroundColor();
-    }
+
 
     @Override
     public void initializeSuperAttributes() {

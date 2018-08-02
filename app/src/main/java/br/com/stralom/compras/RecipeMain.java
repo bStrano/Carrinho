@@ -42,10 +42,6 @@ public class RecipeMain extends BasicViewHelper<Recipe>{
 
     }
 
-    @Override
-    public void callCleanBackgroundColor() {
-        ((RecipeAdapter)listView.getAdapter()).cleanBackGroundColor();
-    }
 
 
     public RecipeMain() {

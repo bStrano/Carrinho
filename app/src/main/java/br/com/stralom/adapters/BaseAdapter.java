@@ -23,8 +23,8 @@ import br.com.stralom.interfaces.EditMenuInterface;
  * Created by Bruno Strano on 06/07/2018.
  */
 public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends RecyclerView.Adapter<T> implements EditMenuInterface {
-    private HashMap<Integer,U> selectedElements;
-    private HashMap<Integer,U> hashClone;
+    protected HashMap<Integer,U> selectedElements;
+    protected HashMap<Integer,U> selectedElementsClone;
     protected ObservableArrayList<U> list;
     private Snackbar snackbar;
     protected  Activity activity;
@@ -83,16 +83,13 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
         return true;
     }
 
-    public void cleanBackGroundColor(){
-        notifyDataSetChanged();
-        selectedElements = new HashMap<>();
-    }
+
 
 
     @Override
     public void remove() {
-        hashClone = (HashMap<Integer, U>) selectedElements.clone();
-        removeTemporaly();
+        selectedElementsClone = (HashMap<Integer, U>) selectedElements.clone();
+        removeTemporally();
         String itemsRemoved;
         if(selectedElements.size() == 1) {
              itemsRemoved = activity.getResources().getString(R.string.list_oneRemovedItems,selectedElements.size());
@@ -105,9 +102,12 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                for (Map.Entry<Integer, U> hash : hashClone.entrySet()) {
-                    removePermanently(hash.getValue());
+                if(selectedElementsClone != null){
+                    for (Map.Entry<Integer, U> hash : selectedElementsClone.entrySet()) {
+                        removePermanently(hash.getValue());
+                    }
                 }
+
 
             }
         });
@@ -119,7 +119,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
     }
 
 
-    private void removeTemporaly(){
+    protected void removeTemporally(){
 
         int removedElements = 0;
         for (Map.Entry<Integer, U> hash : selectedElements.entrySet()) {
@@ -131,29 +131,36 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
         }
     }
 
+
+
+
+
     private void createUndoSnakbar(String message, final TextView itemCartNameAmount){
 
         snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), message, Snackbar.LENGTH_LONG);
             snackbar.setActionTextColor(Color.BLUE);
-            Log.d("DEBUG", "2");
         // Desfazer remoção
             snackbar.setAction(R.string.snackbar_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (Map.Entry<Integer,U> hash: hashClone.entrySet()) {
-                    Log.d("DEBUG", list.toString());
-                    int index = hash.getKey();
-                    list.add(index,  hash.getValue());
-                    notifyItemInserted(index);
-                    notifyDataSetChanged();
-                }
-
+                undoRemove();
 
                 if( itemCartNameAmount != null) {
                     itemCartNameAmount.setPaintFlags( (itemCartNameAmount.getPaintFlags()) & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 }
+                selectedElements = new HashMap<>();
+                selectedElementsClone = null;
             }
         });
+    }
+
+    protected void undoRemove() {
+        for (Map.Entry<Integer,U> hash: selectedElementsClone.entrySet()) {
+            int index = hash.getKey();
+            list.add(index,  hash.getValue());
+            notifyItemInserted(index);
+            notifyDataSetChanged();
+        }
     }
 
 
