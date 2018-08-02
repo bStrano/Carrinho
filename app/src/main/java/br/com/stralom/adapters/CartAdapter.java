@@ -224,7 +224,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
         int removeElements = 0;
         for (Map.Entry hash:selectedElements.entrySet())
         {
-            list.remove(getItemPosition((int) hash.getKey() - removeElements));
+            list.remove((int) hash.getKey() - removeElements);
             removeElements++;
         }
 
@@ -234,10 +234,8 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
     @Override
     protected void undoRemove(){
-        Log.d("DEBUG - List before", list.toString());
         for (Map.Entry hash: selectedElementsClone.entrySet()) {
-            list.add(getItemPosition((Integer) hash.getKey()), (ItemCart) hash.getValue());
-            Log.d("DEBUG - List",  list.toString());
+            list.add((Integer) hash.getKey(), (ItemCart) hash.getValue());
         }
         customNotifyDataSetChanged();
     }
