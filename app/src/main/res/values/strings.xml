@@ -26,7 +26,7 @@
     <!-- ItemCart -->
     <string name="itemCartAmount">Quantidade</string>
     <string name="itemcart_itemList_name"> %second </string>
-    <string name="itemcart_itemList_amount"> %fx  </string>
+    <string name="itemcart_itemList_amount"> %sx  </string>
 
     <!-- Stock -->
     <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>

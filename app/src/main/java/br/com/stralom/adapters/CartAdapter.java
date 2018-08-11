@@ -193,7 +193,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
                 ItemCart itemCart =  list.get(getItemPosition(position));
                 CartViewHolder cartViewHolder = (CartViewHolder) holder;
                 cartViewHolder.productName.setText(itemCart.getProduct().getName());
-                cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getAmount()));
+                cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.formatAmount()));
                 cartViewHolder.viewBackground.setBackgroundColor(Color.parseColor("#FAFAFA"));
                 break;
 

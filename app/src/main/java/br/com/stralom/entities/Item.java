@@ -28,6 +28,14 @@ public class Item implements Serializable {
     Item() {
     }
 
+    public String formatAmount(){
+        if(total % 1 == 0){
+            return String.valueOf((int) amount);
+        } else {
+            return String.format("#.2f",amount);
+        }
+    }
+
     public Long getId() {
         return id;
     }
