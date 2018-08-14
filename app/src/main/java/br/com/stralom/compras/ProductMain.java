@@ -47,7 +47,7 @@ public class ProductMain extends BasicViewHelper<Product> {
 
 
         productDAO = new ProductDAO(getActivity());
-        list = (ObservableArrayList<Product>) productDAO.getAll();
+        list = (ObservableArrayList<Product>) productDAO.getAllOrderedByName();
         setUpEmptyListView(mainView, list,R.id.product_emptyList, R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
         //registerForContextMenu(listView);
 
@@ -122,14 +122,27 @@ public class ProductMain extends BasicViewHelper<Product> {
         return mainView;
     }
 
+    private void addOrdered(Product newProduct){
+        Product product;
+        for (int i = 0 ; i < list.size() ; i ++) {
+            product = list.get(i);
+            if(product.getName().compareToIgnoreCase(newProduct.getName()) > 0 ){
+                list.add(i,newProduct);
+                listView.getAdapter().notifyItemInserted(i);
+                return;
+            }
+        }
+        list.add(newProduct);
+        listView.getAdapter().notifyDataSetChanged();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REGISTRATION_REQUEST){
             if(resultCode == RESULT_OK){
                 Product product = data.getParcelableExtra("product");
                 if(product != null){
-                    list.add(product);
-                    listView.getAdapter().notifyDataSetChanged();
+                    addOrdered(product);
                 }
             }
         }

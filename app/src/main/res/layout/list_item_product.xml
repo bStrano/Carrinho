@@ -1,58 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:orientation="vertical"
-
+    android:background="#FAFAFA"
+    android:id="@id/product_view_foreground"
+    android:foreground="?android:selectableItemBackground"
     >
 
-        <RelativeLayout
-            android:layout_height="match_parent"
-            android:background="#FAFAFA"
-            android:id="@+id/product_view_foreground"
-            android:layout_width="match_parent"
-            android:paddingTop="@dimen/list_paddingVertical"
-            android:paddingBottom="@dimen/list_paddingVertical"
-            android:focusable="true"
-            android:foreground="?android:selectableItemBackground"
-            android:clickable="true"
-            android:gravity="start">
-            <ImageView
-                android:id="@+id/product_itemList_categoryIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_recipe_image"
-                android:layout_marginStart="@dimen/list_marginLeft"
-                android:contentDescription="@string/imageDescription_productCategory" />
+    <ImageView
+        android:id="@+id/product_itemList_categoryIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/imageDescription_productCategory"
+        android:src="@drawable/ic_recipe_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/product_itemList_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/list_textMediumSize"
-                android:layout_toEndOf="@+id/product_itemList_categoryIcon"
-                android:textStyle="bold"
-                android:text="Product Name"
-                tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/product_itemList_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/product_itemList_categoryIcon"
+        android:text="Product Name"
+        android:gravity="center_vertical"
+        android:textAlignment="gravity"
+        android:textSize="@dimen/list_textMediumSize"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/product_itemList_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/product_itemList_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/list_textMediumSize"
-                android:layout_marginStart="@dimen/list_marginLeft"
-                android:layout_toEndOf="@+id/product_itemList_name"
-                android:text="400 R$"
-                tools:ignore="HardcodedText" />
-        </RelativeLayout>
+    <TextView
+        android:id="@+id/product_itemList_price"
+        android:layout_width="62dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@+id/product_itemList_name"
+        android:gravity="center"
+        android:text="400 R$"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/product_itemList_categoryIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
 
     <View
+        android:id="@+id/view3"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

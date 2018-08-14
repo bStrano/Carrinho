@@ -51,6 +51,19 @@ public class ProductDAO extends GenericDAO{
     }
 
 
+    public Product getByName(String name){
+        db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_PRODUCT + " WHERE  " + DBHelper.COLUMN_PRODUCT_NAME+ " = ?",new String[] {name} );
+        if(cursor != null){
+            cursor.moveToFirst();
+            return getProduct(cursor);
+        } else {
+            return null;
+        }
+
+    }
+
     public ArrayList<Product> getAllProductsNotInsertedInTheCart(Cart cart){
 
         db = dbHelper.getReadableDatabase();
@@ -84,6 +97,14 @@ public class ProductDAO extends GenericDAO{
 
 
     public List<Product> getAll(){
+        return getAll(null);
+    }
+
+    public List<Product> getAllOrderedByName(){
+        return getAll(DBHelper.COLUMN_PRODUCT_NAME);
+    }
+
+    private List<Product> getAll(String order_colName){
 
         db = dbHelper.getReadableDatabase();
         ObservableArrayList<Product> products = new ObservableArrayList<>();
@@ -94,6 +115,10 @@ public class ProductDAO extends GenericDAO{
                 " FROM " + DBHelper.TABLE_PRODUCT + " p " +
                 " LEFT JOIN " + DBHelper.TABLE_CATEGORY + " c " +
                 " ON p." + DBHelper.COLUMN_PRODUCT_CATEGORY + " = c." + DBHelper.COLUMN_CATEGORY_NAME ;
+
+        if(order_colName != null){
+            sql = sql + " ORDER BY " + order_colName;
+        }
         try {
 
 
@@ -128,6 +153,8 @@ public class ProductDAO extends GenericDAO{
 
         return new Product(id,name,price,category);
     }
+
+
 
     @NonNull
     private ContentValues getContentValues(Product product) {
