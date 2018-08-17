@@ -28,12 +28,19 @@ public class Item implements Serializable {
     Item() {
     }
 
-    public String formatAmount(){
+
+    protected String formatAmount(double amount){
         if(total % 1 == 0){
             return String.valueOf((int) amount);
         } else {
-            return String.format("#.2f",amount);
+            return String.format("%.2f",amount);
         }
+    }
+
+
+
+    public String getFormattedAmount(){
+        return formatAmount(this.amount);
     }
 
     public Long getId() {

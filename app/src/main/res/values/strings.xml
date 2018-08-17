@@ -132,5 +132,7 @@
     <string name="registration_product_imageNewCategory">Botão - Adicionar nova categoria.</string>
     <string name="error_product_alreadyRegistered">Já existe um produto cadastrado com esse nome.</string>
     <string name="money_sign" > R$</string>
+    <string name="stock_maxTxt">max</string>
+    <string name="stock_minTxt">atual</string>
 
 </resources>

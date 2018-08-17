@@ -1,69 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/stock_itemList_foregroundView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical">
+    android:background="#FAFAFA"
+    android:foreground="?android:selectableItemBackground"
+    android:minHeight="60dp">
 
 
-        <RelativeLayout
-            android:foreground="?android:selectableItemBackground"
-            android:id="@+id/stock_itemList_foregroundView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="@dimen/list_paddingVertical"
-            android:paddingBottom="@dimen/list_paddingVertical"
-            android:background="#FAFAFA"
-            android:layout_gravity="end"
-            android:clickable="true"
-            >
-
-            <TextView
-                android:id="@+id/stock_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nome do Produto  "
-                android:textSize="@dimen/list_textMediumSize"
-                android:textColor="#25383C"
-                android:layout_marginStart="@dimen/list_marginLeft"
-                android:gravity="end"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/stock_actualAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="800"
-                android:textColor="@color/colorPrimaryLight"
-                android:textSize="@dimen/list_textSmallSize"
-                android:layout_toStartOf="@id/stock_maxAmount"
-                android:layout_marginEnd="10dp"
-                android:gravity="center"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/stock_maxAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1000 "
-                android:textSize="@dimen/list_textSmallSize"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_alignParentEnd="true"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/list_marginRight"
-                tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/stock_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
+        android:text="Nome do Produto  "
+        android:textAlignment="gravity"
+        android:textColor="#25383C"
+        android:textSize="@dimen/list_textMediumSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/stock_actualAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
 
-        </RelativeLayout>
+    <TextView
+        android:id="@+id/stock_actualAmount"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_toStartOf="@id/stock_maxAmount"
+        android:gravity="center_horizontal"
+        android:text="1000"
+        android:textColor="@color/colorPrimaryLight"
+        android:textSize="@dimen/list_textSmallSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/stock_maxAmount"
+        app:layout_constraintTop_toBottomOf="@+id/stock_minTxt"
+        tools:ignore="HardcodedText" />
 
 
+    <TextView
+        android:id="@+id/stock_maxAmount"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:gravity="center_horizontal"
+        android:text="1000"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/list_textSmallSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_maxTxt"
+        tools:ignore="HardcodedText" />
 
 
     <View
+        android:id="@+id/view5"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@android:color/darker_gray"
-        />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/stock_maxTxt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="1dp"
+        android:text="@string/stock_maxTxt"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/stock_maxAmount"
+        app:layout_constraintStart_toEndOf="@+id/stock_actualAmount"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/stock_minTxt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="1dp"
+        android:text="@string/stock_minTxt"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/stock_maxAmount"
+        app:layout_constraintStart_toEndOf="@+id/stock_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+</android.support.constraint.ConstraintLayout>

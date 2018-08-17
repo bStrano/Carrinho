@@ -1,68 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="br.com.stralom.compras.StockMain"
-    android:orientation="vertical"
-    android:id="@+id/stock_view_main"
-   >
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/list_paddingVertical"
-        android:paddingBottom="@dimen/list_paddingVertical"
-        android:layout_gravity="end"
-        >
-
-
-
-        <TextView
-            android:id="@+id/stock_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/produto"
-            android:textSize="@dimen/list_textLargeSize"
-            android:textStyle="bold"
-            android:textColor="#25383C"
-            android:layout_marginStart="@dimen/list_marginLeft"
-            android:gravity="center"
-            />
-
-            <TextView
-                android:id="@+id/stock_actualAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/itemStock_actualAmountShort"
-                android:textSize="@dimen/list_textMediumSize"
-                android:textColor="@color/colorPrimaryLight"
-                android:layout_toStartOf="@+id/stock_maxAmount"
-                android:textStyle="bold"
-                android:layout_marginEnd="10dp"
-                android:gravity="center"
-                />
-
-            <TextView
-                android:id="@+id/stock_maxAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/itemStock_maxAmountShort"
-                android:textSize="@dimen/list_textMediumSize"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_alignParentEnd="true"
-                android:textStyle="bold"
-                android:layout_marginEnd="@dimen/list_marginRight"
-                android:gravity="center"/>
-
-        </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <include
             android:layout_height="match_parent"
@@ -73,42 +12,21 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_itemStock"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_addRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-
-            android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            app:backgroundTint="@color/colorTertiary"
-            app:fabSize="normal"
-            />
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_addStock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_add"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            app:fabSize="normal"
-            />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_stock"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_add"
-            android:layout_alignParentBottom="true"
             app:backgroundTint="@color/colorPrimaryDark"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            />
+            app:fabSize="normal" />
+
         <!--<android.support.design.widget.FloatingActionButton-->
             <!--android:id="@+id/btn_newItemStock"-->
             <!--android:layout_width="wrap_content"-->
@@ -129,5 +47,3 @@
     </RelativeLayout>
 
 
-
-</LinearLayout>

@@ -1,59 +1,61 @@
 package br.com.stralom.listeners;
 
 import android.databinding.ObservableList;
-import android.util.Log;
+import android.support.constraint.Group;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 
 public class ListChangeListener<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
-    private LinearLayout layout;
+    private LinearLayout emptyListLayout;
 
-
-    public ListChangeListener( LinearLayout layout, int initialSize) {
-        this.layout = layout;
+    public ListChangeListener(LinearLayout emptyListLayout, int initialSize) {
+        this.emptyListLayout = emptyListLayout;
         updateIfNecessary(initialSize);
+    }
+
+
+    private void showEmptyList(){
+        emptyListLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmptyList(){
+        emptyListLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onChanged(ObservableList<T> sender) {
-        Log.e("DEBUG","onchanged");
         updateIfNecessary(sender.size());
     }
 
     private void updateIfNecessary(int size) {
         if(size == 0){
-            layout.setVisibility(View.VISIBLE);
+            showEmptyList();
         } else {
-            layout.setVisibility(View.INVISIBLE);
+            hideEmptyList();
         }
     }
 
     @Override
     public void onItemRangeChanged(ObservableList<T> sender, int positionStart, int itemCount) {
-        Log.e("DEBUG","onItemRangeChanged");
     }
 
     @Override
     public void onItemRangeInserted(ObservableList<T> sender, int positionStart, int itemCount) {
-        Log.e("DEBUG","onItemRangeInserted");
-        Log.e("DEBUG","onItemRangeInserted: " + sender.size());
-
         if(sender.size() >= 1 ){
-            layout.setVisibility(View.INVISIBLE);
+            hideEmptyList();
         }
     }
 
     @Override
     public void onItemRangeMoved(ObservableList<T> sender, int fromPosition, int toPosition, int itemCount) {
-        Log.e("DEBUG","onItemRangeMoved");
     }
 
     @Override
     public void onItemRangeRemoved(ObservableList<T> sender, int positionStart, int itemCount) {
-        Log.e("DEBUG","onItemRangeRemoved");
         if(sender.size() == 0){
-            layout.setVisibility(View.VISIBLE);
+            showEmptyList();
         }
     }
 

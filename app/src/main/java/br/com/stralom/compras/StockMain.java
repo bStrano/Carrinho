@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,7 +62,7 @@ public class StockMain extends BasicViewHelper<ItemStock> {
     public void initializeSuperAttributes() {
         list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
         listView = mainView.findViewById(R.id.list_itemStock);
-        fab = mainView.findViewById(R.id.fab_stock);
+        fab = mainView.findViewById(R.id.fab_addStock);
         managementMenu = mainView.findViewById(R.id.stock_management_list);
     }
 
@@ -96,7 +99,12 @@ public class StockMain extends BasicViewHelper<ItemStock> {
 
 
         list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
-        setUpEmptyListView(mainView, list,R.id.stock_emptyList,R.drawable.ic_stock,R.string.stock_emptyList_title,R.string.stock_emptyList_description);
+
+
+
+
+
+        setUpEmptyListView(mainView, list,R.id.stock_emptyList, R.drawable.ic_stock,R.string.stock_emptyList_title,R.string.stock_emptyList_description);
 
         StockAdapter adapter = new StockAdapter(list,getActivity());
         listView.setAdapter(adapter);
@@ -110,40 +118,15 @@ public class StockMain extends BasicViewHelper<ItemStock> {
          // Button newItemStock = view.findViewById(R.id.btn_newItemStock);
 
         fabAddStock = mainView.findViewById(R.id.fab_addStock);
-        fabUpdateStock = mainView.findViewById(R.id.fab_addRecipe);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!fabPressed){
-                    openFabMenu();
-                }else {
-                    closeFabMenu();
-                }
-            }
-        });
 
 
-        listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if(dy>0){
-                    hideFabs();
-                    if(fabPressed) {
-                        closeFabMenu();
-                    }
-                } else {
-                    showFabs();
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
 
-        });
+
+
 
         fabAddStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeFabMenu();
                 final View viewDialog = getLayoutInflater().inflate(R.layout.dialog_itemstock_registration,null);
                 // Load Products Spinner
                 Spinner spinner = viewDialog.findViewById(R.id.form_itemStock_products);
@@ -211,32 +194,7 @@ public class StockMain extends BasicViewHelper<ItemStock> {
         }
     }
 
-    private void closeFabMenu() {
-        fab.animate().rotation(-0F);
-        fabPressed = false;
-        fabUpdateStock.animate().translationY(0);
-        fabAddStock.animate().translationY(0);
-    }
 
-    private void openFabMenu() {
-        fab.animate().rotation(135.0F);
-        fabPressed = true;
-        fabAddStock.animate().translationY(-getResources().getDimension(R.dimen.fab_61));
-        fabUpdateStock.animate().translationY(-getResources().getDimension(R.dimen.fab_111));
-
-    }
-
-    private void hideFabs(){
-        fab.hide();
-        fabAddStock.hide();
-        fabUpdateStock.hide();
-    }
-
-    private void showFabs(){
-        fab.show();
-        fabUpdateStock.show();
-        fabAddStock.show();
-    }
 
 
 

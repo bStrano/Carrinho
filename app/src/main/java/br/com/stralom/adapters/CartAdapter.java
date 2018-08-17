@@ -6,7 +6,6 @@ import android.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import br.com.stralom.compras.R;
@@ -193,7 +191,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
                 ItemCart itemCart =  list.get(getItemPosition(position));
                 CartViewHolder cartViewHolder = (CartViewHolder) holder;
                 cartViewHolder.productName.setText(itemCart.getProduct().getName());
-                cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.formatAmount()));
+                cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getFormattedAmount()));
                 cartViewHolder.viewBackground.setBackgroundColor(Color.parseColor("#FAFAFA"));
                 break;
 

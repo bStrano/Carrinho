@@ -40,8 +40,8 @@ public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemS
     public void onBindViewHolder(@NonNull StockViewHolder holder, int position) {
         ItemStock itemStock = list.get(position);
         holder.name.setText(itemStock.getProduct().getName());
-        holder.maxAmount.setText(String.valueOf(itemStock.getAmount()));
-        holder.actualAmount.setText(String.valueOf(itemStock.getActualAmount()));
+        holder.maxAmount.setText(itemStock.getFormattedAmount());
+        holder.actualAmount.setText(itemStock.getFormattedActualAmount());
         holder.viewForeground.setBackgroundColor(Color.parseColor("#FAFAFA"));
     }
 

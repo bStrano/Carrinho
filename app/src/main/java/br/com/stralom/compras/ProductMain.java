@@ -48,7 +48,7 @@ public class ProductMain extends BasicViewHelper<Product> {
 
         productDAO = new ProductDAO(getActivity());
         list = (ObservableArrayList<Product>) productDAO.getAllOrderedByName();
-        setUpEmptyListView(mainView, list,R.id.product_emptyList, R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
+        setUpEmptyListView(mainView, list,R.id.product_emptyList,R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
         //registerForContextMenu(listView);
 
        productAdapter = new ProductAdapter(list,getActivity());

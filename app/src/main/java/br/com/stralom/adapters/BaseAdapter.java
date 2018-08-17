@@ -136,8 +136,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U> extends 
 
 
     private void createUndoSnakbar(String message, final TextView itemCartNameAmount){
-
-        snackbar = Snackbar.make(activity.findViewById(R.id.cart_view_main), message, Snackbar.LENGTH_LONG);
+        snackbar = Snackbar.make(activity.findViewById(R.id.main_frame), message, Snackbar.LENGTH_LONG);
             snackbar.setActionTextColor(Color.BLUE);
         // Desfazer remoção
             snackbar.setAction(R.string.snackbar_undo, new View.OnClickListener() {
