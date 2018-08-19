@@ -6,7 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import br.com.stralom.adapters.ItemClickListener;
+import br.com.stralom.interfaces.ItemClickListener;
 
 /**
  * Created by Bruno on 21/02/2018.

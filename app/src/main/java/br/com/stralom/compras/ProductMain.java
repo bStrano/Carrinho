@@ -51,7 +51,7 @@ public class ProductMain extends BasicViewHelper<Product> {
         setUpEmptyListView(mainView, list,R.id.product_emptyList,R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
         //registerForContextMenu(listView);
 
-       productAdapter = new ProductAdapter(list,getActivity());
+       productAdapter = new ProductAdapter(list,getActivity(),null);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setHasFixedSize(true);
         listView.setAdapter(productAdapter);

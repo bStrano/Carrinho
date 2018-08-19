@@ -131,8 +131,12 @@
     <string name="registration_product_amount">Quantidade</string>
     <string name="registration_product_imageNewCategory">Botão - Adicionar nova categoria.</string>
     <string name="error_product_alreadyRegistered">Já existe um produto cadastrado com esse nome.</string>
-    <string name="money_sign" > R$</string>
+    <string name="money_sign"> R$</string>
     <string name="stock_maxTxt">max</string>
     <string name="stock_minTxt">atual</string>
+    <string name="search_product">Procurar</string>
+    <string name="stock_register">Adicionar ao Estoque</string>
+    <string name="stock_registration_selectProduct">Selecione o Produto</string>
+    <string name="contentDescription_stock_expandProductsListIcon">Icone para substituir o produto escolhido</string>
 
 </resources>

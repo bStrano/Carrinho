@@ -8,7 +8,6 @@ import android.databinding.ObservableArrayList;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import br.com.stralom.adapters.ItemClickListener;
+import br.com.stralom.interfaces.ItemClickListener;
 import br.com.stralom.compras.R;
 import br.com.stralom.interfaces.EditMenuInterface;
 import br.com.stralom.listeners.ListChangeListener;

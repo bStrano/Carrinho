@@ -41,7 +41,8 @@
 
         <activity android:name=".RecipeRegistration" />
         <activity android:name=".ItemCartRegistration" />
-        <activity android:name=".ProductRegistration"></activity>
+        <activity android:name=".ProductRegistration" />
+        <activity android:name=".StockRegistration"/>
     </application>
 
 </manifest>

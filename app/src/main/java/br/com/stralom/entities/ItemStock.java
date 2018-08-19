@@ -1,11 +1,14 @@
 package br.com.stralom.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Bruno Strano on 24/01/2018.
  */
 
 
-public class ItemStock extends Item {
+public class ItemStock extends Item implements Parcelable{
     private Stock stock;
     private double stockPercentage;
     private Status status;
@@ -14,6 +17,34 @@ public class ItemStock extends Item {
 
     public ItemStock() {
 
+    }
+
+    protected ItemStock(Parcel in) {
+        stockPercentage = in.readDouble();
+        actualAmount = in.readDouble();
+    }
+
+    public static final Creator<ItemStock> CREATOR = new Creator<ItemStock>() {
+        @Override
+        public ItemStock createFromParcel(Parcel in) {
+            return new ItemStock(in);
+        }
+
+        @Override
+        public ItemStock[] newArray(int size) {
+            return new ItemStock[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(stockPercentage);
+        parcel.writeDouble(actualAmount);
     }
 
     public enum Status{
@@ -84,8 +115,8 @@ public class ItemStock extends Item {
         return actualAmount;
     }
 
-    public void setActualAmount(int atualAmount) {
-        this.actualAmount = atualAmount;
+    public void setActualAmount(double actualAmount) {
+        this.actualAmount = actualAmount;
     }
 
     public double getStockPercentage() {

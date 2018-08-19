@@ -1,4 +1,4 @@
-package br.com.stralom.adapters;
+package br.com.stralom.interfaces;
 
 import android.view.View;
 
