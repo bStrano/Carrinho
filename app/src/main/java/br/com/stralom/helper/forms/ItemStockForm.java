@@ -23,6 +23,8 @@ import br.com.stralom.helper.exceptions.InvalidElementForm;
  */
 
 public class ItemStockForm  {
+    public static final int EMPTY_PRODUCT_ERRORCODE = 1;
+
     private Validation validation;
 
     private ItemStock itemStock;
@@ -47,7 +49,7 @@ public class ItemStockForm  {
 
         Pair<Double,Double> amounts = checkAmounts();
         if(selectedProduct == null){
-            throw new InvalidElementForm("Product not selected");
+            throw new InvalidElementForm("Product not selected",EMPTY_PRODUCT_ERRORCODE);
         } else if(amounts == null){
             throw new InvalidElementForm("Empty amounts field");
         }

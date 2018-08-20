@@ -44,6 +44,7 @@ public class StockRegistration extends AppCompatActivity  {
     private Group selectedProductGroup;
     private TextView selectedProductView;
     private Group unselectedProductGroup;
+    private TextView selectProductTitle;
 
     private ArrayList<Product> products ;
     private Product selectedProduct;
@@ -73,17 +74,20 @@ public class StockRegistration extends AppCompatActivity  {
         selectedProductGroup = findViewById(R.id.stock_registration_group_selectedProduct);
         unselectedProductGroup = findViewById(R.id.stock_registration_group_productList);
         selectedProductView = findViewById(R.id.stock_registration_selectedProduct);
+        selectProductTitle = findViewById(R.id.stock_regidtration_selectProductTitle);
 
         products = (ArrayList<Product>) productDAO.getAllOrderedByName();
 
         toolbar.setTitle(R.string.stock_register);
+
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        setSupportActionBar(toolbar);
+
 
         for (int id: selectedProductGroup.getReferencedIds()) {
             findViewById(id).setOnClickListener(new View.OnClickListener() {
@@ -133,6 +137,7 @@ public class StockRegistration extends AppCompatActivity  {
         unselectedProductGroup.setVisibility(View.GONE);
         selectedProductGroup.setVisibility(View.VISIBLE);
         selectedProductView.setText(selectedProduct.getName());
+        selectProductTitle.setTextColor(Color.BLACK);
     }
 
     public void unSelectProduct(){
@@ -163,6 +168,9 @@ public class StockRegistration extends AppCompatActivity  {
 
                     finish();
                 } catch (InvalidElementForm invalidElementForm) {
+                    if(invalidElementForm.getErrorCode() == ItemStockForm.EMPTY_PRODUCT_ERRORCODE){
+                        selectProductTitle.setTextColor(Color.RED);
+                    }
                     Log.w(TAG,invalidElementForm);
                 } catch ( SQLiteConstraintException e){
                     if(e.getMessage().contains("code 2067")){
