@@ -25,7 +25,7 @@
 
     <!-- ItemCart -->
     <string name="itemCartAmount">Quantidade</string>
-    <string name="itemcart_itemList_name"> %second </string>
+    <string name="itemcart_itemList_name"> %s </string>
     <string name="itemcart_itemList_amount"> %sx  </string>
 
     <!-- Stock -->
@@ -68,7 +68,7 @@
     <string name="form_title_ItemRecipeRegistration">Adicionar Ingrediente</string>
     <string name="imageDescription_form_recipe">Imagem padrão de uma receita</string>
     <!-- Recipe - ItemList -->
-    <string name="recipe_itemList_name"><b>%second</b> </string>
+    <string name="recipe_itemList_name"><b>%s</b> </string>
     <string name="recipe_itemList_price">Preço: %.2f R$</string>
     <string name="recipe_itemList_ingredientCount">Numero de Ingredientes: %d</string>
 
@@ -80,7 +80,7 @@
     <string name="toast_produc_register">Produto Salvo !</string>
     <string name="swipe_remove">REMOVER</string>
     <string name="check">Confirmar</string>
-    <string name="addIngredient">Adicionar Ingrediente</string>
+    <string name="registration_recipe_selectIngredient">Selecionar Ingrediente</string>
     <string name="delete">Deletar</string>
     <string name="edit">Editar</string>
     <string name="imageDescription_productCategory">Icone da Categoria </string>
@@ -100,7 +100,7 @@
     <string name="validation_obrigatoryField">Campo obrigatório.</string>
     <string name="itemCart_validation_simpleItemAlreadyExists">Já existe um produto cadastrado com esse nome.</string>
     <string name="toast_recipe_alreadyRegistered">Receita já cadastrada.</string>
-    <string name="recipe_validation_ingredients"> %second ( Obrigatório )</string>
+    <string name="recipe_validation_ingredients"> %s ( Obrigatório )</string>
     <string name="toast_itemStock_validRegistration">Produto Cadastrado !</string>
     <string name="toast_itemStock_invalidRegistration">O produto já está cadastrado.</string>
 

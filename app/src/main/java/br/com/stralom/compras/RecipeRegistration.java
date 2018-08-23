@@ -2,8 +2,6 @@ package br.com.stralom.compras;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -12,14 +10,13 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
@@ -30,24 +27,23 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import br.com.stralom.adapters.IngredientsDisplayAdapter;
 import br.com.stralom.dao.ItemRecipeDAO;
-import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.entities.ItemRecipe;
-import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
-import br.com.stralom.helper.ItemRecipeForm;
+
 import br.com.stralom.helper.RecipeForm;
 
 public class RecipeRegistration extends AppCompatActivity {
     private static final String TAG = "RecipeRegistration";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_INGREDIENTS = 2;
     private String mCurrentPhotoPath;
     private ItemRecipeDAO itemRecipeDAO;
     private RecipeDAO recipeDAO;
     private RecipeForm recipeForm;
     private ArrayList<ItemRecipe> ingredients;
-    private ArrayAdapter<ItemRecipe> itemRecipeArrayAdapter;
 
 
     @Override
@@ -56,9 +52,9 @@ public class RecipeRegistration extends AppCompatActivity {
         setContentView(R.layout.fragment_recipe_registration);
 
 
-        Button btn_newImage = findViewById(R.id.form_recipe_btn_newImage);
-        Button btn_newIngredient = findViewById(R.id.form_recipe_btn_newIngredient);
-        ListView list_ingredients = findViewById(R.id.form_recipe_ingredients);
+        Button btn_newImage = findViewById(R.id.registration_recipe_btn_newImage);
+        Button btn_newIngredient = findViewById(R.id.registration_recipe_btn_addIngredient);
+        RecyclerView ingredientsView = findViewById(R.id.registration_recipe_ingredients);
 
         recipeDAO = new RecipeDAO(this);
         itemRecipeDAO = new ItemRecipeDAO(this);
@@ -95,52 +91,25 @@ public class RecipeRegistration extends AppCompatActivity {
         btn_newIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadAlertDialogNewItemRecipe().show();
+                Intent intent = new Intent(getBaseContext(),RecipeIngredients.class);
+                if(ingredients == null){
+                    ingredients = new ArrayList<>();
+                }
+                intent.putParcelableArrayListExtra("selectedIngredients",ingredients);
+
+
+
+                startActivityForResult(intent,REQUEST_INGREDIENTS);
             }
         });
         // Update Ingredient List
-        itemRecipeArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(this), android.R.layout.simple_list_item_1, ingredients);
-        list_ingredients.setAdapter(itemRecipeArrayAdapter);
-
-    }
-
-    private AlertDialog loadAlertDialogNewItemRecipe() {
-        View newItemRecipeLayout = getLayoutInflater().inflate(R.layout.dialog_itemrecipe_registration, null);
-        loadProductsSpinner(newItemRecipeLayout);
-
-        final ItemRecipeForm itemRecipeForm = new ItemRecipeForm(newItemRecipeLayout);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.form_title_ItemRecipeRegistration);
-
-        builder.setView(newItemRecipeLayout);
-        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ingredients.add(itemRecipeForm.getItemRecipe());
-                Toast.makeText(getBaseContext(), "Ingrediente adicionado!", Toast.LENGTH_LONG).show();
-
-                itemRecipeArrayAdapter.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, null);
-        return builder.create();
-    }
-
-    private void loadProductsSpinner(View newItemRecipeLayout) {
-        Spinner list_products = newItemRecipeLayout.findViewById(R.id.form_itemRecipe_products);
-        ProductDAO productDAO = new ProductDAO(this);
-        ArrayList<Product> products = (ArrayList<Product>) productDAO.getAll();
-        ArrayAdapter<Product> productArrayAdapter = new ArrayAdapter<>(Objects.requireNonNull(this), android.R.layout.simple_spinner_item, products);
-        productArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        list_products.setAdapter(productArrayAdapter);
+        IngredientsDisplayAdapter ingredientsDisplayAdapter= new IngredientsDisplayAdapter(this, ingredients);
+        ingredientsView.setAdapter(ingredientsDisplayAdapter);
+        ingredientsView.setLayoutManager(new LinearLayoutManager(this));
+        ingredientsView.setHasFixedSize(true);
     }
 
 
-//    private void loadIngredientList(ListView list_ingredients, ItemRecipeDAO itemRecipeDAO, long recipeId){
-//        ArrayList<ItemRecipe> ingredients = itemRecipeDAO.getAll();
-//        ArrayAdapter adapter = new ArrayAdapter<ItemRecipe>(getContext(),android.R.layout.simple_list_item_1, ingredients);
-//        list_ingredients.setAdapter(adapter);
-//    }
 
     private void capturePhotoIntent() {
         Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -178,7 +147,17 @@ public class RecipeRegistration extends AppCompatActivity {
                     recipeForm.loadImage(mCurrentPhotoPath);
                 }
                 break;
+            case REQUEST_INGREDIENTS:
+                if (resultCode == Activity.RESULT_OK){
 
+                    if (data.getParcelableArrayListExtra("selectedIngredients") != null){
+                        recipeForm.restoreButtonValidState();
+                        this.ingredients.clear();
+                        ArrayList<ItemRecipe> ingredients = data.getParcelableArrayListExtra("selectedIngredients");
+                        this.ingredients.addAll(ingredients);
+                    }
+                }
+                break;
 
         }
 
@@ -230,5 +209,7 @@ public class RecipeRegistration extends AppCompatActivity {
             return false;
         }
     }
+
+
 }
 

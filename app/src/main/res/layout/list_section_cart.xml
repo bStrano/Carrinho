@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:background="@color/colorSection"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@+id/include"
+    app:layout_constraintEnd_toStartOf="@+id/registration_recipe_ingredients_toolbar"
     app:layout_constraintStart_toStartOf="parent"
     android:clickable="false"
     android:focusable="false"
@@ -27,6 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:contentDescription="@string/contentDescription_categoryIcon"
             android:id="@+id/section_itemcart_icon"
             android:layout_width="wrap_content"
             android:layout_height="0dp"

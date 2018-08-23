@@ -18,7 +18,7 @@
                 android:layout_height="190dp">
 
                 <ImageView
-                    android:id="@+id/form_recipe_image"
+                    android:id="@+id/registration_recipe_image"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
                     android:src="@drawable/ic_recipe_image2"
@@ -26,12 +26,12 @@
                     android:contentDescription="@string/imageDescription_form_recipe"/>
 
                 <Button
-                    android:id="@+id/form_recipe_btn_newImage"
+                    android:id="@+id/registration_recipe_btn_newImage"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/ic_add_recipe_image"
-                    android:layout_alignBottom="@id/form_recipe_image"
-                    android:layout_alignEnd="@id/form_recipe_image"
+                    android:layout_alignBottom="@id/registration_recipe_image"
+                    android:layout_alignEnd="@id/registration_recipe_image"
                     android:layout_marginEnd="6dp"
                     android:layout_marginBottom="-24dp"
                     />
@@ -40,37 +40,32 @@
 
 
             <EditText
-                android:id="@+id/form_recipe_name"
+                android:id="@+id/registration_recipe_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/recipeName"
                 android:inputType="textCapWords|textAutoCorrect"/>
 
+            <Button
+                android:id="@+id/registration_recipe_btn_addIngredient"
+                android:layout_width="390dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
 
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:focusable="true"
+                android:text="@string/registration_recipe_selectIngredient"
+                android:textColor="@android:color/white" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/form_recipe_txtAddIngredient"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/addIngredient"/>
-
-                <Button
-                    android:id="@+id/form_recipe_btn_newIngredient"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:drawableStart="@drawable/ic_add"
-                    android:focusable="true"/>
-            </LinearLayout>
-
-            <ListView
-                android:id="@+id/form_recipe_ingredients"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </ListView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/registration_recipe_ingredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
 
 
         </LinearLayout>

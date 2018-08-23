@@ -9,4 +9,6 @@
     <color name="colorGreen">#06fa2f</color>
     <color name="colorSection">#32000dfa</color>
     <color name="bg_swapDelete">#fa315b</color>
+    <color name="bg_basic">#FAFAFA</color>
+    <color name="bg_lightBlue">#e3eff7</color>
 </resources>

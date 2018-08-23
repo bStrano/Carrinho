@@ -1,5 +1,8 @@
 package br.com.stralom.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Bruno Strano on 11/01/2018.
  */
@@ -38,5 +41,35 @@ public class ItemRecipe extends Item {
         return new ItemCart(product, amount, cart);
     }
 
+
+    protected ItemRecipe(Parcel in) {
+        super(in);
+        recipe = (Recipe) in.readValue(Recipe.class.getClassLoader());
+    }
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest,flags);
+        dest.writeValue(recipe);
+    }
+
+    public static final Parcelable.Creator<ItemRecipe> CREATOR = new Parcelable.Creator<ItemRecipe>() {
+        @Override
+        public ItemRecipe createFromParcel(Parcel in) {
+            return new ItemRecipe(in);
+        }
+
+        @Override
+        public ItemRecipe[] newArray(int size) {
+            return new ItemRecipe[size];
+        }
+    };
 
 }

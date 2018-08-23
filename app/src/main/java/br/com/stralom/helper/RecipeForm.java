@@ -5,10 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
@@ -31,6 +30,7 @@ public class RecipeForm extends BasicFormValidation {
     private final ImageView image;
     private final ArrayList<ItemRecipe> ingredients;
     private Recipe recipe;
+    Button addIngredient;
 
     private final Activity activity;
     private boolean validationSuccessful;
@@ -38,8 +38,9 @@ public class RecipeForm extends BasicFormValidation {
     public RecipeForm(Activity activity, ArrayList<ItemRecipe> ingredients) {
         super(activity);
         this.activity = activity;
-        this.name = activity.findViewById(R.id.form_recipe_name);
-        this.image = activity.findViewById(R.id.form_recipe_image);
+        this.name = activity.findViewById(R.id.registration_recipe_name);
+        this.image = activity.findViewById(R.id.registration_recipe_image);
+        this.addIngredient = activity.findViewById(R.id.registration_recipe_btn_addIngredient);
         this.ingredients = ingredients;
         this.validationSuccessful = false;
         recipe = null;
@@ -62,18 +63,23 @@ public class RecipeForm extends BasicFormValidation {
     public boolean validateIngredients() {
         Log.e(TAG,String.valueOf(ingredients.size()));
         if (ingredients.size() == 0 ){
-            String defaultMessage = activity.getResources().getString(R.string.addIngredient);
+            String defaultMessage = activity.getResources().getString(R.string.registration_recipe_selectIngredient);
             String errorMessage = activity.getResources().getString(R.string.recipe_validation_ingredients);
             errorMessage = String.format(errorMessage, defaultMessage );
-            TextView textView = activity.findViewById(R.id.form_recipe_txtAddIngredient);
-            textView.setText(errorMessage);
-            textView.setTextColor(Color.RED);
-            Log.e(TAG, textView.getText().toString());
+            addIngredient.setText(errorMessage);
+            addIngredient.setTextColor(Color.RED);
+            Log.e(TAG, addIngredient.getText().toString());
             return false;
         } else {
             return true;
         }
 
+    }
+
+    public void restoreButtonValidState(){
+        String defaultMessage = activity.getResources().getString(R.string.registration_recipe_selectIngredient);
+        addIngredient.setText(defaultMessage);
+        addIngredient.setTextColor(Color.WHITE);
     }
 
     @Override
