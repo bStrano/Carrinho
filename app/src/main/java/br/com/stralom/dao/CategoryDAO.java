@@ -38,19 +38,24 @@ public class CategoryDAO extends GenericDAO {
         if(cursor != null){
             cursor.moveToFirst();
             category = getCategory(cursor);
-            return category;
         }
 
         return category;
 
     }
 
-    public ArrayList<Category> getAll(){
+    public ArrayList<Category> getAll(String whereSQL, String[] args){
         ArrayList<Category> categories = new ArrayList<>();
 
         db = dbHelper.getReadableDatabase();
+        Cursor cursor;
+        if(whereSQL == null){
+            cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_CATEGORY , null);
+        } else {
+            cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_CATEGORY + whereSQL, args);
+        }
 
-        try(Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_CATEGORY, null)){
+        try{
             while(cursor.moveToNext()){
                 Category category = getCategory(cursor);
 
@@ -58,20 +63,23 @@ public class CategoryDAO extends GenericDAO {
             }
             cursor.close();
         } catch (NullPointerException e) {
-            Log.e(TAG,"[Null Cursor] No category found.");
+            Log.d(TAG,"[Null Cursor] No category found.");
         }
         db.close();
         return categories;
     }
 
+    public ArrayList<Category> getAll() {
+        return getAll(" WHERE " + DBHelper.COLUMN_CATEGORY_NAME + " != ?" ,new String[]{DBHelper.CATEGORY_TEMPORARY_PRODUCT});
+    }
     @NonNull
     private Category getCategory(Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAME));
-        String nameInternacional = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL));
+        String nameInternational = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAMEINTERNACIONAL));
         int isDefault = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CATEGORY_DEFAULT));
         int iconPath = cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CATEGORY_ICON));
 
-        Category category = new Category(name,nameInternacional,iconPath);
+        Category category = new Category(name,nameInternational,iconPath);
         category.setDefault(isDefault);
         return category;
     }

@@ -14,7 +14,7 @@ import br.com.stralom.compras.R;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String TAG = "DBHelper";
     private String[] tables;
-    public static final String DATABASE_NAME = "Stralom_Compras";
+    private static final String DATABASE_NAME = "Stralom_Compras";
     private static final int DATABASE_VERSION = 1;
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,6 +34,8 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_CATEGORY_DEFAULT + " INTEGER DEFAULT 0, " +
             COLUMN_CATEGORY_ICON + " INTEGER" +
             ");";
+
+    public static  final String CATEGORY_TEMPORARY_PRODUCT = "Produtos Temporários";
     // Product
     public static final String TABLE_PRODUCT = "tb_product";
     public static final String COLUMN_PRODUCT_ID = "id";
@@ -71,8 +73,8 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_ITEMCART_CART + " INTEGER NOT NULL, " +
             COLUMN_ITEMCART_PRODUCT + " INTEGER UNIQUE NOT NULL, " +
             COLUMN_ITEMCART_UPDATESTOCK + " INTEGER DEFAULT 0, " +
-            "FOREIGN KEY("+ COLUMN_ITEMCART_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + "), " +
-            "FOREIGN KEY("+ COLUMN_ITEMCART_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ")" +
+            "FOREIGN KEY("+ COLUMN_ITEMCART_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + ") ON DELETE CASCADE, " +
+            "FOREIGN KEY("+ COLUMN_ITEMCART_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ") ON DELETE CASCADE" +
             ");";
     // RECIPE
     public static final String TABLE_RECIPE = "tb_recipe";
@@ -101,8 +103,8 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_ITEMRECIPE_TOTAL + " REAL NOT NULL, " +
             COLUMN_ITEMRECIPE_PRODUCT + " INTEGER NOT NULL, " +
             COLUMN_ITEMRECIPE_RECIPE  + " INTEGER NOT NULL, " +
-            "FOREIGN KEY(" + COLUMN_ITEMRECIPE_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + "), " +
-            "FOREIGN KEY(" + COLUMN_ITEMRECIPE_RECIPE + ") REFERENCES " + TABLE_RECIPE + "(" + COLUMN_RECIPE_ID + ") " +
+            "FOREIGN KEY(" + COLUMN_ITEMRECIPE_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ") ON DELETE CASCADE , " +
+            "FOREIGN KEY(" + COLUMN_ITEMRECIPE_RECIPE + ") REFERENCES " + TABLE_RECIPE + "(" + COLUMN_RECIPE_ID + ") ON DELETE CASCADE" +
             ");";
     // Stock
     public static final String TABLE_STOCK = "tb_stock";
@@ -131,8 +133,8 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_ITEMSTOCK_ACTUALAMOUNT + " INTEGER NOT NULL, " +
             COLUMN_ITEMSTOCK_PRODUCT + " INTEGER NOT NULL UNIQUE, " +
             COLUMN_ITEMSTOCK_STOCK + " INTEGER NOT NULL, " +
-            "FOREIGN KEY(" + COLUMN_ITEMSTOCK_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + "), " +
-            "FOREIGN KEY(" + COLUMN_ITEMSTOCK_STOCK + ") REFERENCES " + TABLE_STOCK + "(" + COLUMN_STOCK_ID + ") " +
+            "FOREIGN KEY(" + COLUMN_ITEMSTOCK_PRODUCT + ") REFERENCES " + TABLE_PRODUCT + "(" + COLUMN_PRODUCT_ID + ") ON DELETE CASCADE , " +
+            "FOREIGN KEY(" + COLUMN_ITEMSTOCK_STOCK + ") REFERENCES " + TABLE_STOCK + "(" + COLUMN_STOCK_ID + ") ON DELETE CASCADE " +
             ");";
     // SIMPLEITEM
     public static final String TABLE_SIMPLEITEM = "tb_simpleItem";
@@ -145,15 +147,15 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_SIMPLEITEM_NAME + " TEXT NOT NULL, " +
             COLUMN_SIMPLEITEM_AMOUNT + " INTEGER, " +
             COLUMN_SIMPLEITEM_CART + " INTEGER NOT NULL, " +
-            "FOREIGN KEY(" + COLUMN_SIMPLEITEM_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + ") " +
+            "FOREIGN KEY(" + COLUMN_SIMPLEITEM_CART + ") REFERENCES " + TABLE_CART + "(" + COLUMN_CART_ID + ") ON DELETE CASCADE" +
             ");";
 
 
-    public static final String SQL_INSERT_DEFAULT_CATEGORIES = "INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
+    private static final String SQL_INSERT_DEFAULT_CATEGORIES = "INSERT INTO " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_NAME + "," + COLUMN_CATEGORY_DEFAULT + "," + COLUMN_CATEGORY_ICON + ")"
             + " VALUES ('Carnes',1, " + R.drawable.meat + ")," +
             "('Frutas',1," + R.drawable.cherries + " )," +
-            "('" + DBHelper.TEMPORARY_PRODUCT_CATEGORY + "' , 1 ,"  + R.drawable.ic_help + ")";
-    public static  final String TEMPORARY_PRODUCT_CATEGORY = "Produtos Temporários";
+            "('" + DBHelper.CATEGORY_TEMPORARY_PRODUCT + "' , 1 ,"  + R.drawable.ic_help + ")";
+
 
     // private String getDropTableString(String tableName){
     //    return "DROP TABLE IF EXISTS " + tableName;

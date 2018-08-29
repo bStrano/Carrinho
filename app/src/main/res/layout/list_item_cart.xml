@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="50dp"
 
     android:id="@+id/cart_view_foreground"
     android:background="#FAFAFA"
@@ -11,24 +11,25 @@
 
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/itemCart_itemList_check"
         android:layout_width="wrap_content"
-        android:layout_height="49dp"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:scaleX="1.7"
+        android:scaleY="1.7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemCart_itemList_amount"
-        android:layout_width="0dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-
         android:text="12x"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -46,16 +47,17 @@
         android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="12dp"
         android:layout_marginEnd="104dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_vertical"
         android:text="Product Name"
+
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="@dimen/list_textMediumSize"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemCart_itemList_amount"
-        app:layout_constraintStart_toEndOf="@+id/checkBox2"
+        app:layout_constraintStart_toEndOf="@+id/itemCart_itemList_check"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 

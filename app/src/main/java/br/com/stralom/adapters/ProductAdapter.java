@@ -6,7 +6,6 @@ import android.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import java.util.ArrayList;
 
@@ -108,7 +106,7 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
         };
     }
 
-    public class ProductViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ProductViewHolder extends  RecyclerView.ViewHolder  {
         final ImageView categoryIcon;
         final TextView name;
         final TextView price;
@@ -123,17 +121,6 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
             price = itemView.findViewById(R.id.product_itemList_price);
             categoryIcon = itemView.findViewById(R.id.product_itemList_categoryIcon);
             viewForeground = itemView.findViewById(R.id.product_view_foreground);
-
-            itemView.setOnClickListener(this);
-
-
-
-        }
-
-        @Override
-        public void onClick(View view) {
-            int position = getAdapterPosition();
-            clickListener.onClick(view,position);
         }
     }
 

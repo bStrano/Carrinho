@@ -1,15 +1,15 @@
 package br.com.stralom.compras;
 
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.RadioButton;
-import android.widget.SearchView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -41,10 +41,8 @@ public class ItemCartRegistration extends AppCompatActivity {
 
     private ArrayList<Product> products;
     private ArrayList<Recipe> recipes;
-    private ArrayList<SimpleItem> temporaryProducts;
 
     private Cart cart;
-    private SimpleItem temporaryProduct;
 
     private SearchView searchView;
     private RecyclerView listView;
@@ -76,8 +74,7 @@ public class ItemCartRegistration extends AppCompatActivity {
         products = productDAO.getAllProductsNotInsertedInTheCart(cart);
         Log.e("DEBUG", products.toString());
         recipes = (ArrayList<Recipe>) recipeDAO.getAll();
-        temporaryProducts = new ArrayList<>();
-        temporaryProduct = null;
+
 
         searchView = findViewById(R.id.search_itemCartRegistration);
         listView = findViewById(R.id.listView_itemCartRegistration);
@@ -174,7 +171,7 @@ public class ItemCartRegistration extends AppCompatActivity {
     }
 
     private boolean isTemporaryProduct(Map.Entry<Product, Integer> entry) {
-        return entry.getKey().getCategory().getName().equals(DBHelper.TEMPORARY_PRODUCT_CATEGORY);
+        return entry.getKey().getCategory().getName().equals(DBHelper.CATEGORY_TEMPORARY_PRODUCT);
     }
 
 

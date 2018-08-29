@@ -1,20 +1,20 @@
 package br.com.stralom.compras;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 
@@ -23,31 +23,32 @@ import br.com.stralom.dao.CartDAO;
 import br.com.stralom.dao.CategoryDAO;
 import br.com.stralom.dao.DBHelper;
 import br.com.stralom.dao.ItemCartDAO;
+import br.com.stralom.dao.ItemStockDAO;
 import br.com.stralom.dao.RecipeDAO;
 import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Cart;
 import br.com.stralom.entities.Category;
 import br.com.stralom.entities.ItemCart;
+import br.com.stralom.entities.ItemStock;
 import br.com.stralom.entities.SimpleItem;
 import br.com.stralom.helper.BasicViewHelper;
-import br.com.stralom.helper.SimpleItemForm;
 import br.com.stralom.interfaces.EditMenuInterface;
+import br.com.stralom.interfaces.ItemCheckListener;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CartMain extends BasicViewHelper<ItemCart>{
+public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckListener {
     private ItemCartDAO itemCartDAO;
-    private RecipeDAO recipeDAO;
     private CartDAO cartDAO;
     private CategoryDAO categoryDAO;
     private Cart cart;
     private SimpleItemDAO simpleItemDAO;
-    private Category temporyProductsCategory;
+    private ItemStockDAO itemStockDAO;
+    private Category temporaryProductsCategory;
     private boolean setUpSections = true;
-
-
+    private Snackbar confirmConcludeElement;
     private CartAdapter adapter;
 
     private static final String TAG = "CartMainTAG";
@@ -121,13 +122,12 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         //DAO
         cartDAO = new CartDAO(getContext());
         itemCartDAO = new ItemCartDAO(getContext());
-        recipeDAO = new RecipeDAO(getContext());
         simpleItemDAO = new SimpleItemDAO(getContext());
         categoryDAO = new CategoryDAO(getContext());
+        itemStockDAO = new ItemStockDAO(getContext());
 
 
-        temporyProductsCategory = categoryDAO.findByName(DBHelper.TEMPORARY_PRODUCT_CATEGORY);
-
+        temporaryProductsCategory = categoryDAO.findByName(DBHelper.CATEGORY_TEMPORARY_PRODUCT);
 
         cart = cartDAO.findById((long) 1);
 
@@ -136,7 +136,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
         setUpEmptyListView(mainView, list,R.id.itemCart_emptyList,R.drawable.ic_cart, R.string.itemCart_emptyList_title,R.string.itemCart_emptyList_description);
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CartAdapter(list,getActivity());
+        adapter = new CartAdapter(this,list,getActivity());
         listView.setAdapter(adapter);
 
         loadItemsFromCart();
@@ -190,7 +190,7 @@ public class CartMain extends BasicViewHelper<ItemCart>{
 
             for (SimpleItem simpleItem:simpleItemList) {
                 ItemCart itemCart = simpleItem.convertToItemCart(simpleItem);
-                itemCart.getProduct().setCategory(temporyProductsCategory);
+                itemCart.getProduct().setCategory(temporaryProductsCategory);
                 list.add(itemCart);
             }
 
@@ -216,12 +216,78 @@ public class CartMain extends BasicViewHelper<ItemCart>{
                 adapter.dismissSnackbar();
             }
 
+            if(confirmConcludeElement != null){
+                confirmConcludeElement.dismiss();
+            }
+
         }
     }
 
+    public void createConfirmSnackBar(final Pair<ItemCart,Integer> itemCartPair){
+        FrameLayout main = getActivity().findViewById(R.id.main_frame);
+        confirmConcludeElement = Snackbar.make(main,R.string.cart_snackbar_confirmCheck, Snackbar.LENGTH_SHORT);
+        confirmConcludeElement.setAction(R.string.snackbar_undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                adapter.undoConcludedElement(itemCartPair);
+            }
+        });
+
+
+        confirmConcludeElement.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                confirmConcludeElement = null;
+                if(itemCartPair.first != null){
+
+                    if(itemCartPair.first.isRemoved()){
+                        confirmConclude(itemCartPair.first);
+                        adapter.customNotifyDataSetChanged();
+                    }
+
+
+                   super.onDismissed(transientBottomBar, event);
+                }
+
+            }
+
+            @Override
+            public void onShown(Snackbar transientBottomBar) {
+                super.onShown(transientBottomBar);
+            }
+        });
 
 
 
+        confirmConcludeElement.show();
+
+
+    }
+
+    public void confirmConclude(ItemCart itemCart) {
+        if(itemCart.getId() != null) {
+            itemCartDAO.remove( itemCart.getId());
+            ItemStock itemStock = itemStockDAO.findByProductName(itemCart.getProduct().getName());
+            if(itemStock != null){
+                itemStock.setActualAmount(itemStock.getActualAmount() + itemCart.getAmount());
+                itemStockDAO.update(itemStock);
+            }
+        } else if(itemCart.getConvertedId() != null){
+            simpleItemDAO.remove( itemCart.getConvertedId());
+
+        }
+        adapter.setConcludedElement(null);
+    }
+
+
+    @Override
+    public void showConfirmSnackbar() {
+        if(confirmConcludeElement != null) {
+            confirmConcludeElement.dismiss();
+        }
+        createConfirmSnackBar(adapter.getConcludedElement());
+    }
 }
 
 

@@ -9,6 +9,7 @@
     android:visibility="gone"
     tools:showIn="@layout/fragment_cart_main"
     android:animateLayoutChanges="true"
+    android:elevation="10dp"
     >
 
     <Button

@@ -2,32 +2,15 @@ package br.com.stralom.adapters;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.DBHelper;
 import br.com.stralom.entities.Cart;
 import br.com.stralom.entities.Category;
 import br.com.stralom.entities.Product;
-import br.com.stralom.entities.SimpleItem;
 
 /**
  * Created by Bruno Strano on 12/07/2018.
@@ -53,7 +36,7 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
     }
 
     private boolean isTemporaryProduct(Product product) {
-        return product.getCategory().getName().equals(DBHelper.TEMPORARY_PRODUCT_CATEGORY ) ;
+        return product.getCategory().getName().equals(DBHelper.CATEGORY_TEMPORARY_PRODUCT) ;
     }
 
     @Override
@@ -107,7 +90,7 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
 
         if(temporaryProduct == null){
             temporaryProduct = new Product();
-            temporaryProduct.setCategory(new Category(DBHelper.TEMPORARY_PRODUCT_CATEGORY,"",R.drawable.ic_help));
+            temporaryProduct.setCategory(new Category(DBHelper.CATEGORY_TEMPORARY_PRODUCT,"",R.drawable.ic_help));
             temporaryProduct.setName(filterInput);
             listClone.add(0,temporaryProduct);
 

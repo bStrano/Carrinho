@@ -138,5 +138,6 @@
     <string name="stock_register">Adicionar ao Estoque</string>
     <string name="stock_registration_selectProduct">Selecione o Produto</string>
     <string name="contentDescription_stock_expandProductsListIcon">Icone para substituir o produto escolhido</string>
+    <string name="cart_snackbar_confirmCheck">Concluído</string>
 
 </resources>

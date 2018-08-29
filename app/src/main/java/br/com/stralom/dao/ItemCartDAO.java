@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.databinding.ObservableArrayList;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stralom.entities.Cart;
@@ -92,10 +91,12 @@ public class ItemCartDAO extends GenericDAO  {
 
     public List<ItemCart> getAllOrderedByCategory(Long cartId){
         String extraConditions = " ORDER BY c." + DBHelper.COLUMN_CATEGORY_NAME;
-        return getAll(cartId,extraConditions);
+        return getAll(" WHERE (i." + DBHelper.COLUMN_ITEMCART_CART  + " = ? )"  + extraConditions,new String[]{cartId.toString()});
     }
 
-    public List<ItemCart> getAll(Long cartId, String extraConditions){
+
+
+    public List<ItemCart> getAll(String whereQuery, String[] args ){
         db = dbHelper.getReadableDatabase();
         ObservableArrayList<ItemCart> items = new ObservableArrayList<>();
         try {
@@ -107,8 +108,8 @@ public class ItemCartDAO extends GenericDAO  {
                     " ON i." + DBHelper.COLUMN_ITEMCART_PRODUCT + " = " + " p." + DBHelper.COLUMN_PRODUCT_ID +
                     " JOIN " + DBHelper.TABLE_CATEGORY + " c " +
                     " ON c." + DBHelper.COLUMN_CATEGORY_NAME + " = " + " p." + DBHelper.COLUMN_PRODUCT_CATEGORY +
-                    " WHERE i." + DBHelper.COLUMN_ITEMCART_CART + " = ? " + extraConditions;
-            Cursor c = db.rawQuery(sql, new String[] {cartId.toString()});
+                    whereQuery;
+            Cursor c = db.rawQuery(sql, args);
 
 
         while (c.moveToNext()){
@@ -119,6 +120,7 @@ public class ItemCartDAO extends GenericDAO  {
             int iconFlag = c.getInt(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_ICON));
             String categoryName = c.getString(c.getColumnIndex(DBHelper.COLUMN_CATEGORY_NAME));
             int updateStock = c.getInt(c.getColumnIndex(DBHelper.COLUMN_ITEMCART_UPDATESTOCK));
+            long cartId = c.getLong((c.getColumnIndex(DBHelper.COLUMN_ITEMCART_CART )));
 
             Category category = new Category();
             category.setIconFlag(iconFlag);

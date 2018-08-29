@@ -10,10 +10,13 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import br.com.stralom.compras.R;
@@ -23,6 +26,7 @@ import br.com.stralom.dao.SimpleItemDAO;
 import br.com.stralom.entities.Category;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.Product;
+import br.com.stralom.interfaces.ItemCheckListener;
 
 /**
  * Created by Bruno Strano on 30/01/2018.
@@ -33,16 +37,22 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     private final SimpleItemDAO simpleItemDAO;
     private final ItemStockDAO itemStockDAO;
     private Resources res;
-    private static int categoryCount = 0;
+    private List<RecyclerView.ViewHolder> listCartHolder;
+
+
+
+    private Pair<ItemCart,Integer> concludedElement;
+    private ItemCheckListener itemCheckListener;
+
 
     private ArrayList<Pair<Category,Integer>> holderSections  = new ArrayList<>();
     private ArrayList<Object> listWithSections;
-    private ArrayList<Object> listWithSectionsClone;
 
 
 
 
-    public CartAdapter(ObservableArrayList<ItemCart> itemCarts, Activity activity) {
+
+    public CartAdapter(ItemCheckListener itemCheckListener,ObservableArrayList<ItemCart> itemCarts, Activity activity) {
         super(itemCarts,activity);
         res = activity.getResources();
         itemCartDAO = new ItemCartDAO(activity);
@@ -50,11 +60,9 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
         simpleItemDAO = new SimpleItemDAO(activity);
         if(list.size() > 0){
             setUpSections();
-            listWithSectionsClone = (ArrayList<Object>) listWithSections.clone();
         }
-
-
-
+        listCartHolder = new ArrayList<>();
+        this.itemCheckListener = itemCheckListener;
     }
 
     @Override
@@ -67,7 +75,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
         final TextView productName;
         final TextView productAmount;
         final View viewBackground;
-
+        final CheckBox checkBox;
 
         CartViewHolder(View itemView) {
             super(itemView);
@@ -75,6 +83,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
             productName = itemView.findViewById(R.id.itemCart_itemList_name);
             productAmount = itemView.findViewById(R.id.itemCart_itemList_amount);
             viewBackground = itemView.findViewById(R.id.cart_view_foreground);
+            checkBox = itemView.findViewById(R.id.itemCart_itemList_check);
 
 
         }
@@ -179,7 +188,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         switch (holder.getItemViewType()){
             case 0:
                 Category category =  list.get(getItemPosition(position)).getProduct().getCategory();
@@ -193,11 +202,40 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
                 cartViewHolder.productName.setText(itemCart.getProduct().getName());
                 cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getFormattedAmount()));
                 cartViewHolder.viewBackground.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                cartViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if(isChecked){
+                            concludeElement(holder.getAdapterPosition());
+                            itemCheckListener.showConfirmSnackbar();
+                            compoundButton.setChecked(false);
+                        }
+                    }
+                });
                 break;
 
 
         }
 
+
+
+    }
+
+    public void undoConcludedElement(Pair<ItemCart,Integer> concludedElement ){
+        concludedElement.first.setRemoved(false);
+        list.add(concludedElement.second,concludedElement.first);
+        customNotifyDataSetChanged();
+    }
+
+    private void concludeElement(int position){
+        int itemIndex = getItemPosition(position);
+        ItemCart itemcart = list.get(itemIndex);
+        itemcart.setRemoved(true);
+        concludedElement = Pair.create(itemcart, itemIndex);
+        list.remove(itemIndex);
+
+
+        customNotifyDataSetChanged();
 
 
     }
@@ -267,34 +305,14 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     }
 
 
+    public Pair<ItemCart, Integer> getConcludedElement() {
+        return concludedElement;
+    }
 
+    public void setConcludedElement(Pair<ItemCart, Integer> concludedElement) {
+        this.concludedElement = concludedElement;
+    }
 
-//    public void completeItem(int position, TextView textView) {
-//        final ItemCart itemCart = itemCarts.get(position);
-//        snackbar = removeTemporarily(position, itemCart, "Concluido",textView);
-//        snackbar.addCallback(new Snackbar.Callback(){
-//            @Override
-//            public void onDismissed(Snackbar transientBottomBar, int event){
-//                if(itemCart.isRemoved()){
-//                    if(itemCart.getId() != null){
-//                        itemCartDAO.remove( itemCart.getId() );
-//                        if(itemCart.isUpdateStock()) {
-//                            ItemStock itemStock = itemStockDAO.findByProductId(itemCart.getProduct().getId());
-//                            if(itemStock != null){
-//                                itemStock.setActualAmount(itemCart.getAmount() + itemStock.getActualAmount());
-//                                itemStock.setTotal(itemStock.getActualAmount(),itemStock.getAmount());
-//                                itemStockDAO.update(itemStock);
-//                            }
-//                        }
-//                    } else if(itemCart.getConvertedId() != null) {
-//                        simpleItemDAO.remove( itemCart.getConvertedId());
-//                    }
-//                }
-//                super.onDismissed(transientBottomBar,event);
-//            }
-//        });
-//        snackbar.show();
-//    }
 
 
 
