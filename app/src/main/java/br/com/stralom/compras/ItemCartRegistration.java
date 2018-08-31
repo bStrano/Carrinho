@@ -77,7 +77,7 @@ public class ItemCartRegistration extends AppCompatActivity {
 
 
         searchView = findViewById(R.id.search_itemCartRegistration);
-        listView = findViewById(R.id.listView_itemCartRegistration);
+        listView = findViewById(R.id.registration_itemCart_list);
         btnCancel = findViewById(R.id.registration_itemCart_cancel);
         btnConfirm = findViewById(R.id.registration_itemCart_confirm);
         rbtnProducts = findViewById(R.id.registration_itemCart_rbtnProducts);

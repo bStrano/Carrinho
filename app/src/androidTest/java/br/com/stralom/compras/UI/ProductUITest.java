@@ -1,21 +1,16 @@
 package br.com.stralom.compras.UI;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,7 +22,6 @@ import br.com.stralom.compras.R;
 import br.com.stralom.dao.CategoryDAO;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.entities.Category;
-import br.com.stralom.entities.Product;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -38,16 +32,13 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static br.com.stralom.compras.UI.matchers.CartMatcher.withCartHolder;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withEmptyList;
-import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withTextInputError;
 import static br.com.stralom.compras.UI.matchers.ProductMatcher.withProductViewHolder;
 import static br.com.stralom.compras.UI.matchers.StockMatcher.withStockHolder;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -143,8 +134,8 @@ public class ProductUITest {
     public void TestAddingProductWithStock(){
         String testAddingProducts = "TestAddingProductWithStock";
         double value = 10;
-        double stockActualAmount = 5;
-        double stockMaxAmount = 10 ;
+        String stockActualAmount = "5";
+        String stockMaxAmount = "10" ;
 
 
         fillProductInfo(testAddingProducts, String.valueOf(value));
@@ -154,8 +145,7 @@ public class ProductUITest {
         onView(withId(R.id.registration_product_addStockMaxAmount)).perform(replaceText(String.valueOf(stockMaxAmount)));
         onView(withId(R.id.registration_save)).perform(click());
         onView(withText(activity.getResources().getStringArray(R.array.tab_titles)[3])).perform(click());
-        onView(withId(R.id.list_itemStock)).perform(RecyclerViewActions
-                .scrollToHolder(withStockHolder(testAddingProducts,String.valueOf(stockActualAmount),String.valueOf(stockMaxAmount))));
+        onView(withId(R.id.list_itemStock)).perform(RecyclerViewActions.scrollToHolder(withStockHolder(testAddingProducts,stockActualAmount,stockMaxAmount)));
 
     }
 

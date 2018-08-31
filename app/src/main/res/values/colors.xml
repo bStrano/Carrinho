@@ -11,4 +11,5 @@
     <color name="bg_swapDelete">#fa315b</color>
     <color name="bg_basic">#FAFAFA</color>
     <color name="bg_lightBlue">#e3eff7</color>
+    <color name="bg_temproaryProduct">#FFFFE0</color>
 </resources>

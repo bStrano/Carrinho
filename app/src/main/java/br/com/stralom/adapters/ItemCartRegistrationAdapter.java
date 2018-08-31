@@ -3,14 +3,12 @@ package br.com.stralom.adapters;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.Product;
 
 /**
  * Created by Bruno Strano on 14/07/2018.
@@ -144,7 +141,7 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
 
         public ViewHolder(View itemView) {
             super(itemView);
-            this.background = itemView.findViewById(R.id.registration_itemcart_mainView);
+            this.background = itemView.findViewById(R.id.registration_itemCart_mainView);
             this.addButton = itemView.findViewById(R.id.registration_itemCart_btnAdd);
             this.manageButton = itemView.findViewById(R.id.registration_itemCart_btnManagement);
             this.productName = itemView.findViewById(R.id.registration_itemCart_txtProductName);

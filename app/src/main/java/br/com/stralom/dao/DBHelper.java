@@ -14,12 +14,12 @@ import br.com.stralom.compras.R;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String TAG = "DBHelper";
     private String[] tables;
-    private static final String DATABASE_NAME = "Stralom_Compras";
+    public static final String DATABASE_NAME = "Stralom_Compras";
     private static final int DATABASE_VERSION = 1;
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         tables = new String[] {TABLE_CATEGORY , TABLE_PRODUCT, TABLE_CART,TABLE_ITEMCART, TABLE_RECIPE,TABLE_ITEMRECIPE
-                ,TABLE_STOCK,SQL_CREATE_TABLE_ITEMSTOCK,TABLE_ITEMSTOCK,TABLE_SIMPLEITEM};
+                ,TABLE_STOCK,TABLE_ITEMSTOCK,TABLE_SIMPLEITEM};
     }
 
     // Category
@@ -197,9 +197,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public void clearTables(){
         for (String tableName:tables) {
             getWritableDatabase().delete(tableName,null,null);
-            getWritableDatabase().execSQL(SQL_INSERT_DEFAULT_CATEGORIES) ;
         }
-
+        getWritableDatabase().execSQL(SQL_INSERT_DEFAULT_CATEGORIES) ;
     }
 
 }

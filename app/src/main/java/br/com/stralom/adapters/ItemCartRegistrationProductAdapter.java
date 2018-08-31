@@ -3,6 +3,7 @@ package br.com.stralom.adapters;
 import android.app.Activity;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,8 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
     protected void setUpViewHolderLayout(@NonNull ViewHolder holder, Product product) {
         super.setUpViewHolderLayout(holder, product);
         if(isTemporaryProduct(product)){
-            holder.background.setBackgroundColor(Color.parseColor("#FFFFE0"));
+            int colorId = ContextCompat.getColor(activity,R.color.bg_temproaryProduct);
+            holder.background.setBackgroundColor(colorId);
         } else {
             holder.background.setBackgroundColor(Color.WHITE);
         }

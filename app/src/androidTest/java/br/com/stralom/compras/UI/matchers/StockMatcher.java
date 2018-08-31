@@ -32,10 +32,26 @@ public class StockMatcher {
                     return false;
                 }
 
+                boolean correctActualAmount, correctMaxAmount;
+                Double actualAmountDouble = Double.valueOf(actualAmountView.getText().toString());
 
-                return ( nameView.getText().toString().equals(productName) &&
-                actualAmountView.getText().toString().equals(actualAmount) &&
-                maxAmountView.getText().toString().equals(maxAmount));
+                Double maxAmountDouble = Double.valueOf(maxAmountView.getText().toString());
+
+                if((actualAmountDouble % 1) == 0){
+                    correctActualAmount = actualAmount.equals(String.valueOf(actualAmountDouble.intValue()));
+                } else {
+                    correctActualAmount = actualAmount.contains(String.valueOf(maxAmountDouble));
+                }
+
+                if((maxAmountDouble % 1) == 0){
+                    correctMaxAmount = maxAmount.equals(String.valueOf(maxAmountDouble.intValue()));
+                } else {
+                    correctMaxAmount = maxAmount.equals(String.valueOf(maxAmountDouble));
+                }
+
+
+
+                return ( nameView.getText().toString().equals(productName) && correctActualAmount  && correctMaxAmount);
             }
         };
     }

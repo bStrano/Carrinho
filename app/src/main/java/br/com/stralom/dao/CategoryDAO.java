@@ -38,7 +38,10 @@ public class CategoryDAO extends GenericDAO {
         if(cursor != null){
             cursor.moveToFirst();
             category = getCategory(cursor);
+            cursor.close();
         }
+
+        db.close();
 
         return category;
 

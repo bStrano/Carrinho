@@ -13,6 +13,8 @@ import br.com.stralom.compras.R;
 
 public class CartMatcher {
 
+
+
     public static Matcher<RecyclerView.ViewHolder> withCartHolder(final String text) {
         return new BoundedMatcher<RecyclerView.ViewHolder, CartAdapter.CartViewHolder>(CartAdapter.CartViewHolder.class) {
             @Override
@@ -49,7 +51,14 @@ public class CartMatcher {
                 if(amount == null){
                     return (nameView.getText().toString().equals(name));
                 }else{
-                    return (nameView.getText().toString().equals(name) && amountView.getText().toString().equals(amount +"x"));
+                    Double amountDouble = Double.valueOf(amount);
+                    if((amountDouble % 1) == 0 ){
+                        return (nameView.getText().toString().equals(name) && amountView.getText().toString().equals(amountDouble.intValue() +"x"));
+
+                    } else {
+                        return (nameView.getText().toString().equals(name) && amountView.getText().toString().equals(amount +"x"));
+                    }
+
                 }
 
             }

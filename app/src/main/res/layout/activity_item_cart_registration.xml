@@ -8,7 +8,7 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/listView_itemCartRegistration"
+        android:id="@+id/registration_itemCart_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
