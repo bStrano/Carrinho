@@ -1,12 +1,11 @@
 package br.com.stralom.compras;
 
-import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.ObservableArrayList;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.constraint.Group;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -29,8 +28,6 @@ import br.com.stralom.entities.Stock;
 import br.com.stralom.helper.exceptions.InvalidElementForm;
 import br.com.stralom.helper.forms.ItemStockForm;
 import br.com.stralom.interfaces.ItemClickListener;
-
-import static br.com.stralom.helper.BasicViewHelper.hideSoftKeyBoard;
 
 
 public class StockRegistration extends AppCompatActivity  {
@@ -76,7 +73,7 @@ public class StockRegistration extends AppCompatActivity  {
         selectedProductView = findViewById(R.id.stock_registration_selectedProduct);
         selectProductTitle = findViewById(R.id.stock_regidtration_selectProductTitle);
 
-        products = (ArrayList<Product>) productDAO.getAllOrderedByName();
+        products = (ArrayList<Product>) productDAO.getAllOrderedByNameWithoutItemStock();
 
         toolbar.setTitle(R.string.stock_register);
 

@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.ItemStockDAO;
 import br.com.stralom.entities.ItemCart;
 import br.com.stralom.entities.ItemStock;
+import br.com.stralom.interfaces.StockUpdateCallback;
 
 /**
  * Created by Bruno Strano on 24/01/2018.
@@ -23,17 +25,23 @@ import br.com.stralom.entities.ItemStock;
 
 public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemStock>  {
     private final ItemStockDAO itemStockDAO;
+    private ArrayList<StockViewHolder> holders;
+    private StockUpdateCallback stockUpdateCallback;
 
-    public StockAdapter(ObservableArrayList<ItemStock> itemStocks, Activity activity) {
+    public StockAdapter(StockUpdateCallback stockUpdateCallback, ObservableArrayList<ItemStock> itemStocks, Activity activity) {
         super(itemStocks,activity);
+        this.stockUpdateCallback = stockUpdateCallback;
         itemStockDAO = new ItemStockDAO(activity);
+        holders = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public StockViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v =  LayoutInflater.from(activity).inflate(R.layout.list_item_stock, parent , false);
-        return new StockViewHolder(v);
+        StockViewHolder stockViewHolder = new StockViewHolder(v);
+        holders.add(stockViewHolder);
+        return stockViewHolder;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemS
     }
 
 
-    public class StockViewHolder extends RecyclerView.ViewHolder  {
+    public class StockViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView name;
         final TextView maxAmount;
         final TextView actualAmount;
@@ -75,11 +83,31 @@ public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemS
             maxAmount = view.findViewById(R.id.stock_maxAmount);
             actualAmount = view.findViewById(R.id.stock_actualAmount);
             viewForeground = view.findViewById(R.id.stock_itemList_foregroundView);
+            view.setOnClickListener(this);
         }
 
 
+        @Override
+        public void onClick(View view) {
 
+            ItemStock itemStock = list.get(getAdapterPosition());
+            //ItemStock itemStock = getItemStockInHolderList(name.getText().toString());
+            if((itemStock != null ) && (!stockUpdateCallback.isEditModeOn()) ){
+                stockUpdateCallback.edit(itemStock);
+            }
         }
+
+    }
+
+    private ItemStock getItemStockInHolderList(String productName){
+        for (int i = 0 ; i < holders.size() ; i++){
+            StockViewHolder holder = holders.get(i);
+            if(holder.name.getText().toString().equals(productName)){
+                return list.get(i);
+            }
+        }
+        return null;
+    }
     }
 
 

@@ -97,14 +97,24 @@ public class ProductDAO extends GenericDAO{
 
 
     public List<Product> getAll(){
-        return getAll(null);
+        return getAll(null,null);
     }
+
+
 
     public List<Product> getAllOrderedByName(){
-        return getAll(DBHelper.COLUMN_PRODUCT_NAME);
+        return getAll(DBHelper.COLUMN_PRODUCT_NAME,null);
     }
 
-    private List<Product> getAll(String order_colName){
+    public List<Product> getAllOrderedByNameWithoutItemStock(){
+
+        String whereSQL = " WHERE p." + DBHelper.COLUMN_PRODUCT_ID + " not in ( SELECT " + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + " FROM " + DBHelper.TABLE_ITEMSTOCK + ")";
+
+        return getAll(null, whereSQL);
+
+    }
+
+    private List<Product> getAll(String order_colName, String whereSql){
 
         db = dbHelper.getReadableDatabase();
         ObservableArrayList<Product> products = new ObservableArrayList<>();
@@ -116,9 +126,13 @@ public class ProductDAO extends GenericDAO{
                 " LEFT JOIN " + DBHelper.TABLE_CATEGORY + " c " +
                 " ON p." + DBHelper.COLUMN_PRODUCT_CATEGORY + " = c." + DBHelper.COLUMN_CATEGORY_NAME ;
 
+        if(whereSql != null){
+            sql = sql + whereSql;
+        }
         if(order_colName != null){
             sql = sql + " ORDER BY " + order_colName;
         }
+
         try {
 
 

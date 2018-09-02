@@ -106,7 +106,7 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
         };
     }
 
-    public class ProductViewHolder extends  RecyclerView.ViewHolder  {
+    public class ProductViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener {
         final ImageView categoryIcon;
         final TextView name;
         final TextView price;
@@ -121,6 +121,15 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
             price = itemView.findViewById(R.id.product_itemList_price);
             categoryIcon = itemView.findViewById(R.id.product_itemList_categoryIcon);
             viewForeground = itemView.findViewById(R.id.product_view_foreground);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(clickListener != null){
+                int position = getAdapterPosition();
+                clickListener.onClick(view,position);
+            }
         }
     }
 

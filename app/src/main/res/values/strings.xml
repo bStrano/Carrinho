@@ -139,5 +139,10 @@
     <string name="stock_registration_selectProduct">Selecione o Produto</string>
     <string name="contentDescription_stock_expandProductsListIcon">Icone para substituir o produto escolhido</string>
     <string name="cart_snackbar_confirmCheck">Concluído</string>
+    <string name="itemStock_update_productTitle">Produto:</string>
+    <string name="itemstock_consume_recipeTitle">Consumir Receita</string>
+    <string name="itemstock_consume_productTitle">Consumir Produto</string>
+    <string name="amountFieldTitle">Quantidade: </string>
+    <string name="updateItem">Atualizar Item</string>
 
 </resources>

@@ -10,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_height"
         android:paddingBottom="@dimen/list_paddingVertical"
-        android:layout_marginLeft="@dimen/list_marginLeft">
+        android:layout_marginStart="@dimen/list_marginLeft">
 
             <TextView
 
+                android:layout_gravity="center"
                 android:id="@+id/recipe_spinner_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:textSize="@dimen/list_textMediumSize"
                 android:textStyle="bold"

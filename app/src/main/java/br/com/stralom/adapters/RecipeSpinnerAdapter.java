@@ -1,5 +1,6 @@
 package br.com.stralom.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +15,12 @@ import br.com.stralom.entities.Recipe;
 
 public class RecipeSpinnerAdapter extends BaseAdapter {
     private ArrayList<Recipe> recipes;
-    private Context context;
+    private Activity activity;
     private LayoutInflater layoutInflater;
 
-    public RecipeSpinnerAdapter(ArrayList<Recipe> recipes, Context context, LayoutInflater layoutInflater) {
+    public RecipeSpinnerAdapter(ArrayList<Recipe> recipes, Activity activity) {
         this.recipes = recipes;
-        this.context = context;
-        this.layoutInflater = layoutInflater;
+        this.activity = activity;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class RecipeSpinnerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = layoutInflater.inflate(R.layout.spinner_item_recipe,viewGroup,false);
+        view = activity.getLayoutInflater().inflate(R.layout.spinner_item_recipe,viewGroup,false);
         TextView recipeName = view.findViewById(R.id.recipe_spinner_name);
 
         Recipe recipe = recipes.get(i);

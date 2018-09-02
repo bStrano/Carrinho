@@ -1,49 +1,107 @@
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:id="@+id/stock_emptyList"
-            layout="@layout/empty_list" />
+    <include
+        android:id="@+id/stock_emptyList"
+        layout="@layout/empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_itemStock"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_itemStock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_addStock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_add"
-            app:backgroundTint="@color/colorPrimaryDark"
-            app:fabSize="normal" />
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/btn_newItemStock"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_margin="16dp"-->
+    <!--android:backgroundTint="@color/colorPrimary"-->
+    <!--android:src="@drawable/ic_add"/>-->
 
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/btn_newItemStock"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_margin="16dp"-->
-            <!--android:backgroundTint="@color/colorPrimary"-->
-            <!--android:src="@drawable/ic_add"/>-->
+    <include
+        android:id="@+id/stock_management_list"
+        layout="@layout/management_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <include
-            android:id="@+id/stock_management_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            layout="@layout/management_list"
-            />
-    </RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stock_fab_addStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="76dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_add"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorTertiary"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stock_fab_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stock_fab_consumeRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_consume_recipe"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimaryLight"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/stock_fab_addStock"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stock_fab_consumeProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_consume_item"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimaryLight"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/stock_fab_consumeRecipe"
+        app:layout_constraintEnd_toEndOf="parent" />
+</android.support.constraint.ConstraintLayout>
 
 
