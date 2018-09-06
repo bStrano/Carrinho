@@ -114,6 +114,29 @@ public class ProductDAO extends GenericDAO{
 
     }
 
+    public boolean hasProductInStock(){
+        db = dbHelper.getReadableDatabase();
+
+
+        String sql = "SELECT p." + DBHelper.COLUMN_PRODUCT_ID +
+                " FROM " + DBHelper.TABLE_PRODUCT + " p "+
+                " WHERE p." + DBHelper.COLUMN_PRODUCT_ID + " not in ( SELECT " + DBHelper.COLUMN_ITEMSTOCK_PRODUCT + " FROM " + DBHelper.TABLE_ITEMSTOCK + ")";
+
+
+        try {
+
+
+            Cursor cursor = db.rawQuery(sql, null);
+            boolean hasFirst = cursor.moveToFirst();
+            cursor.close();
+            return hasFirst;
+
+        } catch (NullPointerException e ){
+            return false;
+        }
+
+    }
+
     private List<Product> getAll(String order_colName, String whereSql){
 
         db = dbHelper.getReadableDatabase();
@@ -147,6 +170,7 @@ public class ProductDAO extends GenericDAO{
         } catch (NullPointerException e ){
             Log.e(TAG,"[NullPointExcepetion] Products not found.");
         }
+
         return products;
     }
 

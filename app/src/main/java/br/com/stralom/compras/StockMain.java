@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import br.com.stralom.entities.ItemStock;
 import br.com.stralom.entities.Recipe;
 import br.com.stralom.entities.Stock;
 import br.com.stralom.helper.BasicViewHelper;
+import br.com.stralom.helper.DialogHelper;
 import br.com.stralom.interfaces.EditMenuInterface;
 import br.com.stralom.interfaces.StockUpdateCallback;
 
@@ -52,7 +54,7 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
     private FloatingActionButton fabAddStock, fabConsumeRecipe, fabConsumeItem;
     private boolean fabPressed = false;
     private ArrayList<Recipe> recipes;
-
+    private ViewPager viewPager;
 
     @Override
     public boolean callChangeItemBackgroundColor(View view, int position) {
@@ -83,7 +85,7 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
         fabConsumeItem = mainView.findViewById(R.id.stock_fab_consumeProduct);
         fab = mainView.findViewById(R.id.stock_fab_main);
         fabAddStock = mainView.findViewById(R.id.stock_fab_addStock);
-
+        viewPager = getActivity().findViewById(R.id.mViewPager);
 
         //DAOS
         recipeDAO = new RecipeDAO(getContext());
@@ -120,8 +122,20 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
         fabAddStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), StockRegistration.class);
-                startActivity(intent);
+
+                if(productDAO.hasProductInStock() ){
+                    Intent intent = new Intent(getActivity(), StockRegistration.class);
+                    startActivity(intent);
+                } else {
+                    DialogHelper.createErrorDialog(getActivity(), R.string.error_title_procutsNotRegistered, R.string.error_message_productsNotRegistered, R.string.error_positiveButton_productsNotRegistered, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            viewPager.setCurrentItem(1);
+                        }
+                    });
+                }
+
             }
         });
 
@@ -129,7 +143,17 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
             @Override
             public void onClick(View view) {
                 RecipeSpinnerAdapter recipeSpinnerAdapter = new RecipeSpinnerAdapter(recipes, getActivity());
-                createConsumeDialog(recipeSpinnerAdapter, R.string.itemstock_consume_recipeTitle);
+                if(recipes.size() > 0){
+                    createConsumeDialog(recipeSpinnerAdapter, R.string.itemstock_consume_recipeTitle);
+                } else {
+                    DialogHelper.createErrorDialog(getActivity(), R.string.error_title_recipesNotRegistered, R.string.error_message_recipesNotRegistered, R.string.error_positiveButton_recipesNotRegistered, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            viewPager.setCurrentItem(2);
+                        }
+                    });
+                }
+
             }
         });
 
@@ -137,7 +161,18 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
             @Override
             public void onClick(View view) {
                 StockSpinnerAdapter stockSpinnerAdapter = new StockSpinnerAdapter(list, getActivity());
-                createConsumeDialog(stockSpinnerAdapter, R.string.itemstock_consume_productTitle);
+                if(list.size() > 0){
+                    createConsumeDialog(stockSpinnerAdapter, R.string.itemstock_consume_productTitle);
+                } else {
+
+                    DialogHelper.createErrorDialog(getActivity(), R.string.error_title_itemStockNotRegistered, R.string.error_message_itemStockNotRegistered, R.string.error_positiveButton_itemStockNotRegistered, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            fabAddStock.performClick();
+                        }
+                    });
+                }
+
             }
         });
 
@@ -207,22 +242,6 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
         builder.setView(dialogView)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (adapter instanceof RecipeSpinnerAdapter) {
-                            Recipe recipe = (Recipe) spinner.getSelectedItem();
-                            ArrayList<ItemRecipe> ingredients = (ArrayList<ItemRecipe>) itemRecipeDAO.getAllByRecipe(recipe.getId());
-                            Double amountDouble = Double.valueOf(amount.getText().toString());
-                            for (ItemRecipe itemrecipe : ingredients) {
-                                for (ItemStock itemStock : list) {
-                                    if (itemStock.getProduct().getName().equals(itemrecipe.getProduct().getName())) {
-                                        double amountToBeAdded = itemrecipe.getAmount() * amountDouble;
-                                        consumeItem(itemStock, amountToBeAdded);
-                                        break;
-                                    }
-                                }
-                            }
-                        } else if (adapter instanceof StockSpinnerAdapter) {
-                            consumeItem((ItemStock) spinner.getSelectedItem(), Double.valueOf(amount.getText().toString()));
-                        }
                     }
 
                 })
@@ -231,9 +250,36 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
                         dialog.dismiss();
                     }
                 });
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(amount.getText().toString().equals("")){
+                    amount.setError(getText(R.string.validation_obrigatoryField));
+                } else {
+                    if (adapter instanceof RecipeSpinnerAdapter) {
+                        Recipe recipe = (Recipe) spinner.getSelectedItem();
+                        ArrayList<ItemRecipe> ingredients = (ArrayList<ItemRecipe>) itemRecipeDAO.getAllByRecipe(recipe.getId());
+                        Double amountDouble = Double.valueOf(amount.getText().toString());
+                        for (ItemRecipe itemrecipe : ingredients) {
+                            for (ItemStock itemStock : list) {
+                                if (itemStock.getProduct().getName().equals(itemrecipe.getProduct().getName())) {
+                                    double amountToBeAdded = itemrecipe.getAmount() * amountDouble;
+                                    consumeItem(itemStock, amountToBeAdded);
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (adapter instanceof StockSpinnerAdapter) {
+                        consumeItem((ItemStock) spinner.getSelectedItem(), Double.valueOf(amount.getText().toString()));
+                    }
+
+                    dialog.dismiss();
+                }
+            }
+        });
     }
 
 
@@ -317,5 +363,16 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
             fab.callOnClick();
         }
         super.showEditModeMenu(editMenuInterface);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser) {
+            if(fabPressed){
+                fab.performClick();
+            }
+        }
+
     }
 }

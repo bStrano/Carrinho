@@ -144,5 +144,14 @@
     <string name="itemstock_consume_productTitle">Consumir Produto</string>
     <string name="amountFieldTitle">Quantidade: </string>
     <string name="updateItem">Atualizar Item</string>
+    <string name="error_title_recipesNotRegistered">Nenhuma receita cadastrada</string>
+    <string name="error_message_recipesNotRegistered">  Cadastre receitas para poder atualizar rapidamente os ingredientes presentes no estoque.</string>
+    <string name="error_positiveButton_recipesNotRegistered">Cadastrar Receitas</string>
+    <string name="error_title_itemStockNotRegistered">Nenhum item cadastrado</string>
+    <string name="error_message_itemStockNotRegistered"> Para atualizar um item é necessário que haja algum produto adicionado ao estoque.</string>
+    <string name="error_positiveButton_itemStockNotRegistered">Cadastrar Item</string>
+    <string name="error_title_procutsNotRegistered">Nenhum produto cadastrado</string>
+    <string name="error_message_productsNotRegistered"> Para pode adicionar um item ao estoque é necessario que exista produtos cadastrados.</string>
+    <string name="error_positiveButton_productsNotRegistered">Cadastrar Produto</string>
 
 </resources>

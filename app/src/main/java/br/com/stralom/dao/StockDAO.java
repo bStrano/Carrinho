@@ -19,6 +19,9 @@ public class StockDAO extends GenericDAO {
         super(context, DBHelper.TABLE_STOCK);
     }
 
+    public long add(Stock stock){
+        return super.add(getContentValues(stock));
+    }
 
     public Stock findById(Long id){
 

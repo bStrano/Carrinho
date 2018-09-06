@@ -29,11 +29,11 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/itemStock_consume_amountLabel"
         app:layout_constraintTop_toBottomOf="@+id/itemStock_consume_title" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/itemStock_consume_amountLabel"
         android:layout_width="wrap_content"
         android:layout_height="54dp"
         android:layout_marginStart="32dp"
@@ -55,5 +55,5 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/itemStock_consume_amountLabel" />
 </android.support.constraint.ConstraintLayout>

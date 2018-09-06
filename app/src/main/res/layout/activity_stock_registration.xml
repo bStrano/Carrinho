@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StockRegistration">
+    tools:context=".StockRegistration"
+    android:id="@+id/stock_registration_main">
 
     <include
         android:id="@+id/registration_toolbar"
@@ -120,7 +121,6 @@
         android:background="#f2f2f2"
         android:gravity="center_vertical"
         android:text="TextView"
-        android:paddingLeft="15dp"
         android:textAlignment="gravity"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/imageView"

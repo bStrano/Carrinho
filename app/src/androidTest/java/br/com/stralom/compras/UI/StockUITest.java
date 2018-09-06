@@ -1,15 +1,18 @@
 package br.com.stralom.compras.UI;
 
 import android.app.Activity;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
@@ -18,153 +21,341 @@ import java.util.ArrayList;
 import br.com.stralom.compras.MainActivity;
 import br.com.stralom.compras.R;
 import br.com.stralom.dao.CategoryDAO;
+import br.com.stralom.dao.DBHelper;
 import br.com.stralom.dao.ItemRecipeDAO;
+import br.com.stralom.dao.ItemStockDAO;
 import br.com.stralom.dao.ProductDAO;
 import br.com.stralom.dao.RecipeDAO;
+import br.com.stralom.dao.StockDAO;
 import br.com.stralom.entities.Category;
 import br.com.stralom.entities.ItemRecipe;
+import br.com.stralom.entities.ItemStock;
 import br.com.stralom.entities.Product;
 import br.com.stralom.entities.Recipe;
+import br.com.stralom.entities.Stock;
 
-import static android.support.test.espresso.Espresso.onData;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static br.com.stralom.compras.UI.matchers.CustomMatcher.isToast;
-import static br.com.stralom.compras.UI.matchers.CustomMatcher.productSpinnerWithText;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.waitFor;
 import static br.com.stralom.compras.UI.matchers.CustomMatcher.withError;
-import static br.com.stralom.compras.UI.matchers.StockMatcher.withStockHolder;
-import static org.hamcrest.Matchers.not;
 
-@RunWith(AndroidJUnit4.class)
+
+@RunWith(Enclosed.class)
 @LargeTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StockUITest {
-    private static final String  CATEGORY_NAME = "Stock Category";
-    private static final String PRODUCT_NAME = "Stock Product";
-    private static final String RECIPE_NAME = "Stock Recipe";
-    private static boolean initialized = false;
-    private static ProductDAO productDAO;
-    private static CategoryDAO categoryDAO;
-    private static RecipeDAO recipeDAO;
-    private static ItemRecipeDAO itemRecipeDAO;
-    private static Product product;
-    private static Category category;
-    private static Recipe recipe;
-    private  Activity activity;
+
+    private static  void expandFabMenu() {
+        onView(isRoot()).perform(waitFor(400));
+        onView(withId(R.id.stock_fab_main)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+    }
+
+    @RunWith(AndroidJUnit4.class)
+    @LargeTest
+    public static class StockWithData {
+        private static final String CATEGORY_NAME = "Stock Category";
+        private static final String PRODUCT_NAME = "Stock Product";
+        private static final String RECIPE_NAME = "Stock Recipe";
+        private boolean initialized = false;
+        private  static ProductDAO productDAO;
+        private static  CategoryDAO categoryDAO;
+        private static  ItemStockDAO itemStockDAO;
+        private static StockDAO stockDAO;
+        private static  RecipeDAO recipeDAO;
+        private static  ItemRecipeDAO itemRecipeDAO;
+
+        private  Stock stock;
+        private   Product product;
+        private   Product product2;
+        private   Category category;
+        private   Recipe recipe;
+        private   ItemStock itemStock;
+        private static Activity activity;
 
 
-    @Rule
-    public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+        @Rule
+        public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    @Before
-    public void init(){
-        activity = activityActivityTestRule.getActivity();
-        if(!initialized){
-            productDAO = new ProductDAO(activity);
-            categoryDAO = new CategoryDAO(activity);
-            recipeDAO = new RecipeDAO(activity);
-            itemRecipeDAO = new ItemRecipeDAO(activity);
-            category = categoryDAO.add(CATEGORY_NAME,CATEGORY_NAME,R.drawable.meat);
-            product = productDAO.add(PRODUCT_NAME,120,category);
-            ItemRecipe itemRecipe = new ItemRecipe(2,product);
+        @Before
+        public void init() {
+            if(!initialized){
+                initialized = true;
+                activity = activityActivityTestRule.getActivity();
+                productDAO = new ProductDAO(activity);
+                categoryDAO = new CategoryDAO(activity);
+                recipeDAO = new RecipeDAO(activity);
+                itemRecipeDAO = new ItemRecipeDAO(activity);
+                itemStockDAO = new ItemStockDAO(activity);
+                stockDAO = new StockDAO(activity);
+            }
+
+
+            category = categoryDAO.add(CATEGORY_NAME, CATEGORY_NAME, R.drawable.meat);
+            product = productDAO.add(PRODUCT_NAME, 120, category);
+            product2 = productDAO.add("Product 2",150,category);
+            ItemRecipe itemRecipe = new ItemRecipe(2, product);
             ArrayList<ItemRecipe> products = new ArrayList<>();
             products.add(itemRecipe);
-            recipe = recipeDAO.add(RECIPE_NAME,products, null);
-            itemRecipeDAO.add(2,product,recipe);
-            initialized = true;
+            recipe = recipeDAO.add(RECIPE_NAME, products, null);
+            itemRecipeDAO.add(2, product, recipe);
+            itemStock = new ItemStock(2,product,1);
+            Long stockId = stockDAO.add(new Stock());
+            itemStock.setStock(new Stock(stockId));
+            itemStockDAO.add(itemStock);
+
+            goToStockTab();
         }
-        goToStockTab();
-    }
 
-
-
-    @Test
-    public void TestAddingItem()  {
-        String actualAmount = "20";
-        String maxAmount = "40";
-
-
-
-        openDialogAndRegisterItem(PRODUCT_NAME, actualAmount,maxAmount);
-
-        onView(withId(R.id.list_itemStock)).perform(RecyclerViewActions.scrollToHolder(withStockHolder(PRODUCT_NAME,actualAmount,maxAmount)))
-                .check(matches(isDisplayed()));
-        onView(withText(R.string.toast_itemStock_validRegistration)).inRoot(withDecorView(not(activity.getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void TestAddingWithEmptyActualAmount(){
-
-        openDialogAndRegisterItem(PRODUCT_NAME,null,"41");
-
-        String validationMsg = activity.getResources().getString(R.string.validation_obrigatoryField);
-        onView(withId(R.id.form_itemStock_actualAmount)).check(matches(withError(validationMsg)));
-    }
-
-    @Test
-    public void TestWithMaxEmptyAmount(){
-
-        openDialogAndRegisterItem(PRODUCT_NAME,"20",null);
-
-        String validationMsg = activity.getResources().getString(R.string.validation_obrigatoryField);
-        onView(withId(R.id.form_itemStock_maxAmount)).check(matches(withError(validationMsg)));
-
-    }
-
-    @Test
-    public void TestAddingItemAlreadyRegistered(){
-        String productName = "Already Registered";
-        productDAO = new ProductDAO(activity);
-        productDAO.add(productName,2,category);
-
-        openDialogAndRegisterItem(productName,"20","40");
-        openDialogAndRegisterItem(productName,"20","40");
-
-        onView(withText(R.string.toast_itemStock_invalidRegistration)).inRoot(isToast())
-                .check(matches(isDisplayed()));
-
-
-    }
-
-
-    private void openDialogAndRegisterItem(String productName, String actualAmount, String maxAmount){
-        accessStockProductDialog();
-        registerProductItemStock(productName,actualAmount,maxAmount);
-    }
-
-    private void registerProductItemStock(String productName, String actualAmount, String maxAmount){
-        if(actualAmount != null){
-            onView(withId(R.id.form_itemStock_actualAmount)).perform(replaceText(actualAmount));
+        @After
+        public void tearDown() {
+            InstrumentationRegistry.getTargetContext().deleteDatabase(DBHelper.DATABASE_NAME);
         }
-        if(maxAmount != null){
-            onView(withId(R.id.form_itemStock_maxAmount)).perform(replaceText(maxAmount));
+
+
+        @Test
+        public void TestExpandFabsMenu() {
+            expandFabMenu();
+            onView(withId(R.id.stock_fab_addStock)).check(matches(isDisplayed()));
+            onView(withId(R.id.stock_fab_consumeProduct)).check(matches(isDisplayed()));
+            onView(withId(R.id.stock_fab_consumeRecipe)).check(matches(isDisplayed()));
         }
-        onView(withId(R.id.form_itemStock_products)).perform(click());
-        onData(productSpinnerWithText(productName)).inRoot(isPlatformPopup()).perform(click());
 
-        onView(withText(R.string.save)).perform(click());
+
+        public void TestCollapseFabMenu() {
+            onView(withId(R.id.stock_fab_main)).check(matches(isDisplayed()));
+            onView(withId(R.id.stock_fab_main)).perform(click());
+            onView(withId(R.id.stock_fab_main)).check(matches(isDisplayed()));
+            onView(withId(R.id.stock_fab_main)).perform(click());
+        }
+
+
+        @Test
+        public void TestStartItemStockRegistrationActivity() {
+            openAddStockDialog();
+            onView(withId(R.id.stock_registration_main)).check(matches(isDisplayed()));
+        }
+
+        @Test
+        public void TestOpenConsumeRecipeDialog() {
+            openConsumeRecipeDialog();
+
+            onView(withText(R.string.itemstock_consume_recipeTitle)).check(matches(isDisplayed()));
+            testConsumeDialog();
+        }
+
+        @Test
+        public void TestConsumeRecipeDialogEmptyAmount(){
+            openConsumeRecipeDialog();
+
+            checkEmptyAmountValidation();
+        }
+
+
+
+
+        @Test
+        public void TestOpenConsumeItemDialog() {
+            openConsumeProductDialog();
+
+            onView(withText(R.string.itemstock_consume_productTitle)).check(matches(isDisplayed()));
+
+            testConsumeDialog();
+
+
+        }
+
+        @Test
+        public void TestConsumeItemDialogEmptyAmount(){
+            openConsumeProductDialog();
+
+            checkEmptyAmountValidation();
+        }
+
+
+        @Test
+        public void TestClickOnListItem(){
+            onView(isRoot()).perform(waitFor(400));
+            onView(withId(R.id.list_itemStock)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+            onView(isRoot()).perform(waitFor(400));
+            onView(withId(R.id.itemstock_consume_itemTitle))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(R.string.updateItem)));
+            onView(withId(R.id.dialog_itemstock_productname))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(product.getName())));
+            String productLabel = activity.getText(R.string.itemStock_update_productTitle).toString();
+            onView(withId(R.id.dialog_itemstock_productnameLabel))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(productLabel)));
+            onView(withId(R.id.dialog_itemstock_actualAmountLayout))
+                    .check(matches(isDisplayed()));
+            onView(withId(R.id.dialog_itemstock_actualamount))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText("")));
+            onView(withId(R.id.dialog_itemstock_maxAmountLayout))
+                    .check(matches(isDisplayed()));
+            onView(withId(R.id.dialog_itemstock_maxamount))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(String.valueOf(itemStock.getAmount()))));
+        }
+
+        private void checkEmptyAmountValidation() {
+            String obrigatoryField = activity.getText(R.string.validation_obrigatoryField).toString();
+            onView(withText(R.string.save)).perform(click());
+            onView(withId(R.id.itemStock_consume_amount)).check(matches(withError(obrigatoryField)));
+        }
+        private void testConsumeDialog() {
+            onView(withId(R.id.itemStock_consume_amount)).check(matches(isDisplayed()));
+            onView(withId(R.id.itemStock_consume_amountLabel)).check(matches(isDisplayed()));
+            onView(withId(R.id.itemStock_spinner_consume)).check(matches(isDisplayed()));
+            onView(withText(R.string.save)).check(matches(isDisplayed()));
+            onView(withText(R.string.cancel)).check(matches(isDisplayed()));
+        }
+
+
+
+        private void goToStockTab() {
+            String tab = activity.getResources().getStringArray(R.array.tab_titles)[3];
+            onView(withText(tab)).perform(click());
+        }
     }
 
-    private void accessStockProductDialog() {
-        onView(isRoot()).perform(waitFor(1000));
-        onView(withId(R.id.fab_stock)).perform(click());
-        onView(isRoot()).perform(waitFor(2000));
-        onView(withId(R.id.fab_addStock)).perform(click());
+    private static void openConsumeRecipeDialog() {
+        expandFabMenu();
+        onView(withId(R.id.stock_fab_consumeRecipe)).perform(click());
     }
 
+    @RunWith(AndroidJUnit4.class)
+    public static class StockEmpty{
+        private Activity activity;
 
-    private void goToStockTab(){
-        String tab = activity.getResources().getStringArray(R.array.tab_titles)[3];
-        onView(withText(tab)).perform(click());
+        @Rule
+        public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
+
+        @Before
+        public void init(){
+            activity = activityActivityTestRule.getActivity();
+            String tab = activity.getResources().getStringArray(R.array.tab_titles)[3];
+            onView(withText(tab)).perform(click());
+        }
+
+
+        @Test
+        public void TestEmptyList() {
+           onView(withId(R.id.stock_emptyList)).check(matches(isDisplayed()));
+           //onView(withText(R.string.stock_emptyList_title)).check(matches(isDisplayed()));
+           onView(withText(R.string.stock_emptyList_description)).check(matches(isDisplayed()));
+        }
+
+        @Test
+        public void TestOpenStockRegistrationErrorDialog(){
+            openAddStockDialog();
+            checkErrorDialog(R.string.error_title_procutsNotRegistered, R.string.error_message_productsNotRegistered,R.string.error_positiveButton_productsNotRegistered);
+        }
+
+        @Test
+        public void TestOpenStockRegistrationErrorDialogPositiveButton(){
+            openAddStockDialog();
+            onView(withText(R.string.error_positiveButton_productsNotRegistered)).perform(click());
+            onView(withId(R.id.product_view_main)).check(matches(isDisplayed()));
+        }
+
+        @Test
+        public void TestOpenStockRegistrationErrorDialogCancelButton(){
+            openAddStockDialog();
+            checkDialogCancelButton();
+        }
+
+        @Test
+        public void TestOpenConsumeProductErrorDialog(){
+            openConsumeProductDialog();
+            checkErrorDialog(R.string.error_title_itemStockNotRegistered, R.string.error_message_itemStockNotRegistered,R.string.error_positiveButton_itemStockNotRegistered);
+        }
+
+        @Test
+        public void TestOpenConsumeProductErrorDialogPositiveButton(){
+            openConsumeProductDialog();
+            onView(withText(R.string.error_positiveButton_itemStockNotRegistered)).perform(click());
+            onView(withText(R.string.error_positiveButton_itemStockNotRegistered))
+                    .check(doesNotExist());
+            onView(withText(R.string.error_message_productsNotRegistered))
+                    .check(matches(isDisplayed()));
+
+        }
+
+
+
+        @Test
+        public void TestOpenConsumeProductErrorDialogCancelButton(){
+            openConsumeProductDialog();
+            checkDialogCancelButton();
+        }
+
+
+
+
+
+        @Test
+        public void TestOpenConsumeRecipeErrorDialog(){
+            openConsumeRecipeDialog();
+            checkErrorDialog(R.string.error_title_recipesNotRegistered, R.string.error_message_recipesNotRegistered,R.string.error_positiveButton_recipesNotRegistered);
+        }
+
+        @Test
+        public void TestOpenConsumeRecipeErrorDialogPositiveButton(){
+            openConsumeRecipeDialog();
+            onView(withText(R.string.error_positiveButton_recipesNotRegistered)).perform(click());
+            onView(withText(R.string.error_positiveButton_recipesNotRegistered))
+                    .check(doesNotExist());
+            onView(withId(R.id.recipe_view_main))
+                    .check(matches(isDisplayed()));
+        }
+
+        @Test
+        public void TestOpenConsumeRecipeErrorDialogCancelButton(){
+            openConsumeRecipeDialog();
+            checkDialogCancelButton();
+        }
+
+        private void checkDialogCancelButton() {
+            onView(withText(R.string.cancel)).perform(click());
+            onView(withId(R.string.cancel)).check(doesNotExist());
+            onView(withId(R.id.stock_main)).check(matches(isDisplayed()));
+        }
+
+        private void checkErrorDialog(int errorTitleRes, int errorDescriptionRes, int positiveButtonRes){
+            String errorTitle = activity.getResources().getString(errorTitleRes);
+            String errorDescription = activity.getResources().getString(errorDescriptionRes);
+            String positiveButton = activity.getResources().getString(positiveButtonRes);
+            onView(withId(R.id.dialog_error_title))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(errorTitle)));
+            onView(withId(R.id.dialog_error_message))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(errorDescription)));
+            onView(withText(positiveButton)).check(matches(isDisplayed()));
+            onView(withText(R.string.cancel)).check(matches(isDisplayed()));
+        }
+    }
+
+    private static void openConsumeProductDialog() {
+        expandFabMenu();
+        onView(withId(R.id.stock_fab_consumeProduct)).perform(click());
+    }
+
+    private static void openAddStockDialog() {
+        expandFabMenu();
+        onView(withId(R.id.stock_fab_addStock)).perform(click());
     }
 }
