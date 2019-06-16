@@ -35,7 +35,7 @@ public class ItemCartTest {
         itemCartExpected.setConvertedId(simpleItem.getId());
         
 
-        ItemCart itemCartResult = ItemCart.convertToItemCart(simpleItem);
+        ItemCart itemCartResult = (ItemCart) ItemCart.convertToItemCart(simpleItem);
 
         assertTrue(itemCartResult.getConvertedId() == simpleItem.getCart().getId());
 
