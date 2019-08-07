@@ -21,7 +21,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.Product;
+import br.com.stralom.compras.entities.Product;
 
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.v4.util.Preconditions.checkNotNull;

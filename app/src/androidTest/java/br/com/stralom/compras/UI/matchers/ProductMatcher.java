@@ -1,10 +1,7 @@
 package br.com.stralom.compras.UI.matchers;
 
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +9,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 
-import br.com.stralom.adapters.ProductAdapter;
+import br.com.stralom.compras.adapters.ProductAdapter;
 import br.com.stralom.compras.R;
 
 /**

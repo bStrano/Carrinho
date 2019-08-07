@@ -7,9 +7,9 @@ import android.widget.TextView;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import br.com.stralom.adapters.RecipeAdapter;
+import br.com.stralom.compras.adapters.RecipeAdapter;
 import br.com.stralom.compras.R;
-import br.com.stralom.entities.Recipe;
+import br.com.stralom.compras.entities.Recipe;
 
 public class RecipeMatcher {
 

@@ -17,11 +17,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import br.com.stralom.compras.MainActivity;
+import br.com.stralom.compras.activities.MainActivity;
 import br.com.stralom.compras.R;
-import br.com.stralom.dao.CategoryDAO;
-import br.com.stralom.dao.ProductDAO;
-import br.com.stralom.entities.Category;
+import br.com.stralom.compras.dao.CategoryDAO;
+import br.com.stralom.compras.dao.ProductDAO;
+import br.com.stralom.compras.entities.Category;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;

@@ -3,10 +3,10 @@ package br.com.stralom.compras.tests.entities;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.stralom.entities.Cart;
-import br.com.stralom.entities.ItemCart;
-import br.com.stralom.entities.Product;
-import br.com.stralom.entities.SimpleItem;
+import br.com.stralom.compras.entities.Cart;
+import br.com.stralom.compras.entities.ItemCart;
+import br.com.stralom.compras.entities.Product;
+import br.com.stralom.compras.entities.SimpleItem;
 import static org.junit.Assert.*;
 
 public class ItemCartTest {

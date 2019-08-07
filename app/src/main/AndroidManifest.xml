@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -39,11 +39,11 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".RecipeRegistration" />
-        <activity android:name=".ItemCartRegistration" />
-        <activity android:name=".ProductRegistration" />
-        <activity android:name=".StockRegistration" />
-        <activity android:name=".RecipeIngredients"/>
+        <activity android:name=".activities.RecipeRegistration" />
+        <activity android:name=".activities.ItemCartRegistration" />
+        <activity android:name=".activities.ProductRegistration" />
+        <activity android:name=".activities.StockRegistration" />
+        <activity android:name=".activities.RecipeIngredients"/>
     </application>
 
 </manifest>

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import br.com.stralom.adapters.CartAdapter;
+import br.com.stralom.compras.adapters.CartAdapter;
 import br.com.stralom.compras.R;
 
 public class CartMatcher {

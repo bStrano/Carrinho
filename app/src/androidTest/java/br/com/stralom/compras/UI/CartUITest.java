@@ -14,10 +14,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import br.com.stralom.compras.ItemCartRegistration;
-import br.com.stralom.compras.MainActivity;
+import br.com.stralom.compras.activities.ItemCartRegistration;
+import br.com.stralom.compras.activities.MainActivity;
 import br.com.stralom.compras.R;
-import br.com.stralom.dao.DBHelper;
+import br.com.stralom.compras.dao.DBHelper;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

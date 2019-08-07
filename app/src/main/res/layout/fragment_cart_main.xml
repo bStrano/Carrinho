@@ -5,11 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:id="@+id/itemCart_emptyList"
-            layout="@layout/empty_list"/>
+    <include
+        android:id="@+id/itemCart_emptyList"
+        layout="@layout/empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="3dp" />
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/itemCart_btn_registerProduct"
@@ -36,8 +38,10 @@
         android:id="@+id/cart_list_itemCarts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/spinner"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_marginStart="-11dp"
+        android:layout_marginTop="5dp"
         android:scrollbars="vertical" />
 
     <!--<android.support.design.widget.FloatingActionButton-->

@@ -17,18 +17,18 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import br.com.stralom.compras.MainActivity;
+import br.com.stralom.compras.activities.MainActivity;
 import br.com.stralom.compras.R;
-import br.com.stralom.dao.CategoryDAO;
-import br.com.stralom.dao.DBHelper;
-import br.com.stralom.dao.ItemCartDAO;
-import br.com.stralom.dao.ItemRecipeDAO;
-import br.com.stralom.dao.ProductDAO;
-import br.com.stralom.dao.RecipeDAO;
-import br.com.stralom.entities.Category;
-import br.com.stralom.entities.ItemRecipe;
-import br.com.stralom.entities.Product;
-import br.com.stralom.entities.Recipe;
+import br.com.stralom.compras.dao.CategoryDAO;
+import br.com.stralom.compras.dao.DBHelper;
+import br.com.stralom.compras.dao.ItemCartDAO;
+import br.com.stralom.compras.dao.ItemRecipeDAO;
+import br.com.stralom.compras.dao.ProductDAO;
+import br.com.stralom.compras.dao.RecipeDAO;
+import br.com.stralom.compras.entities.Category;
+import br.com.stralom.compras.entities.ItemRecipe;
+import br.com.stralom.compras.entities.Product;
+import br.com.stralom.compras.entities.Recipe;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

@@ -2,7 +2,7 @@ package br.com.stralom.compras.tests.entities;
 
 import org.junit.Test;
 
-import br.com.stralom.entities.ItemStock;
+import br.com.stralom.compras.entities.ItemStock;
 
 import static org.junit.Assert.*;
 
