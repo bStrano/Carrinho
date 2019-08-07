@@ -153,5 +153,6 @@
     <string name="error_title_procutsNotRegistered">Nenhum produto cadastrado</string>
     <string name="error_message_productsNotRegistered"> Para pode adicionar um item ao estoque é necessario que exista produtos cadastrados.</string>
     <string name="error_positiveButton_productsNotRegistered">Cadastrar Produto</string>
+    <string name="title_activity_login">Login</string>
 
 </resources>

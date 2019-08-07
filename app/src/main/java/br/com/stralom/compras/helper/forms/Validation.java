@@ -1,14 +1,10 @@
 package br.com.stralom.compras.helper.forms;
 
 import android.app.Activity;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.EditText;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import br.com.stralom.compras.R;
 

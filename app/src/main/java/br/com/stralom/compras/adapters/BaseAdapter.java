@@ -1,13 +1,13 @@
 package br.com.stralom.compras.adapters;
 
 import android.app.Activity;
-import android.databinding.ObservableArrayList;
+import androidx.databinding.ObservableArrayList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;

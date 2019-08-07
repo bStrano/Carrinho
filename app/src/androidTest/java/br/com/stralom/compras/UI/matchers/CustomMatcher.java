@@ -2,13 +2,13 @@ package br.com.stralom.compras.UI.matchers;
 
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
-import android.support.test.espresso.Root;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.matcher.BoundedMatcher;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.test.espresso.Root;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.matcher.BoundedMatcher;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -23,8 +23,8 @@ import org.hamcrest.TypeSafeMatcher;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.entities.Product;
 
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
-import static android.support.v4.util.Preconditions.checkNotNull;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.core.util.Preconditions.checkNotNull;
 
 public class CustomMatcher {
 

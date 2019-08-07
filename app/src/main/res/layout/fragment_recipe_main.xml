@@ -10,7 +10,7 @@
         android:id="@+id/recipe_emptyList"
         layout="@layout/empty_list"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_recipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -18,7 +18,7 @@
 
             />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_newRecipe"
             app:fabSize="normal"
             android:layout_alignParentBottom="true"

@@ -2,10 +2,10 @@ package br.com.stralom.compras.helper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.databinding.ObservableArrayList;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.ObservableArrayList;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;

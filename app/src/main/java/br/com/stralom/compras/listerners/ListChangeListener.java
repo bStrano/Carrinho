@@ -1,9 +1,8 @@
 package br.com.stralom.compras.listerners;
 
-import android.databinding.ObservableList;
-import android.support.constraint.Group;
+import androidx.databinding.ObservableList;
+
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 

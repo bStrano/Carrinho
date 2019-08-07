@@ -2,10 +2,10 @@ package br.com.stralom.compras.adapters;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.databinding.ObservableArrayList;
+import androidx.databinding.ObservableArrayList;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -19,6 +19,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
+            android:name=".activities.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/NoActionBar"></activity>
+        <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -30,7 +34,7 @@
         </activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="br.com.stralom.compras"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -43,7 +47,7 @@
         <activity android:name=".activities.ItemCartRegistration" />
         <activity android:name=".activities.ProductRegistration" />
         <activity android:name=".activities.StockRegistration" />
-        <activity android:name=".activities.RecipeIngredients"/>
+        <activity android:name=".activities.RecipeIngredients" />
     </application>
 
 </manifest>
