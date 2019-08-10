@@ -35,9 +35,9 @@
                 android:title="Share"
                 tools:ignore="HardcodedText" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send"
+                android:title="Logout"
                 tools:ignore="HardcodedText" />
         </menu>
     </item>

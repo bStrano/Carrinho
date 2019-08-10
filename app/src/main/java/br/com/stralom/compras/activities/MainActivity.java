@@ -1,9 +1,13 @@
 package br.com.stralom.compras.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -19,7 +23,6 @@ import br.com.stralom.compras.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Toast.makeText(this,"Teste", Toast.LENGTH_LONG).show();
@@ -118,8 +122,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_share:
 
                 break;
-            case R.id.nav_send:
-
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+                Intent logoutIntent = new Intent(this,LoginActivity.class);
+                startActivity(logoutIntent);
+                finish();
                 break;
         }
 

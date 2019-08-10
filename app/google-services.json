@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "155041133170",
+    "firebase_url": "https://stralom-compras.firebaseio.com",
+    "project_id": "stralom-compras",
+    "storage_bucket": "stralom-compras.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155041133170:android:e05e4135e100eec7",
+        "android_client_info": {
+          "package_name": "br.com.stralom.compras"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155041133170-cor4vae0u1qp32q05i08meglbat5ir5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.stralom.compras",
+            "certificate_hash": "7ca4eb476a8450fd0fb5668dd9a2e987f3826e73"
+          }
+        },
+        {
+          "client_id": "155041133170-nmvg3u6e8l0u5jf2h3i2frcn3ur3n18n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCCYI-gyoNIl1zJWf2M6cwh0qkyPh-_Ac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155041133170-nmvg3u6e8l0u5jf2h3i2frcn3ur3n18n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

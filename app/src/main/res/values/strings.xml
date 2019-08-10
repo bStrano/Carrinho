@@ -154,5 +154,20 @@
     <string name="error_message_productsNotRegistered"> Para pode adicionar um item ao estoque é necessario que exista produtos cadastrados.</string>
     <string name="error_positiveButton_productsNotRegistered">Cadastrar Produto</string>
     <string name="title_activity_login">Login</string>
-
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Senha</string>
+    <string name="login_signin_google">Entrar com Google</string>
+    <string name="login_signin_facebook">Entrar com Facebook</string>
+    <string name="login_signup_btn">Não tem uma conta ? Cadastre-se !</string>
+    <string name="login_forgotpassword_btn">Esqueceu sua senha ?</string>
+    <string name="logo">Stralom logo</string>
+    <string name="login_signin">Entrar</string>
+    <string name="register_senha">Senha</string>
+    <string name="register_email">E-mail</string>
+    <string name="register_nome">Nome</string>
+    <string name="register_submit">Cadastrar</string>
+    <string name="register_logar">Já possuio uma conta ? Entrar</string>
+    <string name="facebook_application_id" translatable="false">373016280044299</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb373016280044299</string>
+    <string name="register_confirmEmail">Confirme seu email</string>
 </resources>

@@ -4,25 +4,33 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/login_mainLayout"
-        >
+        android:id="@+id/login_mainLayout">
 
         <FrameLayout
+            android:clickable="true"
+            android:id="@+id/progressBar_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#80020000"
-            android:visibility="visible"
+            android:background="#C9020000"
+            android:elevation="10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true">
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="141dp"
                 android:layout_height="101dp"
-                android:layout_gravity="center_horizontal|center_vertical" />
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/colorPrimaryDark"
+                android:indeterminateTintMode="src_atop"
+                android:progressBackgroundTint="#3F51B5"
+                android:progressTint="#3F51B5" />
         </FrameLayout>
 
         <Button
@@ -34,7 +42,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/button_bg"
             android:backgroundTint="@color/colorPrimary"
-            android:text="Entrar"
+            android:text="@string/login_signin"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toTopOf="@+id/login_register"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +62,7 @@
             app:layout_constraintBottom_toTopOf="@+id/login_forgotPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-             />
+            android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/login_email"
@@ -69,7 +77,7 @@
             app:layout_constraintBottom_toTopOf="@+id/login_pass"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            />
+            android:autofillHints="email" />
 
         <Button
             android:id="@+id/login_signin_google"
@@ -102,13 +110,19 @@
 
         <ImageView
             android:id="@+id/login_logo"
-            android:layout_width="356dp"
-            android:layout_height="167dp"
+            android:layout_width="195dp"
+            android:layout_height="149dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginEnd="64dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/logo"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo"
             app:layout_constraintBottom_toTopOf="@+id/login_email"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:srcCompat="@drawable/logo2" />
+            app:layout_constraintStart_toStartOf="parent" />
+
 
         <Button
             android:id="@+id/login_register"
