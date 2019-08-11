@@ -157,7 +157,7 @@
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Senha</string>
     <string name="login_signin_google">Entrar com Google</string>
-    <string name="login_signin_facebook">Entrar com Facebook</string>
+    <string name="login_signin_facebook">ENTRAR COM FACEBOOK</string>
     <string name="login_signup_btn">Não tem uma conta ? Cadastre-se !</string>
     <string name="login_forgotpassword_btn">Esqueceu sua senha ?</string>
     <string name="logo">Stralom logo</string>

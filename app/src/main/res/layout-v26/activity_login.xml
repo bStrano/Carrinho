@@ -87,6 +87,7 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="8dp"
             android:backgroundTint="#DD4B39"
+            android:drawableLeft="@drawable/googleg_standard_color_18"
             android:text="@string/login_signin_google"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toTopOf="@+id/login_signin_facebook"
@@ -94,19 +95,26 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <com.facebook.login.widget.LoginButton xmlns:facebook="http://schemas.android.com/apk/res-auto"
             android:id="@+id/login_signin_facebook"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_height="37dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="36dp"
             android:backgroundTint="#3C5A99"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="@string/login_signin_facebook"
             android:textColor="#FFFFFF"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            facebook:com_facebook_login_text="@string/login_signin_facebook"
+            facebook:layout_constraintHeight_min="wrap"
+            facebook:layout_constraintHorizontal_bias="0.0" />
+
 
         <ImageView
             android:id="@+id/login_logo"

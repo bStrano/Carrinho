@@ -3,6 +3,13 @@ package br.com.stralom.compras.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +21,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -23,6 +32,10 @@ import br.com.stralom.compras.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "MainActivity";
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +44,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
+        mAuth = FirebaseAuth.getInstance();
+        user  = this.mAuth.getCurrentUser();
 
 
 
@@ -123,7 +137,20 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_logout:
-                FirebaseAuth.getInstance().signOut();
+
+                mAuth.signOut();
+                if( user.getProviderData().get(1).getProviderId().equals("facebook.com")){
+                    Log.d(TAG,"Deslogar FB");
+                    LoginManager.getInstance().logOut();
+                } else if (user.getProviderData().get(1).getProviderId().equals("google.com")){
+                    Log.d(TAG,"Deslogar Google");
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .build();
+                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                    mGoogleSignInClient.signOut();
+                }
+
+
                 Intent logoutIntent = new Intent(this,LoginActivity.class);
                 startActivity(logoutIntent);
                 finish();
