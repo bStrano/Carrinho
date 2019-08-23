@@ -18,11 +18,11 @@ import br.com.stralom.compras.entities.Recipe;
 
 public class RecipeDAO extends GenericDAO {
     private static final String TAG = "RecipeDAO";
-    private final ItemRecipeDAO itemRecipeDAO;
+//    private final ItemRecipeDAO itemRecipeDAO;
 
     public RecipeDAO(Context context) {
         super(context, DBHelper.TABLE_RECIPE);
-        itemRecipeDAO = new ItemRecipeDAO(context);
+//        itemRecipeDAO = new ItemRecipeDAO(context);
     }
 
     public Long add(Recipe recipe){
@@ -52,9 +52,10 @@ public class RecipeDAO extends GenericDAO {
     }
 
     @Override
-    public void remove(Long id) {
-        itemRecipeDAO.deleteAllFromRecipe(id);
-        super.remove(id);
+    public void remove(Long id) throws Exception {
+        throw new Exception("Refatoração em progresso");
+        //        itemRecipeDAO.deleteAllFromRecipe(id);
+        //super.remove(id);
     }
 
      public Recipe findByName(String name){

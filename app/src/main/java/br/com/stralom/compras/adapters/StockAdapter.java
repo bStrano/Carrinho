@@ -13,23 +13,24 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.compras.dao.ItemStockDAO;
+import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.entities.ItemStock;
+import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.interfaces.StockUpdateCallback;
 
 /**
  * Created by Bruno Strano on 24/01/2018.
  */
 
-public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemStock>  {
-    private final ItemStockDAO itemStockDAO;
+public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,Product>  {
+    private final ProductDAO productDAO;
     private ArrayList<StockViewHolder> holders;
     private StockUpdateCallback stockUpdateCallback;
 
-    public StockAdapter(StockUpdateCallback stockUpdateCallback, ObservableArrayList<ItemStock> itemStocks, Activity activity) {
+    public StockAdapter(StockUpdateCallback stockUpdateCallback, ObservableArrayList<Product> itemStocks, Activity activity) {
         super(itemStocks,activity);
         this.stockUpdateCallback = stockUpdateCallback;
-        itemStockDAO = new ItemStockDAO(activity);
+        productDAO = new ProductDAO(activity);
         holders = new ArrayList<>();
     }
 
@@ -44,10 +45,10 @@ public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemS
 
     @Override
     public void onBindViewHolder(@NonNull StockViewHolder holder, int position) {
-        ItemStock itemStock = list.get(position);
-        holder.name.setText(itemStock.getProduct().getName());
-        holder.maxAmount.setText(itemStock.getFormattedAmount());
-        holder.actualAmount.setText(itemStock.getFormattedActualAmount());
+        Product product = list.get(position);
+        holder.name.setText(product.getName());
+        holder.maxAmount.setText(product.getItemStock().getFormattedAmount());
+        holder.actualAmount.setText(product.getItemStock().getFormattedActualAmount());
         holder.viewForeground.setBackgroundColor(Color.parseColor("#FAFAFA"));
     }
 
@@ -57,8 +58,8 @@ public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemS
     }
 
     @Override
-    public void removePermanently(ItemStock item) {
-        itemStockDAO.remove( item.getId());
+    public void removePermanently(Product item) {
+        productDAO.remove( item.getId());
     }
 
 
@@ -88,16 +89,16 @@ public class StockAdapter extends BaseAdapter<StockAdapter.StockViewHolder,ItemS
         @Override
         public void onClick(View view) {
 
-            ItemStock itemStock = list.get(getAdapterPosition());
+            Product product = list.get(getAdapterPosition());
             //ItemStock itemStock = getItemStockInHolderList(name.getText().toString());
-            if((itemStock != null ) && (!stockUpdateCallback.isEditModeOn()) ){
-                stockUpdateCallback.edit(itemStock);
+            if((product != null ) && (!stockUpdateCallback.isEditModeOn()) ){
+                stockUpdateCallback.edit(product);
             }
         }
 
     }
 
-    private ItemStock getItemStockInHolderList(String productName){
+    private Product getItemStockInHolderList(String productName){
         for (int i = 0 ; i < holders.size() ; i++){
             StockViewHolder holder = holders.get(i);
             if(holder.name.getText().toString().equals(productName)){

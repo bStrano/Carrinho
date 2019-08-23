@@ -8,17 +8,28 @@ import android.os.Parcelable;
  */
 
 public class ItemRecipe extends Item {
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     private Recipe recipe;
+    private Product product;
 
     public ItemRecipe(){}
 
     public ItemRecipe(double amount, Product product) {
-        super(amount, product);
+        super(amount, product.getPrice());
+        this.product = product;
     }
 
     public ItemRecipe(double amount, Product product, Recipe recipe) {
-        super(amount, product);
+        super(amount, product.getPrice());
         this.recipe = recipe;
+        this.product = product;
     }
 
 
@@ -37,8 +48,9 @@ public class ItemRecipe extends Item {
         return product.getName() + " (" + this.amount + ") - " + this.total + " R$";
     }
 
-    public ItemCart convertToItemCart(Cart cart){
-        return new ItemCart(product, amount, cart);
+    public ItemCart convertToItemCart(Cart cart) throws Exception {
+        throw new Exception("Em refatoração");
+     //    return new ItemCart(product, amount, cart);
     }
 
 

@@ -3,15 +3,7 @@ package br.com.stralom.compras.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.databinding.ObservableArrayList;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +12,28 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.ObservableArrayList;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
+import br.com.stralom.compras.R;
 import br.com.stralom.compras.adapters.RecipeSpinnerAdapter;
 import br.com.stralom.compras.adapters.StockAdapter;
 import br.com.stralom.compras.adapters.StockSpinnerAdapter;
-import br.com.stralom.compras.R;
-import br.com.stralom.compras.dao.ItemRecipeDAO;
-import br.com.stralom.compras.dao.ItemStockDAO;
 import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.dao.RecipeDAO;
-import br.com.stralom.compras.dao.StockDAO;
 import br.com.stralom.compras.entities.ItemRecipe;
-import br.com.stralom.compras.entities.ItemStock;
+import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Recipe;
 import br.com.stralom.compras.entities.Stock;
 import br.com.stralom.compras.helper.BasicViewHelper;
@@ -41,21 +41,25 @@ import br.com.stralom.compras.helper.DialogHelper;
 import br.com.stralom.compras.interfaces.EditMenuInterface;
 import br.com.stralom.compras.interfaces.StockUpdateCallback;
 
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdateCallback {
+public class StockMain extends BasicViewHelper<Product> implements StockUpdateCallback {
     private static final String TAG = "StockMain";
-    private ItemStockDAO itemStockDAO;
     private RecipeDAO recipeDAO;
     private ProductDAO productDAO;
-    private ItemRecipeDAO itemRecipeDAO;
+
     private Stock stock;
     private FloatingActionButton fabAddStock, fabConsumeRecipe, fabConsumeItem;
     private boolean fabPressed = false;
     private ArrayList<Recipe> recipes;
     private ViewPager viewPager;
+    private ArrayList<Product> products;
+    private final int REGISTRATION_ITEMSTOCK = 555;
+
 
     @Override
     public boolean callChangeItemBackgroundColor(View view, int position) {
@@ -67,7 +71,18 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
 
     @Override
     public void initializeSuperAttributes() {
-        list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
+//        list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
+//        ArrayList<Product> products1 = getArguments().getParcelableArrayList("products");
+
+        products = ((MainActivity) getActivity()).productList;
+        for(Product product: products){
+            if(product.getItemStock().getAmount() > 0) {
+                this.list.add(product);
+            }
+        }
+        recipes = getArguments().getParcelableArrayList("recipes");
+
+//        products.addAll(products1);
         listView = mainView.findViewById(R.id.list_itemStock);
         managementMenu = mainView.findViewById(R.id.stock_management_list);
     }
@@ -90,21 +105,15 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
 
         //DAOS
         recipeDAO = new RecipeDAO(getContext());
-        itemStockDAO = new ItemStockDAO(getContext());
         productDAO = new ProductDAO(getContext());
-        itemRecipeDAO = new ItemRecipeDAO(getActivity());
-        StockDAO stockDAO = new StockDAO(getContext());
 
-        stock = stockDAO.findById((long) 1);
-        if (stock == null) {
-            stock = new Stock((long) 1);
-            stockDAO.add(stockDAO.getContentValues(stock));
-        }
+
         initializeSuperAttributes();
+
+
         //VIEWS
         View view = inflater.inflate(R.layout.fragment_stock_main, container, false);
-        list = (ObservableArrayList<ItemStock>) itemStockDAO.getAll(stock.getId());
-        recipes = (ArrayList<Recipe>) recipeDAO.getAll();
+
 
         setUpEmptyListView(mainView, list, R.id.stock_emptyList, R.drawable.ic_stock, R.string.stock_emptyList_title, R.string.stock_emptyList_description);
 
@@ -124,9 +133,17 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
             @Override
             public void onClick(View view) {
 
-                if(productDAO.hasProductInStock() ){
+                if(list.size() > 0 ){
                     Intent intent = new Intent(getActivity(), StockRegistration.class);
-                    startActivity(intent);
+
+                    ArrayList<Product> productsNotInStock = new ArrayList<>();
+                    for(Product product: products){
+                        if(product.getItemStock().getAmount() == 0){
+                            productsNotInStock.add(product);
+                        }
+                    }
+                    intent.putExtra("products", productsNotInStock);
+                    startActivityForResult(intent, REGISTRATION_ITEMSTOCK);
                 } else {
                     DialogHelper.createErrorDialog(getActivity(), R.string.error_title_procutsNotRegistered, R.string.error_message_productsNotRegistered, R.string.error_positiveButton_productsNotRegistered, new DialogInterface.OnClickListener() {
                         @Override
@@ -196,19 +213,19 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
                     fabAddStock.animate().translationY(20).setDuration(200).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            fabAddStock.setVisibility(View.INVISIBLE);
+                            fabAddStock.show();
                         }
                     });
                     fabConsumeRecipe.animate().translationY(120).setDuration(400).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            fabConsumeRecipe.setVisibility(View.INVISIBLE);
+                            fabConsumeRecipe.show();
                         }
                     });
                     fabConsumeItem.animate().translationY(240).setDuration(600).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            fabConsumeItem.setVisibility(View.INVISIBLE);
+                            fabConsumeItem.show();
                             fab.setBackgroundResource(R.color.colorPrimary);
                         }
                     });
@@ -225,9 +242,15 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
     }
 
     private void changeFabsVisibility(int visibility) {
-        fabAddStock.setVisibility(visibility);
-        fabConsumeItem.setVisibility(visibility);
-        fabConsumeRecipe.setVisibility(visibility);
+        if(visibility ==  View.VISIBLE) {
+            fabAddStock.show();
+            fabConsumeItem.show();
+            fabConsumeRecipe.show();
+        } else if(visibility == View.INVISIBLE){
+            fabAddStock.hide();
+            fabConsumeItem.hide();
+            fabConsumeRecipe.hide();
+        }
     }
 
     public void createConsumeDialog(final BaseAdapter adapter, int titleRes) {
@@ -262,19 +285,23 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
                 } else {
                     if (adapter instanceof RecipeSpinnerAdapter) {
                         Recipe recipe = (Recipe) spinner.getSelectedItem();
-                        ArrayList<ItemRecipe> ingredients = (ArrayList<ItemRecipe>) itemRecipeDAO.getAllByRecipe(recipe.getId());
+                       // ArrayList<ItemRecipe> ingredients = (ArrayList<ItemRecipe>) itemRecipeDAO.getAllByRecipe(recipe.getId());
+
+                        // TODO: Refatoração em progresso , linha temporaria
+                        ArrayList<ItemRecipe> ingredients = new ArrayList<>();
+
                         Double amountDouble = Double.valueOf(amount.getText().toString());
                         for (ItemRecipe itemrecipe : ingredients) {
-                            for (ItemStock itemStock : list) {
-                                if (itemStock.getProduct().getName().equals(itemrecipe.getProduct().getName())) {
+                            for (Product product : list) {
+                                if (product.getName().equals(itemrecipe.getProduct().getName())) {
                                     double amountToBeAdded = itemrecipe.getAmount() * amountDouble;
-                                    consumeItem(itemStock, amountToBeAdded);
+                                    consumeItem(product, amountToBeAdded);
                                     break;
                                 }
                             }
                         }
                     } else if (adapter instanceof StockSpinnerAdapter) {
-                        consumeItem((ItemStock) spinner.getSelectedItem(), Double.valueOf(amount.getText().toString()));
+                        consumeItem((Product) spinner.getSelectedItem(), Double.valueOf(amount.getText().toString()));
                     }
 
                     dialog.dismiss();
@@ -284,19 +311,19 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
     }
 
 
-    private void consumeItem(ItemStock itemStock, double amountToBeAdded) {
-        double newAmount = itemStock.getActualAmount() - amountToBeAdded;
+    private void consumeItem(Product product, double amountToBeAdded) {
+        double newAmount = product.getItemStock().getActualAmount() - amountToBeAdded;
         if (newAmount < 0) {
-            itemStock.setActualAmount(0);
+            product.getItemStock().setActualAmount(0);
         } else {
-            itemStock.setActualAmount(newAmount);
+            product.getItemStock().setActualAmount(newAmount);
         }
 
-        itemStockDAO.update(itemStock);
+        productDAO.update(product);
         listView.getAdapter().notifyDataSetChanged();
     }
 
-    public void createEditDialogForItem(final ItemStock itemStock) {
+    public void createEditDialogForItem(final Product product) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_itemstock_updateamounts, null);
         final TextInputEditText actualAmount = dialogView.findViewById(R.id.dialog_itemstock_actualamount);
@@ -305,9 +332,9 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
         TextView productName = dialogView.findViewById(R.id.dialog_itemstock_productname);
 
 
-        productName.setText(itemStock.getProduct().getName());
+        productName.setText(product.getName());
         actualAmount.setText("");
-        maxAmount.setText(String.valueOf(itemStock.getAmount()));
+        maxAmount.setText(String.valueOf(product.getItemStock().getAmount()));
 
         builder.setView(dialogView)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
@@ -315,14 +342,14 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
                         String dialogActualAmount = actualAmount.getText().toString();
                         String dialogMaxAmount = maxAmount.getText().toString();
                         if (!dialogActualAmount.equals("")) {
-                            itemStock.setActualAmount(Double.valueOf(dialogActualAmount));
+                            product.getItemStock().setActualAmount(Double.valueOf(dialogActualAmount));
                         }
                         if (!dialogMaxAmount.equals("")) {
-                            itemStock.setAmount(Double.valueOf(dialogMaxAmount));
+                            product.getItemStock().setAmount(Double.valueOf(dialogMaxAmount));
                         }
 
 
-                        itemStockDAO.update(itemStock);
+                        productDAO.update(product);
                         listView.getAdapter().notifyDataSetChanged();
                     }
                 })
@@ -341,7 +368,12 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
         //Temporary
         super.onResume();
         list.clear();
-        list.addAll(itemStockDAO.getAll((long) 1));
+        ArrayList<Product> products = ((MainActivity) getActivity()).productList;
+        for(Product product: products){
+            if(product.getItemStock().getAmount() > 0) {
+                this.list.add(product);
+            }
+        }
         listView.getAdapter().notifyDataSetChanged();
         recipes = (ArrayList<Recipe>) recipeDAO.getAll();
 
@@ -349,8 +381,8 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
 
 
     @Override
-    public void edit(ItemStock itemStock) {
-        createEditDialogForItem(itemStock);
+    public void edit(Product product) {
+        createEditDialogForItem(product);
     }
 
     @Override
@@ -375,5 +407,34 @@ public class StockMain extends BasicViewHelper<ItemStock> implements StockUpdate
             }
         }
 
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REGISTRATION_ITEMSTOCK) {
+            if(resultCode == RESULT_OK){
+                Product product = data.getParcelableExtra("product");
+
+                if (product != null) {
+                    boolean updated = false;
+                    int index = 0;
+                    for (Product productItem : products) {
+
+                        if (productItem.getName().toLowerCase().equals(product.getName().toLowerCase())) {
+                            updated = true;
+                            this.products.set(index, product);
+                            this.listView.getAdapter().notifyDataSetChanged();
+                            Toast.makeText(getContext(), "Produto inserido ao estoque !", Toast.LENGTH_LONG).show();
+
+                            break;
+                        }
+                        index++;
+                    }
+                }
+            }
+
+        }
     }
 }

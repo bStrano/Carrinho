@@ -1,5 +1,6 @@
 package br.com.stralom.compras.activities;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import androidx.databinding.ObservableArrayList;
 import android.graphics.Color;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 
 import br.com.stralom.compras.adapters.ProductAdapter;
 import br.com.stralom.compras.R;
-import br.com.stralom.compras.dao.ItemStockDAO;
 import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.entities.ItemStock;
 import br.com.stralom.compras.entities.Product;
@@ -44,14 +44,14 @@ public class StockRegistration extends AppCompatActivity  {
     private Group unselectedProductGroup;
     private TextView selectProductTitle;
 
-    private ArrayList<Product> products ;
+    private ObservableArrayList<Product> products ;
     private Product selectedProduct;
 
     private ProductAdapter productAdapter;
     private ItemStockForm itemStockForm;
 
     private ProductDAO productDAO;
-    private ItemStockDAO itemStockDAO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,6 @@ public class StockRegistration extends AppCompatActivity  {
         stock = new Stock((long) 1);
 
         productDAO = new ProductDAO(this);
-        itemStockDAO = new ItemStockDAO(this);
 
         itemStockForm = new ItemStockForm(this);
 
@@ -74,7 +73,10 @@ public class StockRegistration extends AppCompatActivity  {
         selectedProductView = findViewById(R.id.stock_registration_selectedProduct);
         selectProductTitle = findViewById(R.id.stock_regidtration_selectProductTitle);
 
-        products = (ArrayList<Product>) productDAO.getAllOrderedByNameWithoutItemStock();
+
+        Intent intent = getIntent();
+        ArrayList<Product> productsExtra = intent.getExtras().getParcelableArrayList("products");
+        //products = (ArrayList<Product>) productDAO.getAllOrderedByNameWithoutItemStock();
 
         toolbar.setTitle(R.string.stock_register);
 
@@ -86,7 +88,8 @@ public class StockRegistration extends AppCompatActivity  {
             }
         });
 
-
+        products = new ObservableArrayList<>();
+        products.addAll(productsExtra);
         for (int id: selectedProductGroup.getReferencedIds()) {
             findViewById(id).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -156,13 +159,14 @@ public class StockRegistration extends AppCompatActivity  {
         switch (item.getItemId()){
             case R.id.registration_save:
                 try {
-                    ItemStock itemStock = itemStockForm.getValidItemStock(selectedProduct);
-                    itemStock.setStock(stock);
-                    Long id = itemStockDAO.add(itemStockDAO.getContentValues(itemStock));
-                    itemStock.setId(id);
-//                    Intent intent = new Intent();
-//                    intent.putExtra("itemStock", itemStock);
-//                    setResult(RESULT_OK,intent);
+                    Product product = itemStockForm.getValidItemStock(selectedProduct);
+//                    itemStock.setStock(stock);
+                    productDAO.add(product,null);
+//                    Long id = itemStockDAO.add(itemStockDAO.getContentValues(itemStock));
+//                    itemStock.setId(id);
+                    Intent intent = new Intent();
+                    intent.putExtra("product", product);
+                    setResult(RESULT_OK,intent);
 
                     finish();
                 } catch (InvalidElementForm invalidElementForm) {

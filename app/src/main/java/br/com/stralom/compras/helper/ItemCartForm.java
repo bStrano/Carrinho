@@ -47,8 +47,9 @@ public class ItemCartForm extends BasicFormValidation {
         int amount = Integer.parseInt(amout.getText().toString());
         updateStock.isChecked();
 
-        itemCart = new ItemCart(product,amount,cart);
+        itemCart = new ItemCart(amount);
         itemCart.setUpdateStock(updateStock.isChecked());
+        product.setItemCart(itemCart);
         validationSuccessful = true;
     }
 

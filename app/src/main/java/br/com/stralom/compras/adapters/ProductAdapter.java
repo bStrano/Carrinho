@@ -1,6 +1,8 @@
 package br.com.stralom.compras.adapters;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import androidx.databinding.ObservableArrayList;
 import android.graphics.Color;
@@ -30,6 +32,7 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
     private Resources res;
     private ArrayList<Product> listClone;
     final private ItemClickListener clickListener;
+    private String activeProfile;
 
     public ProductAdapter(ObservableArrayList<Product> products, Activity activity, ItemClickListener recyclerClickListener) {
         super(products,activity);
@@ -65,7 +68,7 @@ public class ProductAdapter extends BaseAdapter<ProductAdapter.ProductViewHolder
 
     @Override
     public void removePermanently(Product item) {
-        productDAO.remove(item.getId());
+        productDAO.remove(item.getName());
     }
 
 

@@ -36,7 +36,7 @@ public class ItemStockForm  {
         this.itemStock = null;
     }
 
-    public ItemStock getValidItemStock(Product selectedProduct) throws InvalidElementForm {
+    public Product getValidItemStock(Product selectedProduct) throws InvalidElementForm {
 
 
         Pair<Double,Double> amounts = checkAmounts();
@@ -47,10 +47,9 @@ public class ItemStockForm  {
         }
 
         itemStock = new ItemStock();
-        itemStock.setProduct(selectedProduct);
         itemStock.setAmounts(amounts.first,amounts.second);
-
-        return itemStock;
+        selectedProduct.setItemStock(itemStock);
+        return selectedProduct;
     }
 
     private Pair<Double,Double> checkAmounts(){

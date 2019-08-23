@@ -13,6 +13,8 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +31,6 @@ import java.util.Objects;
 
 import br.com.stralom.compras.adapters.IngredientsDisplayAdapter;
 import br.com.stralom.compras.R;
-import br.com.stralom.compras.dao.ItemRecipeDAO;
 import br.com.stralom.compras.dao.RecipeDAO;
 import br.com.stralom.compras.entities.ItemRecipe;
 import br.com.stralom.compras.entities.Recipe;
@@ -41,7 +42,7 @@ public class RecipeRegistration extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_INGREDIENTS = 2;
     private String mCurrentPhotoPath;
-    private ItemRecipeDAO itemRecipeDAO;
+
     private RecipeDAO recipeDAO;
     private RecipeForm recipeForm;
     private ArrayList<ItemRecipe> ingredients;
@@ -58,7 +59,7 @@ public class RecipeRegistration extends AppCompatActivity {
         RecyclerView ingredientsView = findViewById(R.id.registration_recipe_ingredients);
 
         recipeDAO = new RecipeDAO(this);
-        itemRecipeDAO = new ItemRecipeDAO(this);
+
         ingredients = new ArrayList<>();
 
         recipeForm = new RecipeForm(this, ingredients);
@@ -180,13 +181,17 @@ public class RecipeRegistration extends AppCompatActivity {
                 recipeForm.getValidator().validate();
                 Recipe recipe = recipeForm.getRecipe();
                 if (recipeForm.isValidationSuccessful()) {
-                    if(registerRecipe(recipe)){
-                        Intent data = new Intent();
-                        data.putExtra("recipe",recipe);
-                        setResult(RESULT_OK,data);
-                        finish();
+                    try {
+                        if(registerRecipe(recipe)){
+                            Intent data = new Intent();
+                            data.putExtra("recipe",recipe);
+                            setResult(RESULT_OK,data);
+                            finish();
 
 
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG,"Refatoração em progresso");
                     }
                 }
 
@@ -196,13 +201,14 @@ public class RecipeRegistration extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean registerRecipe(Recipe recipe) {
+    private boolean registerRecipe(Recipe recipe) throws Exception {
         if (recipeDAO.findByName(recipe.getName()) == null) {
             Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
             recipe.setId(idRecipe);
             for (ItemRecipe ingredient : ingredients) {
                 ingredient.setRecipe(recipe);
-                itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
+                throw new Exception("Refatoração em progresso");
+//                itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
             }
             return true;
         } else {

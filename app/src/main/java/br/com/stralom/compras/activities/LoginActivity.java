@@ -67,13 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
         this.mAuth = FirebaseAuth.getInstance();
         user  = this.mAuth.getCurrentUser();
-        if(user != null) {
-            if(user.isEmailVerified() || user.getProviderData().get(1).equals("facebook.com")){
-                Intent intent = new Intent(this,MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }
+
 
         this.signinBtn = findViewById(R.id.login_signin);
         this.signinGoogleBtn = findViewById(R.id.login_signin_google);
@@ -84,6 +78,27 @@ public class LoginActivity extends AppCompatActivity {
         this.registerBtn = findViewById(R.id.login_register);
         this.mainLayout = findViewById(R.id.login_mainLayout);
         this.progressBarPanel = findViewById(R.id.progressBar_panel);
+
+        if(user != null) {
+            Log.d(TAG,"User !== null");
+
+
+            if(user.getProviderData().size() >= 1) {
+                Log.d(TAG,"Provider Size > 1") ;
+                if(user.isEmailVerified()  || user.getProviderData().get(0).equals("facebook.com")){
+                    login();
+                }
+
+                if(user.getProviderData().size() > 1){
+                    if(user.getProviderData().get(1).equals("facebook.com")){
+                        login();
+                    }
+                }
+
+            }
+
+        }
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -149,7 +164,14 @@ public class LoginActivity extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
+                                        boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+
                                         if(user.isEmailVerified()){
+                                            if (isNewUser) {
+                                                Log.d(TAG, "EEEE!");
+                                            } else {
+                                                Log.d(TAG, "UUU!");
+                                            }
                                             login();
                                         } else {
                                             showEmailNotVerifiedSnackBar(user);

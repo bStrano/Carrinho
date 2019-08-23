@@ -16,6 +16,7 @@ import java.util.List;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.entities.Category;
+import br.com.stralom.compras.entities.ItemCart;
 import br.com.stralom.compras.entities.Product;
 
 /**
@@ -58,7 +59,7 @@ public class ProductForm implements Validator.ValidationListener {
         double price = Double.parseDouble(this.price.getText().toString());
         Category category = (Category) categorySpinner.getSelectedItem();
 
-        product = new Product(name, price, category);
+        product = new Product(name,name, price, category);
         Toast.makeText(activity, "...", Toast.LENGTH_SHORT).show();
     }
 

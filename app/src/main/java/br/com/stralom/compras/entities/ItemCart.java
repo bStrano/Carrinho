@@ -1,35 +1,84 @@
 package br.com.stralom.compras.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Bruno Strano on 03/01/2018.
  */
 
-public class ItemCart extends Item {
-    private Cart cart;
+public class ItemCart extends Item  implements Parcelable {
     private Long convertedId;
     private boolean isRemoved;
     private boolean updateStock;
 
-    public ItemCart(Product product, double amount, Cart cart) {
-        super(amount,product);
-        this.cart = cart;
+    protected ItemCart(Parcel in) {
+        super(in);
+        if (in.readByte() == 0) {
+            convertedId = null;
+        } else {
+            convertedId = in.readLong();
+        }
+        isRemoved = in.readByte() != 0;
+        updateStock = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        if (convertedId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(convertedId);
+        }
+        dest.writeByte((byte) (isRemoved ? 1 : 0));
+        dest.writeByte((byte) (updateStock ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ItemCart> CREATOR = new Creator<ItemCart>() {
+        @Override
+        public ItemCart createFromParcel(Parcel in) {
+            return new ItemCart(in);
+        }
+
+        @Override
+        public ItemCart[] newArray(int size) {
+            return new ItemCart[size];
+        }
+    };
+
+    public Map toHash(){
+        Map<String, Object> map = new HashMap<>();
+        map.put("convertedId",this.convertedId);
+        map.put("isRemoved",this.isRemoved);
+        map.put("updateStock",this.updateStock);
+        return map;
+    }
+
+    public ItemCart(double amount) {
+        super(amount);
         isRemoved = false;
         updateStock = false;
     }
 
-    public ItemCart(Long id, Product product,double amount, double total,  Cart cart) {
-        super(id, amount, total, product);
-        this.cart = cart;
+    public ItemCart(Long id,double amount) {
+        super(id, amount);
         isRemoved = false;
         updateStock = false;
     }
 
-    public ItemCart(Product product, double amount){
-        super(amount,product);
-    }
 
     public ItemCart() {
-        this.amount = 1;
+        this.amount = 0;
         isRemoved = false;
         updateStock = false;
     }
@@ -58,25 +107,12 @@ public class ItemCart extends Item {
         this.updateStock = updateStock;
     }
 
-    @Override
-    public String toString(){
-      return  product.getName() + " ( " + amount + " )" + " - "  + product.getPrice();
-    }
-
     public Long getConvertedId() {
         return convertedId;
     }
 
     public void setConvertedId(Long convertedId) {
         this.convertedId = convertedId;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
     }
 
 
@@ -89,7 +125,7 @@ public class ItemCart extends Item {
     public static ItemCart convertToItemCart(SimpleItem simpleItem){
         Product product = new Product();
         product.setName(simpleItem.getName());
-        ItemCart itemCart = new ItemCart(product,simpleItem.getAmount(),simpleItem.getCart());
+        ItemCart itemCart = new ItemCart(simpleItem.getAmount());
         itemCart.setConvertedId(simpleItem.getId());
 
         return itemCart;

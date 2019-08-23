@@ -25,7 +25,7 @@ public abstract class GenericDAO  {
     }
 
 
-    public void remove(Long id){
+    public void remove(Long id) throws Exception {
         db = dbHelper.getReadableDatabase();
         db.delete(tableName,"id = ?", new String[] {id.toString()});
     }

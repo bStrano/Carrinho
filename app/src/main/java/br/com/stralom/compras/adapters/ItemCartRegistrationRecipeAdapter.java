@@ -19,4 +19,14 @@ public class ItemCartRegistrationRecipeAdapter extends ItemCartRegistrationAdapt
     public String getName(Recipe recipe) {
         return recipe.getName();
     }
+
+    @Override
+    public double getAmount(Recipe recipe) {
+        return 1;
+    }
+
+    @Override
+    public void setAmount(Recipe object, double amount) {
+        return;
+    }
 }

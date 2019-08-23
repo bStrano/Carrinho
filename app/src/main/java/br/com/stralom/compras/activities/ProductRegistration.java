@@ -1,12 +1,9 @@
 package br.com.stralom.compras.activities;
 
+import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -17,16 +14,19 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import br.com.stralom.compras.adapters.CategorySpinnerAdapter;
 import br.com.stralom.compras.R;
+import br.com.stralom.compras.adapters.CategorySpinnerAdapter;
 import br.com.stralom.compras.dao.CategoryDAO;
-import br.com.stralom.compras.dao.ItemCartDAO;
-import br.com.stralom.compras.dao.ItemStockDAO;
 import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.entities.Cart;
 import br.com.stralom.compras.entities.Category;
@@ -36,16 +36,14 @@ import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Stock;
 import br.com.stralom.compras.helper.TriplePair;
 import br.com.stralom.compras.helper.forms.ProductForm;
+import br.com.stralom.compras.listerners.FirebaseGetDataListener;
 
 public class ProductRegistration extends AppCompatActivity {
-    ProductForm productForm ;
+    ProductForm productForm;
 
 
     private CategoryDAO categoryDAO;
     private ProductDAO productDAO;
-    private ItemStockDAO itemStockDAO;
-    private ItemCartDAO itemCartDAO;
-
     private FrameLayout spinner_frame;
     private CheckBox addStock;
     private ConstraintLayout addStock_mainView;
@@ -54,10 +52,6 @@ public class ProductRegistration extends AppCompatActivity {
 
     private Spinner categoriesView;
     private TextInputLayout cartAmountLayout;
-
-
-
-
 
 
     private ArrayList<Category> categories;
@@ -71,8 +65,6 @@ public class ProductRegistration extends AppCompatActivity {
 
         categoryDAO = new CategoryDAO(this);
         productDAO = new ProductDAO(this);
-        itemStockDAO = new ItemStockDAO(this);
-        itemCartDAO = new ItemCartDAO(this);
 
         Toolbar toolbar = findViewById(R.id.registration_toolbar);
 
@@ -86,21 +78,35 @@ public class ProductRegistration extends AppCompatActivity {
 
         productForm = new ProductForm(this);
 
-        categories = categoryDAO.getAll();
+        categoryDAO.getAll(new FirebaseGetDataListener<Category>() {
+            @Override
+            public void handleListData(List<Category> objects) {
+                categories = (ArrayList<Category>) objects;
+                categorySpinnerAdapter = new CategorySpinnerAdapter(getBaseContext(), categories);
+                categoriesView.setAdapter(categorySpinnerAdapter);
+                categoriesView.setAdapter(categorySpinnerAdapter);
+            }
 
-        categorySpinnerAdapter = new CategorySpinnerAdapter(this,categories);
-        categoriesView.setAdapter(categorySpinnerAdapter);
+            @Override
+            public void onHandleListDataFailed() {
+
+            }
+
+            @Override
+            public void getObject() {
+
+            }
+        });
 
 
         toolbar.setTitle("Novo Produto");
         setSupportActionBar(toolbar);
 
-        categoriesView.setAdapter(categorySpinnerAdapter);
 
         addCart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     addCartTitle.setVisibility(View.GONE);
                     cartAmountLayout.setVisibility(View.VISIBLE);
                 } else {
@@ -113,15 +119,13 @@ public class ProductRegistration extends AppCompatActivity {
         addStock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     addStock_mainView.setVisibility(View.VISIBLE);
                 } else {
                     addStock_mainView.setVisibility(View.GONE);
                 }
             }
         });
-
-
 
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -142,36 +146,35 @@ public class ProductRegistration extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.registration_save:
                 TriplePair triplePair = register();
-                if(triplePair !=  null){
+                if (triplePair != null) {
                     Intent intent = new Intent();
                     intent.putExtra("product", (Product) triplePair.first);
-                    setResult(RESULT_OK,intent);
+                    setResult(RESULT_OK, intent);
 
                     finish();
                 }
 
-    }
+        }
         return true;
     }
 
 
-
-    private TriplePair<Product,ItemStock,ItemCart> register(){
+    private TriplePair<Product, ItemStock, ItemCart> register() {
         Product product = productForm.getValidProduct();
         ItemCart itemCart = null;
         ItemStock itemStock = null;
 
         boolean isValid = true;
-        if(product == null){
+        if (product == null) {
             isValid = false;
         }
 
-        if(addStock.isChecked()){
-            Pair<Double,Double> validStockAmounts = productForm.getValidStockAmounts();
-            if(validStockAmounts == null){
+        if (addStock.isChecked()) {
+            Pair<Double, Double> validStockAmounts = productForm.getValidStockAmounts();
+            if (validStockAmounts == null) {
                 isValid = false;
             } else {
                 itemStock = new ItemStock();
@@ -179,59 +182,44 @@ public class ProductRegistration extends AppCompatActivity {
                 Stock stock = new Stock();
                 stock.setId((long) 1);
                 itemStock.setStock(stock);
-                itemStock.setAmounts(validStockAmounts.first,validStockAmounts.second);
-                Log.d("TESTE",itemStock.toString());
+                itemStock.setAmounts(validStockAmounts.first, validStockAmounts.second);
+                Log.d("TESTE", itemStock.toString());
             }
 
         }
-        if(addCart.isChecked()){
+        if (addCart.isChecked()) {
             double addCartAmount = productForm.getValidItemCartAmount();
             // TEMPORARIO
             Cart cart = new Cart();
             cart.setId((long) 1);
-            if(addCartAmount == -1){
+            if (addCartAmount == -1) {
                 isValid = false;
             } else {
                 itemCart = new ItemCart();
                 itemCart.setAmount(addCartAmount);
-                itemCart.setCart(cart);
             }
 
         }
 
-        if(!isValid){
+        if (!isValid) {
             return null;
         } else {
-            try{
-                Long id = productDAO.add(product);
-                product.setId(id);
-            } catch (SQLiteConstraintException e){
-                // coode 2067 - UNIQUE error code
-                if(e.getMessage().contains("code 2067")){
-                    Toast.makeText(this,R.string.error_product_alreadyRegistered, Toast.LENGTH_LONG).show();
-                    return null;
-                }
 
-
+            if (itemStock != null) {
+//            itemStock.setProduct(product);
+//            itemStockDAO.add(itemStock);
+                product.setItemStock(itemStock);
+            }
+            if (itemCart != null) {
+//            itemCart.setProduct(product);
+//            itemCartDAO.add(itemCart);
+                product.setItemCart(itemCart);
             }
 
-
-
-
-            if(itemStock != null){
-                itemStock.setProduct(product);
-                itemStockDAO.add(itemStock);
-            }
-            if(itemCart != null){
-                itemCart.setProduct(product);
-                itemCartDAO.add(itemCart);
-            }
-
-            return new TriplePair<>(product,itemStock,itemCart);
+            productDAO.add(product, null);
         }
 
+
+        return new TriplePair<>(product, itemStock, itemCart);
     }
-
-
-
 }

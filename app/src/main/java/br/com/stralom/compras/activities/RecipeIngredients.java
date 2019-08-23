@@ -1,7 +1,10 @@
 package br.com.stralom.compras.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,14 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.stralom.compras.adapters.IngredientsAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.entities.ItemRecipe;
 import br.com.stralom.compras.entities.Product;
-
+import br.com.stralom.compras.listerners.FirebaseGetDataListener;
 
 
 public class RecipeIngredients extends AppCompatActivity {
@@ -83,7 +89,26 @@ public class RecipeIngredients extends AppCompatActivity {
     }
 
     private void listSetup(){
-        products = (ArrayList<Product>) productDAO.getAllOrderedByName();
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
+        String profileIdentifier = sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile), "");
+        productDAO.getAllOrderedByName(profileIdentifier,new FirebaseGetDataListener() {
+
+
+            @Override
+            public void handleListData(List objects) {
+
+            }
+
+            @Override
+            public void onHandleListDataFailed() {
+
+            }
+
+            @Override
+            public void getObject() {
+
+            }
+        });
         Intent intent = getIntent();
         selectedIngredients = intent.getParcelableArrayListExtra("selectedIngredients");
 

@@ -6,6 +6,8 @@ import androidx.databinding.ObservableArrayList;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.compras.dao.ItemCartDAO;
-import br.com.stralom.compras.dao.ItemStockDAO;
-import br.com.stralom.compras.dao.SimpleItemDAO;
+import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.entities.Category;
-import br.com.stralom.compras.entities.ItemCart;
 import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.interfaces.ItemCheckListener;
 
@@ -32,16 +31,14 @@ import br.com.stralom.compras.interfaces.ItemCheckListener;
  * Created by Bruno Strano on 30/01/2018.
  */
 
-public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  {
-    private final ItemCartDAO itemCartDAO;
-    private final SimpleItemDAO simpleItemDAO;
-    private final ItemStockDAO itemStockDAO;
+public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,Product>  {
+    private static final String TAG = "CartAdapter";
     private Resources res;
     private List<RecyclerView.ViewHolder> listCartHolder;
+    private ProductDAO productDAO;
 
 
-
-    private Pair<ItemCart,Integer> concludedElement;
+    private Pair<Product,Integer> concludedElement;
     private ItemCheckListener itemCheckListener;
 
 
@@ -52,17 +49,16 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
 
 
-    public CartAdapter(ItemCheckListener itemCheckListener,ObservableArrayList<ItemCart> itemCarts, Activity activity) {
-        super(itemCarts,activity);
+    public CartAdapter(ItemCheckListener itemCheckListener,ObservableArrayList<Product> products, Activity activity) {
+        super(products,activity);
         res = activity.getResources();
-        itemCartDAO = new ItemCartDAO(activity);
-        itemStockDAO = new ItemStockDAO(activity);
-        simpleItemDAO = new SimpleItemDAO(activity);
+
         if(list.size() > 0){
             setUpSections();
         }
         listCartHolder = new ArrayList<>();
         this.itemCheckListener = itemCheckListener;
+        productDAO = new ProductDAO(activity);
     }
 
     @Override
@@ -104,12 +100,15 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
 
     public void customNotifyDataSetChanged(){
+        Log.d(TAG, "Custom Notifyt Dataset changed");
         if(listWithSections != null){
+            Log.d(TAG, "listWithSections != null");
             listWithSections.clear();
             holderSections.clear();
         }
 
         if(list.size() > 0){
+            Log.d(TAG, "listsize > 0");
             setUpSections();
         }
 
@@ -126,10 +125,10 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
         } else if (position == 1 ){
             return 1;
         } else if (position >1){
-            ItemCart itemCart = list.get(getItemPosition(position));
-            String categoryName = itemCart.getProduct().getCategory().getName();
+            Product product = list.get(getItemPosition(position));
+            String categoryName = product.getCategory().getTag();
 
-            String previousCategoryName = list.get(getItemPosition(position-1)).getProduct().getCategory().getName();
+            String previousCategoryName = list.get(getItemPosition(position-1)).getCategory().getTag();
             if(!categoryName.equals(previousCategoryName)){
                 return 0;
             }
@@ -191,16 +190,16 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         switch (holder.getItemViewType()){
             case 0:
-                Category category =  list.get(getItemPosition(position)).getProduct().getCategory();
+                Category category =  list.get(getItemPosition(position)).getCategory();
                 CartSectionViewHolder sectionHolder = (CartSectionViewHolder) holder;
-                sectionHolder.sectionName.setText(category.getName());
+                sectionHolder.sectionName.setText(category.getTag());
                 sectionHolder.sectionIcon.setImageResource(category.getIconFlag());
                 break;
             case 1:
-                ItemCart itemCart =  list.get(getItemPosition(position));
+                Product product =  list.get(getItemPosition(position));
                 CartViewHolder cartViewHolder = (CartViewHolder) holder;
-                cartViewHolder.productName.setText(itemCart.getProduct().getName());
-                cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, itemCart.getFormattedAmount()));
+                cartViewHolder.productName.setText(product.getName());
+                cartViewHolder.productAmount.setText(res.getString(R.string.itemcart_itemList_amount, product.getItemCart().getFormattedAmount()));
                 cartViewHolder.viewBackground.setBackgroundColor(Color.parseColor("#FAFAFA"));
                 cartViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -221,17 +220,17 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
     }
 
-    public void undoConcludedElement(Pair<ItemCart,Integer> concludedElement ){
-        concludedElement.first.setRemoved(false);
+    public void undoConcludedElement(Pair<Product,Integer> concludedElement ){
+        concludedElement.first.getItemCart().setRemoved(false);
         list.add(concludedElement.second,concludedElement.first);
         customNotifyDataSetChanged();
     }
 
     private void concludeElement(int position){
         int itemIndex = getItemPosition(position);
-        ItemCart itemcart = list.get(itemIndex);
-        itemcart.setRemoved(true);
-        concludedElement = Pair.create(itemcart, itemIndex);
+        Product product = list.get(itemIndex);
+        product.getItemCart().setRemoved(true);
+        concludedElement = Pair.create(product, itemIndex);
         list.remove(itemIndex);
 
 
@@ -246,13 +245,15 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     }
 
     @Override
-    public void removePermanently(ItemCart itemCart) {
-        if(itemCart.getId() != null) {
-            itemCartDAO.remove( itemCart.getId());
-        } else if(itemCart.getConvertedId() != null){
-            simpleItemDAO.remove( itemCart.getConvertedId());
-
+    public void removePermanently(Product product) {
+        if(product.getId() != null) {
+            productDAO.remove(product.getId());
+            //itemCartDAO.remove(product.getId());
         }
+//        } else if(product.getConvertedId() != null){
+//            simpleItemDAO.remove( product.getConvertedId());
+//
+//        }
     }
 
     @Override
@@ -271,7 +272,7 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     @Override
     protected void undoRemove(){
         for (Map.Entry hash: selectedElementsClone.entrySet()) {
-            list.add((Integer) hash.getKey(), (ItemCart) hash.getValue());
+            list.add((Integer) hash.getKey(), (Product) hash.getValue());
         }
         customNotifyDataSetChanged();
     }
@@ -280,18 +281,18 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
 
     private void setUpSections(){
         listWithSections = new ArrayList<>();
-        Product initialProduct = list.get(0).getProduct();
+        Product initialProduct = list.get(0);
         Category initialCategory = initialProduct.getCategory();
         newSection(initialProduct, initialCategory);
 
-        ItemCart itemCart;
+        Product product;
         for (int index = 1  ; index<list.size() ; index++ ) {
-            itemCart = list.get(index);
-            if(!itemCart.getProduct().getCategory().getName().equals(initialCategory.getName())){
-                newSection(itemCart.getProduct(),itemCart.getProduct().getCategory());
-                initialCategory = itemCart.getProduct().getCategory();
+            product = list.get(index);
+            if(!product.getCategory().getTag().equals(initialCategory.getTag())){
+                newSection(product,product.getCategory());
+                initialCategory = product.getCategory();
             } else {
-                listWithSections.add(itemCart.getProduct());
+                listWithSections.add(product);
             }
 
         }
@@ -305,11 +306,11 @@ public class CartAdapter extends BaseAdapter<RecyclerView.ViewHolder,ItemCart>  
     }
 
 
-    public Pair<ItemCart, Integer> getConcludedElement() {
+    public Pair<Product, Integer> getConcludedElement() {
         return concludedElement;
     }
 
-    public void setConcludedElement(Pair<ItemCart, Integer> concludedElement) {
+    public void setConcludedElement(Pair<Product, Integer> concludedElement) {
         this.concludedElement = concludedElement;
     }
 

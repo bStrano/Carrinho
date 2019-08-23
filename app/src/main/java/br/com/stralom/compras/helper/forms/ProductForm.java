@@ -66,7 +66,7 @@ public class ProductForm {
             double price = Double.parseDouble(priceView.getText().toString());
             Category category = (Category) categoriesView.getSelectedItem();
             Log.d("TESTE",category.toString());
-            return new Product(name,price,category);
+            return new Product(name,name,price,category);
         } else {
             return null;
         }

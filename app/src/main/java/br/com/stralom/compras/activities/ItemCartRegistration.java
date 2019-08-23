@@ -1,10 +1,9 @@
 package br.com.stralom.compras.activities;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,33 +11,31 @@ import android.widget.RadioButton;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.Map;
 
+import br.com.stralom.compras.R;
 import br.com.stralom.compras.adapters.ItemCartRegistrationAdapter;
 import br.com.stralom.compras.adapters.ItemCartRegistrationProductAdapter;
 import br.com.stralom.compras.adapters.ItemCartRegistrationRecipeAdapter;
-import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.DBHelper;
-import br.com.stralom.compras.dao.ItemCartDAO;
-import br.com.stralom.compras.dao.ItemRecipeDAO;
 import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.dao.RecipeDAO;
-import br.com.stralom.compras.dao.SimpleItemDAO;
 import br.com.stralom.compras.entities.Cart;
 import br.com.stralom.compras.entities.ItemCart;
-import br.com.stralom.compras.entities.ItemRecipe;
 import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Recipe;
-import br.com.stralom.compras.entities.SimpleItem;
+import br.com.stralom.compras.listerners.FirebasePostDataListener;
 
 
 public class ItemCartRegistration extends AppCompatActivity {
+    private static final String TAG = "ItemCartRegistration";
     private ProductDAO productDAO;
     private RecipeDAO recipeDAO;
-    private ItemCartDAO itemCartDAO;
-    private ItemRecipeDAO itemRecipeDAO;
-    private SimpleItemDAO simpleItemDAO;
 
     private ArrayList<Product> products;
     private ArrayList<Recipe> recipes;
@@ -53,7 +50,7 @@ public class ItemCartRegistration extends AppCompatActivity {
     private RadioButton rbtnRecipes;
 
     private ItemCartRegistrationProductAdapter productAdapter;
-    private ItemCartRegistrationRecipeAdapter  recipeAdapter;
+    private ItemCartRegistrationRecipeAdapter recipeAdapter;
 
 
     @Override
@@ -67,12 +64,13 @@ public class ItemCartRegistration extends AppCompatActivity {
 
         productDAO = new ProductDAO(this);
         recipeDAO = new RecipeDAO(this);
-        itemCartDAO = new ItemCartDAO(this);
-        itemRecipeDAO = new ItemRecipeDAO(this);
-        simpleItemDAO = new SimpleItemDAO(this);
 
-       // products = (ArrayList<Product>) productDAO.getAll();
-        products = productDAO.getAllProductsNotInsertedInTheCart(cart);
+
+        Intent itemCartMainIntent = getIntent();
+        // products = (ArrayList<Product>) productDAO.getAll();
+
+        products = itemCartMainIntent.getParcelableArrayListExtra("products");
+
         Log.e("DEBUG", products.toString());
         recipes = (ArrayList<Recipe>) recipeDAO.getAll();
 
@@ -85,8 +83,8 @@ public class ItemCartRegistration extends AppCompatActivity {
         rbtnRecipes = findViewById(R.id.registration_itemCart_rbtnRecipes);
 
 
-        productAdapter = new ItemCartRegistrationProductAdapter( products,this);
-        recipeAdapter = new ItemCartRegistrationRecipeAdapter(recipes,this);
+        productAdapter = new ItemCartRegistrationProductAdapter(products, this);
+        recipeAdapter = new ItemCartRegistrationRecipeAdapter(recipes, this);
 
 
         listView.setAdapter(productAdapter);
@@ -101,10 +99,10 @@ public class ItemCartRegistration extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if(rbtnProducts.isChecked()){
-                    productAdapter.ifNecessaryCreateOrUpdateSimpleProduct(s,cart);
+                if (rbtnProducts.isChecked()) {
+                    productAdapter.ifNecessaryCreateOrUpdateSimpleProduct(s, cart);
                     productAdapter.getFilter().filter(s);
-                } else if ( rbtnRecipes.isChecked()){
+                } else if (rbtnRecipes.isChecked()) {
                     recipeAdapter.getFilter().filter(s);
                 }
 
@@ -116,6 +114,7 @@ public class ItemCartRegistration extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
@@ -124,13 +123,16 @@ public class ItemCartRegistration extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                for (Map.Entry<Product, Integer> entry: productAdapter.getSelectedPositions().entrySet()) {
+                for (Map.Entry<Product, Double> entry : productAdapter.getSelectedPositions().entrySet()) {
                     addItemFromProduct(entry);
                 }
 
-                for (Map.Entry<Recipe, Integer> entry: recipeAdapter.getSelectedPositions().entrySet()) {
+                for (Map.Entry<Recipe, Double> entry : recipeAdapter.getSelectedPositions().entrySet()) {
                     addItemFromRecipe(entry);
                 }
+                setResult(Activity.RESULT_OK,
+                        new Intent().putExtra("products",products));
+                finish();
                 finish();
             }
         });
@@ -138,20 +140,19 @@ public class ItemCartRegistration extends AppCompatActivity {
     }
 
 
-
-    public void onRadioButtonClicked(View view){
+    public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
-        searchView.setQuery(null,true);
+        searchView.setQuery(null, true);
         ((ItemCartRegistrationAdapter) listView.getAdapter()).restoreList();
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.registration_itemCart_rbtnProducts:
-                if(checked){
+                if (checked) {
                     listView.setAdapter(productAdapter);
 
                 }
                 break;
             case R.id.registration_itemCart_rbtnRecipes:
-                if(checked){
+                if (checked) {
                     listView.setAdapter(recipeAdapter);
 
                 }
@@ -160,54 +161,60 @@ public class ItemCartRegistration extends AppCompatActivity {
     }
 
 
-    private void addItemFromProduct(Map.Entry<Product,Integer> entry) {
-        if(isTemporaryProduct(entry)){
-            SimpleItem simpleItem = new SimpleItem(entry.getKey().getName(), entry.getValue(), cart);
-            simpleItemDAO.add(simpleItem);
-        } else {
-            ItemCart itemCart = new ItemCart(entry.getKey(), entry.getValue(), cart);
-            addItem(itemCart);
-        }
-
+    private void addItemFromProduct(Map.Entry<Product, Double> entry) {
+        Log.d(TAG, String.valueOf(entry));
+        addItem(entry.getKey());
     }
+
 
     private boolean isTemporaryProduct(Map.Entry<Product, Integer> entry) {
-        return entry.getKey().getCategory().getName().equals(DBHelper.CATEGORY_TEMPORARY_PRODUCT);
+        return entry.getKey().getCategory().getTag().equals(DBHelper.CATEGORY_TEMPORARY_PRODUCT);
     }
 
 
-    private void addItemFromRecipe(Map.Entry<Recipe,Integer> entry) {
-        //ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
-        Recipe recipe = entry.getKey();
-        recipe.setIngredients(itemRecipeDAO.getAllByRecipe(recipe.getId()));
-        for(ItemRecipe itemRecipe : recipe.getIngredients()){
-            itemRecipe.setAmount(itemRecipe.getAmount() * entry.getValue());
-            ItemCart itemCartDB = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
-            if((itemCartDB == null )){
-                itemCartDAO.add(itemRecipe.convertToItemCart(cart));
+    private void addItemFromRecipe(Map.Entry<Recipe, Double> entry) {
+        //ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getTag());
+//        Recipe recipe = entry.getKey();
+//        recipe.setIngredients(itemRecipeDAO.getAllByRecipe(recipe.getId()));
+//        for(ItemRecipe itemRecipe : recipe.getIngredients()){
+//            itemRecipe.setAmount(itemRecipe.getAmount() * entry.getValue());
+////            ItemCart itemCartDB = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
+//
+//            if((itemCartDB == null )){
+//                itemCartDAO.add(itemRecipe.convertToItemCart(cart));
+//
+//            } else {
+//                itemCartDB.setAmount(itemCartDB.getAmount() + itemRecipe.getAmount());
+//                itemCartDAO.update(itemCartDB);
+//            }
+//        }
+    }
 
-            } else {
-                itemCartDB.setAmount(itemCartDB.getAmount() + itemRecipe.getAmount());
-                itemCartDAO.update(itemCartDB);
+    private void addItem(Product product) {
+//        ItemCart itemCartdb =itemCartDAO.getByProductName(newItemCart.getProduct().getName());
+//        if(itemCartdb == null){
+//            productDAO.add(produc);
+//            Long id = itemCartDAO.add(newItemCart);
+//            newItemCart.setId(id);
+//            Toast.makeText(this,R.string.itemCart_toast_productAdded,Toast.LENGTH_LONG).show();
+//            //list.add(newItemCart);
+//            //listView.getAdapter().notifyDataSetChanged();
+//        } else {
+//            Toast.makeText(this,R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
+//        }
+
+        productDAO.add(product, new FirebasePostDataListener() {
+            @Override
+            public void addOnSuccessListener(Object objects) {
+                Toast.makeText(getBaseContext(),R.string.registration_newitem, Toast.LENGTH_LONG).show();
             }
-        }
+
+            @Override
+            public void addOnFailureListener() {
+
+            }
+        });
     }
-
-    private void addItem(ItemCart newItemCart){
-        ItemCart itemCartdb =itemCartDAO.getByProductName(newItemCart.getProduct().getName());
-        if(itemCartdb == null){
-            Long id = itemCartDAO.add(newItemCart);
-            newItemCart.setId(id);
-            Toast.makeText(this,R.string.itemCart_toast_productAdded,Toast.LENGTH_LONG).show();
-            //list.add(newItemCart);
-            //listView.getAdapter().notifyDataSetChanged();
-        } else {
-            Toast.makeText(this,R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-
 
 
 }

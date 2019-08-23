@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class Cart implements Serializable {
     private Long id;
-    private List<ItemCart> listItemCart;
+    private List<Product> listItemCart;
     private double total =0;
 
     public Cart() {
@@ -23,22 +23,22 @@ public class Cart implements Serializable {
         this.id = id;
     }
 
-    public Cart(Long id, List<ItemCart> listItemCart, double total) {
+    public Cart(Long id, List<Product> listItemCart, double total) {
         this.id = id;
         this.listItemCart = listItemCart;
         this.total = total;
     }
 
-    public Cart(List<ItemCart> listItemCart, double total) {
+    public Cart(List<Product> listItemCart, double total) {
         this.listItemCart = listItemCart;
         this.total = total;
     }
 
-    public List<ItemCart> getListItemCart() {
+    public List<Product> getListItemCart() {
         return listItemCart;
     }
 
-    public void setListItemCart(List<ItemCart> listItemCart) {
+    public void setListItemCart(List<Product> listItemCart) {
         this.listItemCart = listItemCart;
     }
 

@@ -9,6 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+
+import java.util.ArrayList;
 
 import br.com.stralom.compras.adapters.ProductAdapter;
 import br.com.stralom.compras.R;
@@ -22,8 +26,6 @@ import static android.app.Activity.RESULT_OK;
 public class ProductMain extends BasicViewHelper<Product> {
     private static final int REGISTRATION_REQUEST = 1;
     private ProductAdapter productAdapter;
-    private ProductDAO productDAO;
-
     @Override
     public void initializeSuperAttributes() {
         listView = mainView.findViewById(R.id.product_list);
@@ -47,17 +49,26 @@ public class ProductMain extends BasicViewHelper<Product> {
         initializeSuperAttributes();
 
 
-        productDAO = new ProductDAO(getActivity());
-        list = (ObservableArrayList<Product>) productDAO.getAllOrderedByName();
-        setUpEmptyListView(mainView, list,R.id.product_emptyList,R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
-        //registerForContextMenu(listView);
+//        ArrayList<Product> products1 = getArguments().getParcelableArrayList("products");
+        ArrayList<Product> products1 = ((MainActivity) getActivity()).productList;
 
-       productAdapter = new ProductAdapter(list,getActivity(),null);
+        ObservableArrayList<Product> products = new ObservableArrayList<Product>();
+        products.addAll(products1);
+        list = products;
+        productAdapter = new ProductAdapter(list,getActivity(),null);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setHasFixedSize(true);
         listView.setAdapter(productAdapter);
-
         setUpManagementMenu(productAdapter);
+
+        setUpEmptyListView(mainView, list,R.id.product_emptyList,R.drawable.ic_info, R.string.product_emptyList_title,R.string.product_emptyList_description);
+
+        //registerForContextMenu(listView);
+
+
+
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,59 +77,6 @@ public class ProductMain extends BasicViewHelper<Product> {
                 startActivityForResult(intent,REGISTRATION_REQUEST);
             }
 
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                final View newProductView = getLayoutInflater().inflate(R.layout.product_registration,null);
-//                final Spinner spinner = newProductView.findViewById(R.id.form_productCategory);
-//                CategoryDAO categoryDAO = new CategoryDAO(getContext());
-//                final ArrayList<Category> categories = categoryDAO.getAll();
-//
-//
-//                CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getContext(),categories);
-//
-//                //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinner.setAdapter(adapter);
-//
-//                final ProductForm productForm = new ProductForm(getActivity(),newProductView);
-//
-//
-//                builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                    }
-//                });
-//                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Toast.makeText(getActivity(), "Registro cancelado", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//
-//
-//                builder.setView(newProductView);
-//                final AlertDialog dialog = builder.create();
-//                dialog.show();
-//                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        productForm.getValidator().validate();
-//                        if(productForm.isValidationSuccessful()){
-//                            Product product = productForm.getProduct();
-//                            try{
-//                                Long id = productDAO.add(product);
-//                                product.setId(id);
-//                                list.add(product);
-//                                productAdapter.notifyDataSetChanged();
-//                                Toast.makeText(getActivity(),R.string.toast_produc_register,Toast.LENGTH_LONG).show();
-//                            }catch (SQLiteConstraintException e){
-//                                Toast.makeText(getActivity(),R.string.toast_product_alreadyRegistered,Toast.LENGTH_LONG).show();
-//                            }
-//                            dialog.dismiss();
-//                        }
-//                    }
-//
-//                });
-//
-//            }
         });
         return mainView;
     }
@@ -143,7 +101,26 @@ public class ProductMain extends BasicViewHelper<Product> {
             if(resultCode == RESULT_OK){
                 Product product = data.getParcelableExtra("product");
                 if(product != null){
-                    addOrdered(product);
+                    boolean updated = false;
+                    int index = 0;
+                    for(Product productItem: this.list){
+
+                        if(productItem.getName().toLowerCase().equals(product.getName().toLowerCase())){
+                            updated = true;
+                            this.list.set(index, product);
+                            this.listView.getAdapter().notifyDataSetChanged();
+
+                            break;
+                        }
+                        index++;
+                    }
+
+                    if(!updated){
+                        addOrdered(product);
+                    } else {
+                        Toast.makeText(getContext(), R.string.toast_product_update, Toast.LENGTH_LONG).show();
+                    }
+                    ((MainActivity) getActivity()).productList = this.list;
                 }
             }
         }

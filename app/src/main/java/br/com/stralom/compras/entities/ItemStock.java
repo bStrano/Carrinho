@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 
-public class ItemStock extends Item implements Parcelable{
+public class ItemStock extends Item implements Parcelable {
     private Stock stock;
     private double stockPercentage;
     private Status status;
@@ -16,12 +16,46 @@ public class ItemStock extends Item implements Parcelable{
 
 
     public ItemStock() {
-
+        this.actualAmount = 0;
+        this.amount = 0;
     }
 
+    public enum Status{
+        EMPTY,BAD,NEUTRAL,GOOD,FULL
+    }
+
+    public ItemStock(Long id, double amount, double total, int stockPercentage, Status status, double actualAmount, Stock stock) {
+        super(amount, total);
+        this.stockPercentage = stockPercentage;
+        this.status = status;
+        this.actualAmount = actualAmount;
+        this.stock = stock;
+    }
+
+    public ItemStock(double amount, double actualAmount) {
+        super(amount);
+        this.actualAmount = actualAmount;
+        setStockPercentage(amount, actualAmount);
+        setStatus();
+    }
+
+
     protected ItemStock(Parcel in) {
+        super(in);
         stockPercentage = in.readDouble();
         actualAmount = in.readDouble();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeDouble(stockPercentage);
+        dest.writeDouble(actualAmount);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ItemStock> CREATOR = new Creator<ItemStock>() {
@@ -35,39 +69,6 @@ public class ItemStock extends Item implements Parcelable{
             return new ItemStock[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeDouble(stockPercentage);
-        parcel.writeDouble(actualAmount);
-    }
-
-    public enum Status{
-        EMPTY,BAD,NEUTRAL,GOOD,FULL
-    }
-
-    public ItemStock(Long id, double amount, double total, Product product, int stockPercentage, Status status, double actualAmount, Stock stock) {
-        super(id, amount, total, product);
-        this.stockPercentage = stockPercentage;
-        this.status = status;
-        this.actualAmount = actualAmount;
-        this.stock = stock;
-    }
-
-    public ItemStock(double amount, Product product, int actualAmount) {
-        super(amount, product);
-        this.actualAmount = actualAmount;
-        setStockPercentage(amount, actualAmount);
-        setStatus();
-    }
-
-
-
 
     /**
      * This method cheks the value of the stockPercentage attribute and updates the status with the correspondent value

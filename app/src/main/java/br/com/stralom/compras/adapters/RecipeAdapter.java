@@ -63,7 +63,11 @@ public class RecipeAdapter extends BaseAdapter<RecipeAdapter.RecipeViewHolder,Re
 
     @Override
     public void removePermanently(Recipe item) {
-        recipeDAO.remove(item.getId());
+        try {
+            recipeDAO.remove(item.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -106,7 +110,7 @@ public class RecipeAdapter extends BaseAdapter<RecipeAdapter.RecipeViewHolder,Re
 //        }
 //
 //        TextView name = view.findViewById(R.id.recipe_name);
-//        name.setText(recipe.getName());
+//        name.setText(recipe.getTag());
 //
 //        TextView ingredientCount = view.findViewById(R.id.recipe_ingredientCount);
 //        ingredientCount.setText("Numero de Ingrediente: " + String.valueOf(recipe.getIgredientCount()));

@@ -57,7 +57,7 @@ public class CategorySpinnerAdapter extends BaseAdapter implements Filterable{
         Category category = categories.get(position);
         icon.setImageDrawable(ResourcesCompat.getDrawable(res,category.getIconFlag(),null));
 
-        name.setText(category.getName());
+        name.setText(category.getTag());
         return convertView;
     }
 
@@ -74,7 +74,7 @@ public class CategorySpinnerAdapter extends BaseAdapter implements Filterable{
                     } else {
                         String input = charSequence.toString().toLowerCase();
                         for (Category category : categoriesClone) {
-                            if (category.getName().toLowerCase().startsWith(input)) {
+                            if (category.getTag().toLowerCase().startsWith(input)) {
                                 filteredList.add(category);
                             }
                         }

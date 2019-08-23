@@ -2,6 +2,8 @@ package br.com.stralom.compras.adapters;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
@@ -17,6 +19,7 @@ import br.com.stralom.compras.entities.Product;
  * Created by Bruno Strano on 12/07/2018.
  */
 public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdapter<Product>  {
+    private static final String TAG = "RegistProductAdapter" ;
     private Product temporaryProduct = null;
 
 
@@ -38,6 +41,9 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
     }
 
     private boolean isTemporaryProduct(Product product) {
+        Log.d(TAG, product.toString());
+        Log.d(TAG, product.getCategory().toString());
+        Log.d(TAG, product.getCategory().getName());
         return product.getCategory().getName().equals(DBHelper.CATEGORY_TEMPORARY_PRODUCT) ;
     }
 
@@ -71,7 +77,7 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
                 list.add(productClone);
                 listClone.add(productClone);
                 temporaryProduct = null;
-                selectedPositions.put(productClone, 1);
+                selectedPositions.put(productClone, 1.0);
 
             } else {
                 super.addAmount(product);
@@ -92,7 +98,7 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
 
         if(temporaryProduct == null){
             temporaryProduct = new Product();
-            temporaryProduct.setCategory(new Category(DBHelper.CATEGORY_TEMPORARY_PRODUCT,"",R.drawable.ic_help));
+            temporaryProduct.setCategory(new Category(DBHelper.CATEGORY_TEMPORARY_PRODUCT));
             temporaryProduct.setName(filterInput);
             listClone.add(0,temporaryProduct);
 
@@ -119,4 +125,16 @@ public class ItemCartRegistrationProductAdapter extends ItemCartRegistrationAdap
     public String getName(Product product) {
         return product.getName();
     }
+
+    @Override
+    public double getAmount(Product product) {
+        return product.getItemCart().getAmount();
+    }
+
+    @Override
+    public void setAmount(Product object, double amount) {
+        object.getItemCart().setAmount(amount);
+    }
+
+
 }

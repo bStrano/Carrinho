@@ -10,31 +10,31 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.com.stralom.compras.R;
-import br.com.stralom.compras.entities.ItemStock;
+import br.com.stralom.compras.entities.Product;
 
 public class StockSpinnerAdapter extends BaseAdapter {
-    private ArrayList<ItemStock> stocks;
+    private ArrayList<Product> products;
     private Activity activity;
 
 
-    public StockSpinnerAdapter(ArrayList<ItemStock> stocks, Activity activity) {
-        this.stocks = stocks;
+    public StockSpinnerAdapter(ArrayList<Product> products, Activity activity) {
+        this.products = products;
         this.activity = activity;
     }
 
     @Override
     public int getCount() {
-        return stocks.size();
+        return products.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return stocks.get(i);
+        return products.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return stocks.get(i).getId();
+        return -1;
     }
 
     @Override
@@ -43,12 +43,12 @@ public class StockSpinnerAdapter extends BaseAdapter {
         TextView productName = view.findViewById(R.id.spinner_itemStock_name);
         ImageView imageView = view.findViewById(R.id.spinner_itemStock_icon);
 
-        ItemStock itemStock = stocks.get(i);
-        if(itemStock.getProduct().getCategory() != null){
-            imageView.setImageResource(itemStock.getProduct().getCategory().getIconFlag());
+        Product product = products.get(i);
+        if(product.getCategory() != null){
+            imageView.setImageResource(product.getCategory().getIconFlag());
         }
 
-        productName.setText(itemStock.getProduct().getName());
+        productName.setText(product.getName());
 
 
         return view;

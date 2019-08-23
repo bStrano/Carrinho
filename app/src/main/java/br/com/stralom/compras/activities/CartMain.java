@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -22,30 +23,28 @@ import br.com.stralom.compras.adapters.CartAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.CartDAO;
 import br.com.stralom.compras.dao.CategoryDAO;
-import br.com.stralom.compras.dao.DBHelper;
-import br.com.stralom.compras.dao.ItemCartDAO;
-import br.com.stralom.compras.dao.ItemStockDAO;
+import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.dao.SimpleItemDAO;
 import br.com.stralom.compras.entities.Cart;
 import br.com.stralom.compras.entities.Category;
-import br.com.stralom.compras.entities.ItemCart;
-import br.com.stralom.compras.entities.ItemStock;
-import br.com.stralom.compras.entities.SimpleItem;
+import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.helper.BasicViewHelper;
 import br.com.stralom.compras.interfaces.EditMenuInterface;
 import br.com.stralom.compras.interfaces.ItemCheckListener;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckListener {
-    private ItemCartDAO itemCartDAO;
+public class CartMain extends BasicViewHelper<Product> implements ItemCheckListener {
+    private static final int REGISTRATION_REQUEST = 22654;
+    private ProductDAO productDAO;
     private CartDAO cartDAO;
     private CategoryDAO categoryDAO;
     private Cart cart;
     private SimpleItemDAO simpleItemDAO;
-    private ItemStockDAO itemStockDAO;
     private Category temporaryProductsCategory;
     private boolean setUpSections = true;
     private Snackbar confirmConcludeElement;
@@ -120,16 +119,12 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
         initializeSuperAttributes();
 
         //DAO
-        cartDAO = new CartDAO(getContext());
-        itemCartDAO = new ItemCartDAO(getContext());
-        simpleItemDAO = new SimpleItemDAO(getContext());
-        categoryDAO = new CategoryDAO(getContext());
-        itemStockDAO = new ItemStockDAO(getContext());
+
+        productDAO = new ProductDAO(getContext());
 
 
-        temporaryProductsCategory = categoryDAO.findByName(DBHelper.CATEGORY_TEMPORARY_PRODUCT);
 
-        cart = cartDAO.findById((long) 1);
+        temporaryProductsCategory = new Category("Temporary");
 
 
 
@@ -158,7 +153,8 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
             public void onClick(View view) {
                 //loadItemCartDialog();
                 Intent intent = new Intent(getActivity(), ItemCartRegistration.class);
-                startActivityForResult(intent,1);
+                intent.putExtra("products",((MainActivity) getActivity()).productList);
+                startActivityForResult(intent,REGISTRATION_REQUEST);
             }
         });
 
@@ -171,11 +167,18 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
 
 
     private void loadItemsFromCart() {
+        list.clear();
 
-        ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
-        addSimpleProducts(simpleItemList);
-        list.addAll(itemCartDAO.getAllOrderedByCategory(cart.getId()));
-        cart.setListItemCart(list);
+        ArrayList<Product> products = ((MainActivity) getActivity()).productList;
+        for(Product product : products){
+            if(product.getItemCart().getAmount() > 0) {
+                this.list.add(product);
+            }
+        }
+      //  ArrayList<SimpleItem> simpleItemList = (ArrayList<SimpleItem>) simpleItemDAO.getAll(cart.getId());
+       // addSimpleProducts(simpleItemList);
+       // list.addAll(itemCartDAO.getAllOrderedByCategory(cart.getId()));
+//        cart.setListItemCart(this.list);
         adapter.customNotifyDataSetChanged();
 
     }
@@ -185,27 +188,27 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
 
 
 
-    private void addSimpleProducts(ArrayList<SimpleItem> simpleItemList){
-        if(simpleItemList.size() > 0) {
+//    private void addSimpleProducts(ArrayList<SimpleItem> simpleItemList){
+//        if(simpleItemList.size() > 0) {
+//4
+//            for (SimpleItem simpleItem:simpleItemList) {
+//                ItemCart itemCart = simpleItem.convertToItemCart(simpleItem);
+//                itemCart.getProduct().setCategory(temporaryProductsCategory);
+//                list.add(itemCart);
+//            }
+//
+//        }
+//    }
 
-            for (SimpleItem simpleItem:simpleItemList) {
-                ItemCart itemCart = simpleItem.convertToItemCart(simpleItem);
-                itemCart.getProduct().setCategory(temporaryProductsCategory);
-                list.add(itemCart);
-            }
 
-        }
-    }
-
-
-    private boolean checkForItemWithName(String name){
-        for (ItemCart itemCart: list) {
-            if(itemCart.getProduct().getName().equals(name)){
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean checkForItemWithName(String name){
+//        for (ItemCart itemCart: list) {
+//            if(itemCart.getProduct().getName().equals(name)){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     // https://stackoverflow.com/questions/9590386/fragment-onhiddenchanged-not-called
     @Override
@@ -223,7 +226,7 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
         }
     }
 
-    public void createConfirmSnackBar(final Pair<ItemCart,Integer> itemCartPair){
+    public void createConfirmSnackBar(final Pair<Product,Integer> itemCartPair){
         FrameLayout main = getActivity().findViewById(R.id.main_frame);
         confirmConcludeElement = Snackbar.make(main,R.string.cart_snackbar_confirmCheck, Snackbar.LENGTH_SHORT);
         confirmConcludeElement.setAction(R.string.snackbar_undo, new View.OnClickListener() {
@@ -241,7 +244,7 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
                 confirmConcludeElement = null;
                 if(itemCartPair.first != null){
 
-                    if(itemCartPair.first.isRemoved()){
+                    if(itemCartPair.first.getItemCart().isRemoved()){
                         confirmConclude(itemCartPair.first);
                         adapter.customNotifyDataSetChanged();
                     }
@@ -265,19 +268,26 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
 
     }
 
-    public void confirmConclude(ItemCart itemCart) {
-        if(itemCart.getId() != null) {
-            itemCartDAO.remove( itemCart.getId());
-            ItemStock itemStock = itemStockDAO.findByProductName(itemCart.getProduct().getName());
-            if(itemStock != null){
-                itemStock.setActualAmount(itemStock.getActualAmount() + itemCart.getAmount());
-                itemStockDAO.update(itemStock);
+    public void confirmConclude(final Product product) {
+        if (product.getId() != null) {
+            productDAO.remove(product.getId());
+            boolean containsProduct = false;
+            for(Product item : list){
+                if(item.getId() == product.getId()){
+                    containsProduct = true;
+                    break;
+                }
             }
-        } else if(itemCart.getConvertedId() != null){
-            simpleItemDAO.remove( itemCart.getConvertedId());
-
+            if (containsProduct) {
+                product.getItemStock().setActualAmount(product.getItemStock().getActualAmount() + product.getItemCart().getAmount());
+                productDAO.update(product);
+            }
+//        } else if(product.getConvertedId() != null){
+//            simpleItemDAO.remove( product.getConvertedId());
+//
+//        }
+            adapter.setConcludedElement(null);
         }
-        adapter.setConcludedElement(null);
     }
 
 
@@ -288,6 +298,19 @@ public class CartMain extends BasicViewHelper<ItemCart> implements ItemCheckList
         }
         createConfirmSnackBar(adapter.getConcludedElement());
     }
-}
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, String.valueOf(requestCode));
+        if(requestCode == REGISTRATION_REQUEST){
+            Log.d(TAG, String.valueOf(resultCode));
+            if(resultCode == RESULT_OK){
+                Log.d(TAG, "Update");
+                ArrayList<Product> products = (ArrayList<Product>) data.getExtras().get("products");
+                ((MainActivity) getActivity()).productList = products;
+                loadItemsFromCart();
+                }
+            }
+        }
 
+    }

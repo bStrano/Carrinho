@@ -25,7 +25,7 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
     protected ArrayList<T> listClone;
     protected Activity activity;
     protected boolean filtering = false;
-    protected HashMap<T,Integer> selectedPositions;
+    protected HashMap<T,Double> selectedPositions;
 
     public ItemCartRegistrationAdapter(ArrayList<T> list, Activity activity) {
         this.list = list;
@@ -37,7 +37,8 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
 
 
     public abstract String getName(T t);
-
+    public abstract double getAmount(T t);
+    public abstract void setAmount(T object,double amount);
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,8 +51,12 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
 
         final T object = getObject(position);
         holder.productName.setText(getName(object));
-        holder.productAmount.setText("");
+        holder.productAmount.setText(String.valueOf(getAmount(object)));
         setUpViewHolderLayout(holder, object);
+
+        if(getAmount(object) > 0) {
+            setAddButtonChecked(holder);
+        }
 
 
         holder.addButton.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +79,7 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
     }
 
     protected void setUpViewHolderLayout(@NonNull ViewHolder holder, T object) {
-        if(selectedPositions.containsKey(object)){
+        if(getAmount(object) > 0){
             setUpSelectedElements(holder, object);
 
         } else {
@@ -85,14 +90,14 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
     protected void setUpSelectedElements(@NonNull ViewHolder holder, T object) {
         setAddButtonChecked(holder);
         holder.manageButton.setEnabled(true);
-        if(selectedPositions.get(object) ==  1){
+        if(getAmount(object) ==  1){
             holder.manageButton.setBackgroundResource(R.drawable.ic_cancel);
         } else {
             holder.manageButton.setBackgroundResource(R.drawable.ic_remove);
         }
 
 
-        holder.productAmount.setText(String.valueOf(selectedPositions.get(object)));
+        holder.productAmount.setText(String.valueOf(getAmount(object)));
     }
 
 
@@ -107,23 +112,18 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
     }
 
     protected void removeAmount(T object) {
-        if(selectedPositions.get(object)== 1){
 
-            selectedPositions.remove(object);
-        } else {
-            selectedPositions.put(object, selectedPositions.get(object) -1);
-        }
+            selectedPositions.put(object, getAmount(object) -1);
+            setAmount(object, getAmount(object)-1);
+
     }
 
 
 
     protected void addAmount( T object) {
-        if(!selectedPositions.containsKey(object)){
-            selectedPositions.put(object,1);
-        } else {
-            selectedPositions.put(object,selectedPositions.get(object) + 1);
-            //selectedPositions.put(position, selectedPositions.get(position).getAmount() +1);
-        }
+
+            selectedPositions.put(object,getAmount(object)+ 1);
+            setAmount(object,getAmount(object) +1);
     }
 
     @Override
@@ -204,7 +204,7 @@ public abstract class ItemCartRegistrationAdapter<T> extends RecyclerView.Adapte
         list.addAll(listClone);
     }
 
-    public HashMap<T, Integer> getSelectedPositions() {
+    public HashMap<T, Double> getSelectedPositions() {
         return selectedPositions;
     }
 

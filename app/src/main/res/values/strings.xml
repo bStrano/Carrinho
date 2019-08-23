@@ -170,4 +170,8 @@
     <string name="facebook_application_id" translatable="false">373016280044299</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb373016280044299</string>
     <string name="register_confirmEmail">Confirme seu email</string>
+    <string name="categories_productTemporary">Produto Temporario</string>
+    <string name="sharedPreferences_profiles">profiles</string>
+    <string name="sharedPreferences_selectedProfile">selectedProfile</string>
+    <string name="registration_newitem">Carrinho Atualizado !</string>
 </resources>
