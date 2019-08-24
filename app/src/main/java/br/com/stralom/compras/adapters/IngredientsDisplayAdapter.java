@@ -3,6 +3,8 @@ package br.com.stralom.compras.adapters;
 import android.app.Activity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +14,18 @@ import java.util.ArrayList;
 
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.entities.ItemRecipe;
+import br.com.stralom.compras.entities.Product;
 
 public class IngredientsDisplayAdapter extends RecyclerView.Adapter<IngredientsDisplayAdapter.ViewHolder> {
+    private static final String TAG = "IngsDispAdapter" ;
     private Activity activity;
     private ArrayList<ItemRecipe> ingredients;
+    private ArrayList<Product> products;
 
-    public IngredientsDisplayAdapter(Activity activity, ArrayList<ItemRecipe> ingredients) {
+    public IngredientsDisplayAdapter(Activity activity, ArrayList<ItemRecipe> ingredients,ArrayList<Product> products) {
         this.activity = activity;
         this.ingredients = ingredients;
+        this.products = products;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -49,7 +55,9 @@ public class IngredientsDisplayAdapter extends RecyclerView.Adapter<IngredientsD
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ItemRecipe itemRecipe = ingredients.get(position);
-        holder.productName.setText(itemRecipe.getProduct().getName());
+        Product product = products.get(position);
+        Log.d(TAG,itemRecipe.toString());
+        holder.productName.setText(product.getName());
         String amount = String.valueOf(itemRecipe.getFormattedAmount() + "x");
         holder.amount.setText(amount);
     }

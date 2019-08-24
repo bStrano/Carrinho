@@ -75,6 +75,7 @@ public class RecipeMain extends BasicViewHelper<Recipe>{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(),RecipeRegistration.class);
+                intent.putParcelableArrayListExtra("products",((MainActivity) getActivity()).productList);
                 startActivityForResult(intent,REGISTER_RECIPE_REQUEST);
 
             }

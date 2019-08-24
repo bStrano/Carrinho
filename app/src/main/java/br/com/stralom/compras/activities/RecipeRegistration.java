@@ -33,6 +33,7 @@ import br.com.stralom.compras.adapters.IngredientsDisplayAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.RecipeDAO;
 import br.com.stralom.compras.entities.ItemRecipe;
+import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Recipe;
 
 import br.com.stralom.compras.helper.RecipeForm;
@@ -46,6 +47,7 @@ public class RecipeRegistration extends AppCompatActivity {
     private RecipeDAO recipeDAO;
     private RecipeForm recipeForm;
     private ArrayList<ItemRecipe> ingredients;
+    private ArrayList<Product> products;
 
 
     @Override
@@ -60,6 +62,8 @@ public class RecipeRegistration extends AppCompatActivity {
 
         recipeDAO = new RecipeDAO(this);
 
+        Intent intent = getIntent();
+        products = intent.getParcelableArrayListExtra("products");
         ingredients = new ArrayList<>();
 
         recipeForm = new RecipeForm(this, ingredients);
@@ -98,6 +102,7 @@ public class RecipeRegistration extends AppCompatActivity {
                     ingredients = new ArrayList<>();
                 }
                 intent.putParcelableArrayListExtra("selectedIngredients",ingredients);
+                intent.putParcelableArrayListExtra("products",products);
 
 
 
@@ -105,7 +110,7 @@ public class RecipeRegistration extends AppCompatActivity {
             }
         });
         // Update Ingredient List
-        IngredientsDisplayAdapter ingredientsDisplayAdapter= new IngredientsDisplayAdapter(this, ingredients);
+        IngredientsDisplayAdapter ingredientsDisplayAdapter= new IngredientsDisplayAdapter(this, ingredients,products);
         ingredientsView.setAdapter(ingredientsDisplayAdapter);
         ingredientsView.setLayoutManager(new LinearLayoutManager(this));
         ingredientsView.setHasFixedSize(true);
@@ -134,7 +139,7 @@ public class RecipeRegistration extends AppCompatActivity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Objects.requireNonNull(this).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
@@ -153,9 +158,12 @@ public class RecipeRegistration extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK){
 
                     if (data.getParcelableArrayListExtra("selectedIngredients") != null){
+                        Log.d(TAG,"Request Ingredients");
+
                         recipeForm.restoreButtonValidState();
                         this.ingredients.clear();
                         ArrayList<ItemRecipe> ingredients = data.getParcelableArrayListExtra("selectedIngredients");
+                        Log.d(TAG,ingredients.toString());
                         this.ingredients.addAll(ingredients);
                     }
                 }
@@ -184,6 +192,7 @@ public class RecipeRegistration extends AppCompatActivity {
                     try {
                         if(registerRecipe(recipe)){
                             Intent data = new Intent();
+
                             data.putExtra("recipe",recipe);
                             setResult(RESULT_OK,data);
                             finish();

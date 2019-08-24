@@ -24,6 +24,7 @@ import br.com.stralom.compras.entities.ItemRecipe;
 import br.com.stralom.compras.entities.Product;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements Filterable{
+    private static final String TAG = "INGREDIENTADAPTER" ;
     private ArrayList<Product> products;
     private ArrayList<Product> productsClone;
     private ArrayList<ItemRecipe> ingredients;
@@ -51,6 +52,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Product product = products.get(position);
+        Log.d(TAG,"on bind view golder" +  product);
         holder.productName.setText(product.getName());
         holder.product = product;
         holder.mainView.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +115,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private static final String TAG ="IngredientsAdapter" ;
         ConstraintLayout mainView;
         TextView productName;
         TextInputEditText amount;
@@ -126,6 +129,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             amount = itemView.findViewById(R.id.item_ingredient_amount);
             amountLayout = itemView.findViewById(R.id.item_ingredient_amountLayout);
 
+
             amount.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int start, int before, int i2) {
@@ -135,6 +139,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                 @Override
                 public void onTextChanged(CharSequence charSequence, int start, int before, int i2) {
 
+                    Log.d(TAG, product.toString());
                     String productNameString = productName.getText().toString();
                     ItemRecipe itemRecipe = getIngredient(productNameString);
                     if( (!charSequence.toString().isEmpty() && (!charSequence.toString().equals("0")))){

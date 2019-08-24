@@ -45,7 +45,13 @@ public class ItemRecipe extends Item {
 
     @Override
     public String toString() {
-        return product.getName() + " (" + this.amount + ") - " + this.total + " R$";
+        String productName;
+        if(this.product == null){
+            productName = "Null Produict";
+        } else {
+            productName = this.product.getName();
+        }
+        return productName + " (" + this.amount + ") - " + this.total + " R$";
     }
 
     public ItemCart convertToItemCart(Cart cart) throws Exception {

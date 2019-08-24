@@ -89,27 +89,9 @@ public class RecipeIngredients extends AppCompatActivity {
     }
 
     private void listSetup(){
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
-        String profileIdentifier = sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile), "");
-        productDAO.getAllOrderedByName(profileIdentifier,new FirebaseGetDataListener() {
 
-
-            @Override
-            public void handleListData(List objects) {
-
-            }
-
-            @Override
-            public void onHandleListDataFailed() {
-
-            }
-
-            @Override
-            public void getObject() {
-
-            }
-        });
         Intent intent = getIntent();
+        products = intent.getParcelableArrayListExtra("products");
         selectedIngredients = intent.getParcelableArrayListExtra("selectedIngredients");
 
         ingredientsAdapter = new IngredientsAdapter(this,products,selectedIngredients );
