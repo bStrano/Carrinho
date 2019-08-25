@@ -375,7 +375,7 @@ public class StockMain extends BasicViewHelper<Product> implements StockUpdateCa
             }
         }
         listView.getAdapter().notifyDataSetChanged();
-        recipes = (ArrayList<Recipe>) recipeDAO.getAll();
+
 
     }
 

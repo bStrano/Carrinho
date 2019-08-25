@@ -3,8 +3,7 @@ package br.com.stralom.compras.adapters;
 import android.app.Activity;
 import android.content.res.Resources;
 import androidx.databinding.ObservableArrayList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,16 +43,10 @@ public class RecipeAdapter extends BaseAdapter<RecipeAdapter.RecipeViewHolder,Re
         Recipe recipe = list.get(position);
         holder.name.setText(String.format(res.getString(R.string.recipe_itemList_name),recipe.getName()));
         holder.price.setText(String.format(res.getString(R.string.recipe_itemList_price), recipe.getTotal()));
-        holder.ingredientCount.setText(String.format(res.getString(R.string.recipe_itemList_ingredientCount),recipe.getIgredientCount()));
+        holder.ingredientCount.setText(String.format(res.getString(R.string.recipe_itemList_ingredientCount),recipe.getIngredientCount()));
         holder.foregroundView.setBackgroundColor(Color.parseColor("#FAFAFA"));
 
-        String imagePath = recipe.getImagePath();
-        if(imagePath != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            Bitmap bitmapReduced = Bitmap.createScaledBitmap(bitmap,100,100,true);
-            holder.image.setImageBitmap(bitmapReduced);
-            holder.image.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
+
     }
 
     @Override
@@ -113,7 +106,7 @@ public class RecipeAdapter extends BaseAdapter<RecipeAdapter.RecipeViewHolder,Re
 //        name.setText(recipe.getTag());
 //
 //        TextView ingredientCount = view.findViewById(R.id.recipe_ingredientCount);
-//        ingredientCount.setText("Numero de Ingrediente: " + String.valueOf(recipe.getIgredientCount()));
+//        ingredientCount.setText("Numero de Ingrediente: " + String.valueOf(recipe.getIngredientCount()));
 //
 //        TextView price = view.findViewById(R.id.recipe_price);
 //        price.setText("Preço: " + String.valueOf(recipe.getTotal()) + " R$");

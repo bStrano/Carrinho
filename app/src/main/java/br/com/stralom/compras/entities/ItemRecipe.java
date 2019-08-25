@@ -7,7 +7,28 @@ import android.os.Parcelable;
  * Created by Bruno Strano on 11/01/2018.
  */
 
-public class ItemRecipe extends Item {
+public class ItemRecipe extends Item implements Parcelable {
+    private Recipe recipe;
+    private Product product;
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ItemRecipe> CREATOR = new Creator<ItemRecipe>() {
+        @Override
+        public ItemRecipe createFromParcel(Parcel in) {
+            return new ItemRecipe(in);
+        }
+
+        @Override
+        public ItemRecipe[] newArray(int size) {
+            return new ItemRecipe[size];
+        }
+    };
+
     public Product getProduct() {
         return product;
     }
@@ -15,9 +36,6 @@ public class ItemRecipe extends Item {
     public void setProduct(Product product) {
         this.product = product;
     }
-
-    private Recipe recipe;
-    private Product product;
 
     public ItemRecipe(){}
 
@@ -32,6 +50,19 @@ public class ItemRecipe extends Item {
         this.product = product;
     }
 
+
+    protected ItemRecipe(Parcel in) {
+        super(in);
+        recipe = in.readParcelable(Recipe.class.getClassLoader());
+        product = in.readParcelable(Product.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(recipe, flags);
+        dest.writeParcelable(product, flags);
+    }
 
     public Recipe getRecipe() {
         return recipe;
@@ -59,35 +90,5 @@ public class ItemRecipe extends Item {
      //    return new ItemCart(product, amount, cart);
     }
 
-
-    protected ItemRecipe(Parcel in) {
-        super(in);
-        recipe = (Recipe) in.readValue(Recipe.class.getClassLoader());
-    }
-
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest,flags);
-        dest.writeValue(recipe);
-    }
-
-    public static final Parcelable.Creator<ItemRecipe> CREATOR = new Parcelable.Creator<ItemRecipe>() {
-        @Override
-        public ItemRecipe createFromParcel(Parcel in) {
-            return new ItemRecipe(in);
-        }
-
-        @Override
-        public ItemRecipe[] newArray(int size) {
-            return new ItemRecipe[size];
-        }
-    };
 
 }

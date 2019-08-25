@@ -25,18 +25,16 @@ import br.com.stralom.compras.entities.Product;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements Filterable{
     private static final String TAG = "INGREDIENTADAPTER" ;
-    private ArrayList<Product> products;
-    private ArrayList<Product> productsClone;
     private ArrayList<ItemRecipe> ingredients;
+    private ArrayList<ItemRecipe> ingredientsClone;
     private Activity activity;
     private ArrayList<ViewHolder> holders;
 
 
-    public IngredientsAdapter(Activity activity, ArrayList<Product> products, ArrayList<ItemRecipe> ingredients) {
-        this.products = products;
+    public IngredientsAdapter(Activity activity, ArrayList<ItemRecipe> ingredients) {
         this.activity = activity;
         this.ingredients = ingredients;
-        this.productsClone = (ArrayList<Product>) products.clone();
+        this.ingredientsClone = (ArrayList<ItemRecipe>) this.ingredients.clone();
         holders = new ArrayList<>();
     }
 
@@ -51,10 +49,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Product product = products.get(position);
-        Log.d(TAG,"on bind view golder" +  product);
-        holder.productName.setText(product.getName());
-        holder.product = product;
+        Log.d("on bind view golder : ", String.valueOf(position));
+        ItemRecipe ingredient = ingredients.get(position);
+        Log.d(TAG,"on bind view golder" +  ingredient.toString());
+        holder.productName.setText(ingredient.getProduct().getName());
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,22 +60,20 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
             }
         });
-        ItemRecipe ingredient = getIngredient(holder.productName.getText().toString());
-        if (ingredient != null) {
-            ingredient.setProduct(product);
-            ingredient.setTotal(ingredient.getAmount(),product.getPrice());
+
+        if (ingredient.getAmount() > 0) {
             holder.amount.setText(String.valueOf(ingredient.getAmount()));
             holder.mainView.setBackgroundResource(R.color.bg_lightBlue);
         } else {
             holder.amount.setText("");
-            holder.mainView.setBackgroundResource(android.R.color.background_light);
+            holder.mainView.setBackgroundResource(android.R.color.white);
         }
     }
 
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return ingredients.size();
     }
 
     @Override
@@ -85,14 +81,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                ArrayList<Product> filteredList = new ArrayList<>();
+                ArrayList<ItemRecipe> filteredList = new ArrayList<>();
 
                 if (charSequence == null || charSequence.length() == 0 ) {
-                    filteredList.addAll(productsClone);
+                    filteredList.addAll(ingredientsClone);
                 } else {
-                    for (Product product : productsClone) {
-                        if (product.getName().toLowerCase().trim().startsWith(charSequence.toString().toLowerCase().trim())) {
-                            filteredList.add(product);
+                    for (ItemRecipe ingredient : ingredientsClone) {
+                        if (ingredient.getProduct().getName().toLowerCase().trim().startsWith(charSequence.toString().toLowerCase().trim())) {
+                            filteredList.add(ingredient);
                         }
                     }
                 }
@@ -106,8 +102,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                products.clear();
-                products.addAll((ArrayList<Product>) filterResults.values);
+                ingredients.clear();
+                ingredients.addAll((ArrayList<ItemRecipe>) filterResults.values);
                 notifyDataSetChanged();
             }
         };
@@ -115,7 +111,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private static final String TAG ="IngredientsAdapter" ;
         ConstraintLayout mainView;
         TextView productName;
         TextInputEditText amount;
@@ -138,32 +133,16 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int start, int before, int i2) {
-
-                    Log.d(TAG, product.toString());
                     String productNameString = productName.getText().toString();
                     ItemRecipe itemRecipe = getIngredient(productNameString);
                     if( (!charSequence.toString().isEmpty() && (!charSequence.toString().equals("0")))){
                         mainView.setBackgroundResource(R.color.bg_lightBlue);
                         Log.d("SelectedProducts", "Start: " + start + "Before: " + before + " i2: " + i2  );
-                        if(start == 0 ){
-
-
-                            if(itemRecipe == null){
-                                itemRecipe = new ItemRecipe(Double.parseDouble(amount.getText().toString()), product);
-                                ingredients.add(itemRecipe);
-                            }
-
-                        } else  {
-                            itemRecipe.setAmount(Double.parseDouble(amount.getText().toString()));
-                        }
-
+                        itemRecipe.setAmount(Double.parseDouble(amount.getText().toString()));
                     } else {
-                        if(itemRecipe != null){
-                            ingredients.remove(itemRecipe);
-                        }
-                        mainView.setBackgroundResource(R.color.bg_basic);
+                        itemRecipe.setAmount(0.0);
+                        mainView.setBackgroundResource(R.color.bg_lightBlue);
                     }
-
 
                 }
 
@@ -190,7 +169,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
 
     public ArrayList<ItemRecipe> getSelectedItems() {
-        return ingredients;
+        ArrayList<ItemRecipe> selectedIngredients = new ArrayList<>();
+        for(ItemRecipe ingredient: ingredients){
+            if(ingredient.getAmount() > 0) {
+                selectedIngredients.add(ingredient);
+            }
+        }
+        return selectedIngredients;
     }
 
 }

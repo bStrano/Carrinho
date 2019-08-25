@@ -85,7 +85,7 @@ public class ProductDAO extends GenericDAO{
         String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
         if(profileIdentifier != null){
             dbFirebase.collection("profiles").document(profileIdentifier).collection("products")
-                    .document(productName);
+                    .document(productName).delete();
         }
 
     }

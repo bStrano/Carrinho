@@ -154,6 +154,7 @@ public class CartMain extends BasicViewHelper<Product> implements ItemCheckListe
                 //loadItemCartDialog();
                 Intent intent = new Intent(getActivity(), ItemCartRegistration.class);
                 intent.putExtra("products",((MainActivity) getActivity()).productList);
+                intent.putExtra("recipes",((MainActivity) getActivity()).recipeList);
                 startActivityForResult(intent,REGISTRATION_REQUEST);
             }
         });

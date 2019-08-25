@@ -40,8 +40,10 @@ import java.util.Objects;
 import br.com.stralom.compras.adapters.TabFragmentPagerAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.ProductDAO;
+import br.com.stralom.compras.dao.RecipeDAO;
 import br.com.stralom.compras.entities.Category;
 import br.com.stralom.compras.entities.Product;
+import br.com.stralom.compras.entities.Recipe;
 import br.com.stralom.compras.helper.DataViewModel;
 import br.com.stralom.compras.listerners.FirebaseGetDataListener;
 
@@ -52,7 +54,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseUser user;
     private FirebaseFirestore db;
     public ArrayList<Product> productList;
-    private static final int NUMBER_ASYNCTASK = 1;
+    public ArrayList<Recipe> recipeList;
+    private static final int NUMBER_ASYNCTASK = 2;
     private static int counter = 0;
     private HashMap<String, ArrayList> data;
 
@@ -104,13 +107,33 @@ public class MainActivity extends AppCompatActivity
 
 
         final ProductDAO productDAO = new ProductDAO(this);
-
+        final RecipeDAO recipeDAO = new RecipeDAO(this);
 
         productDAO.getAllOrderedByName(sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),""),new FirebaseGetDataListener() {
             @Override
             public void handleListData(List objects) {
                productList = (ArrayList<Product>) objects;
-               Log.d(TAG, String.valueOf(productList));
+                recipeDAO.getAll(new FirebaseGetDataListener() {
+                    @Override
+                    public void handleListData(List objects) {
+                        recipeList = (ArrayList<Recipe>) objects;
+
+                        Log.d(TAG, String.valueOf(recipeList));
+                        asyncTaskCompleted("recipes", (ArrayList) objects);
+                    }
+
+                    @Override
+                    public void onHandleListDataFailed() {
+
+                    }
+
+                    @Override
+                    public void getObject() {
+
+                    }
+                }, productList);
+
+                Log.d(TAG, String.valueOf(productList));
                 asyncTaskCompleted("products", (ArrayList) objects);
             }
 
@@ -122,7 +145,6 @@ public class MainActivity extends AppCompatActivity
             public void getObject() {
             }
         });
-
 
 
 

@@ -1,53 +1,55 @@
 package br.com.stralom.compras.entities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import br.com.stralom.compras.R;
 
 /**
  * Created by Bruno Strano on 11/01/2018.
  */
 
 public class Recipe implements Parcelable {
-    private Long id;
+    private String id;
     private String name;
     private double total;
-    private int igredientCount;
+    private int ingredientCount;
     private List<ItemRecipe> ingredients;
-    private String imagePath;
+   // private String imagePath;
 
     public Recipe(){
     }
 
-
-
-    public Recipe(Long id, String name, List<ItemRecipe> ingredients) {
-        this.id = id;
-        this.name = name;
-        this.total =  calculateTotal();
-        this.igredientCount = ingredients.size();
-        this.ingredients = ingredients;
-    }
-
-    public Recipe(String name, List<ItemRecipe> ingredients, String imagePath) {
-        this.name = name;
-        this.ingredients = ingredients;
-        this.total = calculateTotal();
-        this.igredientCount = ingredients.size();
-        this.imagePath = imagePath;
-    }
-
     protected Recipe(Parcel in) {
-        if (in.readByte() == 0) {
-            id = null;
-        } else {
-            id = in.readLong();
-        }
+        id = in.readString();
         name = in.readString();
         total = in.readDouble();
-        igredientCount = in.readInt();
-        imagePath = in.readString();
+        ingredientCount = in.readInt();
+        ingredients = in.createTypedArrayList(ItemRecipe.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeDouble(total);
+        dest.writeInt(ingredientCount);
+        dest.writeTypedList(ingredients);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -62,6 +64,44 @@ public class Recipe implements Parcelable {
         }
     };
 
+    public Map<String,Object> toJson(String profileIdentifier, FirebaseFirestore dbFirebase){
+        Map<String, Object> recipe = new HashMap<>();
+        recipe.put("name",this.name);
+        recipe.put("total",this.total);
+
+        ArrayList<Object> ingredients = new ArrayList<>();
+        for(ItemRecipe itemRecipe: this.ingredients){
+            Map<String, Object> itemRecipeHash = new HashMap<>();
+            itemRecipeHash.put("amount",itemRecipe.getAmount());
+            itemRecipeHash.put("total",itemRecipe.getTotal());
+
+            DocumentReference productRef= dbFirebase.collection("profiles").document(profileIdentifier).collection("products").document(itemRecipe.getProduct().getName());
+            itemRecipeHash.put("productRef",productRef);
+            itemRecipeHash.put("productName", itemRecipe.getProduct().getName());
+            ingredients.add(itemRecipeHash);
+        }
+        recipe.put("ingredients", ingredients);
+
+
+        return recipe;
+    }
+
+    public Recipe(String id, String name, List<ItemRecipe> ingredients) {
+        this.id = id;
+        this.name = name;
+        this.ingredientCount = ingredients.size();
+        this.ingredients = ingredients;
+        this.total =  calculateTotal();
+    }
+
+    public Recipe(String name, List<ItemRecipe> ingredients) {
+        this.name = name;
+        this.ingredients = ingredients;
+        this.total = calculateTotal();
+        this.ingredientCount = ingredients.size();
+        //this.imagePath = imagePath;
+    }
+
     private double calculateTotal(){
         double total = 0;
         for (ItemRecipe ingredient: ingredients) {
@@ -72,11 +112,11 @@ public class Recipe implements Parcelable {
 
 
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -96,12 +136,12 @@ public class Recipe implements Parcelable {
         this.total = total;
     }
 
-    public int getIgredientCount() {
-        return igredientCount;
+    public int getIngredientCount() {
+        return ingredientCount;
     }
 
-    public void setIgredientCount(int igredientCount) {
-        this.igredientCount = igredientCount;
+    public void setIngredientCount(int ingredientCount) {
+        this.ingredientCount = ingredientCount;
     }
 
     public List<ItemRecipe> getIngredients() {
@@ -112,13 +152,6 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
 
     @Override
     public String toString() {
@@ -126,28 +159,9 @@ public class Recipe implements Parcelable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", total=" + total +
-                ", igredientCount=" + igredientCount +
+                ", ingredientCount=" + ingredientCount +
                 ", ingredients=" + ingredients +
-                ", imagePath='" + imagePath + '\'' +
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        if (id == null) {
-            parcel.writeByte((byte) 0);
-        } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeLong(id);
-        }
-        parcel.writeString(name);
-        parcel.writeDouble(total);
-        parcel.writeInt(igredientCount);
-        parcel.writeString(imagePath);
-    }
 }

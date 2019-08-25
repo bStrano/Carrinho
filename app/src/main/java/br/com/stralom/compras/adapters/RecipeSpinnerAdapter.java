@@ -34,7 +34,7 @@ public class RecipeSpinnerAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return recipes.get(i).getId();
+        return -1;
     }
 
     @Override

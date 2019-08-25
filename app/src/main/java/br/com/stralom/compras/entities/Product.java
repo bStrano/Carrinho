@@ -3,6 +3,8 @@ package br.com.stralom.compras.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +18,7 @@ public class Product implements Parcelable,Cloneable {
     private String name;
     private double price;
     private Category category;
+    private DocumentReference productRef;
 
     private ItemCart itemCart;
     private ItemStock itemStock;
@@ -143,6 +146,13 @@ public class Product implements Parcelable,Cloneable {
         this.category = category;
     }
 
+    public DocumentReference getProductRef() {
+        return productRef;
+    }
+
+    public void setProductRef(DocumentReference productRef) {
+        this.productRef = productRef;
+    }
 
 
 

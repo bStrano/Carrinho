@@ -1,16 +1,30 @@
 package br.com.stralom.compras.dao;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import androidx.databinding.ObservableArrayList;
+import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
+
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import br.com.stralom.compras.R;
 import br.com.stralom.compras.entities.ItemRecipe;
+import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Recipe;
+import br.com.stralom.compras.listerners.FirebaseGetDataListener;
 
 /**
  * Created by Bruno Strano on 17/01/2018.
@@ -18,90 +32,109 @@ import br.com.stralom.compras.entities.Recipe;
 
 public class RecipeDAO extends GenericDAO {
     private static final String TAG = "RecipeDAO";
+    private FirebaseFirestore dbFirebase;
+    private Context context;
 //    private final ItemRecipeDAO itemRecipeDAO;
 
     public RecipeDAO(Context context) {
         super(context, DBHelper.TABLE_RECIPE);
-//        itemRecipeDAO = new ItemRecipeDAO(context);
+        this.context = context;
+        this.dbFirebase = FirebaseFirestore.getInstance();
+        //        itemRecipeDAO = new ItemRecipeDAO(context);
     }
 
-    public Long add(Recipe recipe){
-        return super.add(getContentValues(recipe));
-    }
+    public void add(Recipe recipe) {
+        Log.d(TAG, "Add Recipe");
 
-    public Recipe add(String name, ArrayList<ItemRecipe> items, String imagePath){
-        Recipe recipe = new Recipe(name,items, null);
-        Long recipeId = add(recipe);
-        Log.e(TAG, String.valueOf(recipeId));
-        recipe.setId(recipeId);
-        return recipe;
-    }
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
+        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
 
-    public ContentValues getContentValues(Recipe recipe){
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.COLUMN_RECIPE_NAME,recipe.getName());
-        contentValues.put(DBHelper.COLUMN_RECIPE_INGREDIENTCOUNT,recipe.getIgredientCount());
-        contentValues.put(DBHelper.COLUMN_RECIPE_TOTAL,recipe.getId());
-        contentValues.put(DBHelper.COLUMN_RECIPE_IMAGEPATH, recipe.getImagePath());
-        contentValues.put(DBHelper.COLUMN_RECIPE_TOTAL,recipe.getTotal());
-        return contentValues;
-    }
+        Map<String, Object> productTest = recipe.toJson(profileIdentifier, dbFirebase);
 
-    public void update(Recipe recipe){
-        super.update(DBHelper.COLUMN_RECIPE_ID, recipe.getId(),getContentValues(recipe));
-    }
 
-    @Override
-    public void remove(Long id) throws Exception {
-        throw new Exception("Refatoração em progresso");
+        dbFirebase.collection("profiles").document(profileIdentifier).collection("recipes")
+                .document(recipe.getName())
+                .set(productTest)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+        }
+
+
+
+    public void remove( String id)  {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
+        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
+        if(profileIdentifier != null){
+            dbFirebase.collection("profiles").document(profileIdentifier).collection("recipes")
+                    .document(id).delete();
+        }
         //        itemRecipeDAO.deleteAllFromRecipe(id);
         //super.remove(id);
     }
+    public void getAll(final FirebaseGetDataListener listener, final ArrayList<Product> products){
+        Log.d(TAG, "GET ALL ORDER BY NAME");
 
-     public Recipe findByName(String name){
-        db = dbHelper.getReadableDatabase();
-        Recipe recipe = null;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
+        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
 
-        String sql = "SELECT * FROM " + DBHelper.TABLE_RECIPE + " WHERE " +
-                DBHelper.COLUMN_RECIPE_NAME + " = ?";
+        dbFirebase.collection("profiles").document(profileIdentifier).collection("recipes")
+                .orderBy("name")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Recipe> recipes = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                String recipeName = document.getString("name");
+                                ArrayList<HashMap<String,Object>> ingredientsDocument = (ArrayList<HashMap<String,Object>>) document.get("ingredients");
+                                Log.d("Bruno",ingredientsDocument.toString());
+                                ArrayList<ItemRecipe> ingredients = new ArrayList<>();
+                                  for(HashMap<String,Object> ingredient : ingredientsDocument){
+                                    double amount = (double) ingredient.get("amount");
+                                    String productName = (String) ingredient.get("productName");
+                                    Product product = null;
+                                    for(Product item : products){
+                                        Log.d("Bruno", item.getName() + "/" + productName);
+                                        if(item.getName().equals(productName)){
+                                            Log.d("Bruno", "true");
+                                            product = item;
+                                            break;
+                                        }
+                                    }
+                                    if(product != null){
+                                        Log.d("Bruno", "Ingredient add");
+                                        ItemRecipe itemRecipe = new ItemRecipe(amount,product);
+                                        ingredients.add(itemRecipe);
+                                    }
 
-        Cursor c = db.rawQuery(sql,new String[] {name});
-
-        if(c != null  && c.moveToFirst()){
-            recipe = getRecipe(c);
-            c.close();
-        }
-
-        return  recipe;
-     }
-
-    public List<Recipe> getAll() {
-        db = dbHelper.getReadableDatabase();
-        ObservableArrayList<Recipe> recipes = new ObservableArrayList<>();
-
-        try (Cursor cursor = db.rawQuery("SELECT * FROM " + DBHelper.TABLE_RECIPE, null)) {
-            while (cursor.moveToNext()) {
-                Recipe recipe = getRecipe(cursor);
-
-                recipes.add(recipe);
-            }
-            cursor.close();
-        } catch (NullPointerException e) {
-            Log.e(TAG, "[NullPointerException] Empty recipe list");
-        }
-
-
-
-        return recipes;
+                                }
+                                Log.d("Bruno", ingredients.toString());
+                                Log.d("Bruno", String.valueOf(ingredients.size()));
+                                Recipe recipe = new Recipe(document.getId(), recipeName, (List<ItemRecipe>) ingredients.clone());
+                                Log.d("Bruno", recipe.toString());
+                                  recipes.add(recipe);
+                            }
+                            listener.handleListData(recipes);
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
-    private Recipe getRecipe(Cursor cursor) {
-        Recipe recipe = new Recipe();
-        recipe.setId(cursor.getLong(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_ID)));
-        recipe.setImagePath(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_IMAGEPATH)));
-        recipe.setIgredientCount(cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_INGREDIENTCOUNT)));
-        recipe.setTotal(cursor.getDouble(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_TOTAL)));
-        recipe.setName(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_RECIPE_NAME)));
-        return recipe;
-    }
+
+
+
 }

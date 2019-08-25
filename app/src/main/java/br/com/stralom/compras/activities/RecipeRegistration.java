@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import br.com.stralom.compras.adapters.IngredientsAdapter;
 import br.com.stralom.compras.adapters.IngredientsDisplayAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.RecipeDAO;
@@ -44,10 +46,14 @@ public class RecipeRegistration extends AppCompatActivity {
     private static final int REQUEST_INGREDIENTS = 2;
     private String mCurrentPhotoPath;
 
+    private IngredientsAdapter ingredientsAdapter;
+
     private RecipeDAO recipeDAO;
     private RecipeForm recipeForm;
     private ArrayList<ItemRecipe> ingredients;
     private ArrayList<Product> products;
+
+    private SearchView searchView;
 
 
     @Override
@@ -56,9 +62,9 @@ public class RecipeRegistration extends AppCompatActivity {
         setContentView(R.layout.fragment_recipe_registration);
 
 
-        Button btn_newImage = findViewById(R.id.registration_recipe_btn_newImage);
-        Button btn_newIngredient = findViewById(R.id.registration_recipe_btn_addIngredient);
+
         RecyclerView ingredientsView = findViewById(R.id.registration_recipe_ingredients);
+        searchView = findViewById(R.id.registration_recipe_ingredients_search);
 
         recipeDAO = new RecipeDAO(this);
 
@@ -87,54 +93,73 @@ public class RecipeRegistration extends AppCompatActivity {
 
 
         // Add Image
-        btn_newImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                capturePhotoIntent();
-            }
-        });
+//        btn_newImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                capturePhotoIntent();
+//            }
+//        });
         // Add Ingredient
-        btn_newIngredient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(),RecipeIngredients.class);
-                if(ingredients == null){
-                    ingredients = new ArrayList<>();
+//        btn_newIngredient.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getBaseContext(),RecipeIngredients.class);
+//                if(ingredients == null){
+//                    ingredients = new ArrayList<>();
+//                }
+//                Log.d("Bruno", ingredients.toString());
+//                intent.putParcelableArrayListExtra("selectedIngredients",ingredients);
+//                intent.putParcelableArrayListExtra("products",products);
+//
+//
+//
+//                startActivityForResult(intent,REQUEST_INGREDIENTS);
+//            }
+//        });
+
+
+        boolean hasIngredient ;
+        for(Product product : products){
+            hasIngredient = false;
+            for(ItemRecipe itemRecipe: ingredients){
+                if(product.getName().equals(itemRecipe.getProduct().getName())){
+                    hasIngredient = true;
+                    break;
                 }
-                intent.putParcelableArrayListExtra("selectedIngredients",ingredients);
-                intent.putParcelableArrayListExtra("products",products);
-
-
-
-                startActivityForResult(intent,REQUEST_INGREDIENTS);
             }
-        });
-        // Update Ingredient List
-        IngredientsDisplayAdapter ingredientsDisplayAdapter= new IngredientsDisplayAdapter(this, ingredients,products);
-        ingredientsView.setAdapter(ingredientsDisplayAdapter);
-        ingredientsView.setLayoutManager(new LinearLayoutManager(this));
-        ingredientsView.setHasFixedSize(true);
-    }
-
-
-
-    private void capturePhotoIntent() {
-        Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intentCamera.resolveActivity(Objects.requireNonNull(this).getPackageManager()) != null) {
-            File photo = null;
-            try {
-                photo = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (photo != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, "br.com.stralom.compras", photo);
-                intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(intentCamera, REQUEST_IMAGE_CAPTURE);
+            if(!hasIngredient){
+                ingredients.add(new ItemRecipe(0,product));
             }
         }
+
+        Log.d("Bruno2",ingredients.toString());
+        ingredientsAdapter = new IngredientsAdapter(this, ingredients);
+
+        ingredientsView.setAdapter(ingredientsAdapter);
+        ingredientsView.setHasFixedSize(true);
+        ingredientsView.setLayoutManager(new LinearLayoutManager(this));
+        searchViewSetup();
     }
+
+
+
+//    private void capturePhotoIntent() {
+//        Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (intentCamera.resolveActivity(Objects.requireNonNull(this).getPackageManager()) != null) {
+//            File photo = null;
+//            try {
+//                photo = createImageFile();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            if (photo != null) {
+//                Uri photoURI = FileProvider.getUriForFile(this, "br.com.stralom.compras", photo);
+//                intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(intentCamera, REQUEST_IMAGE_CAPTURE);
+//            }
+//        }
+//    }
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -150,10 +175,10 @@ public class RecipeRegistration extends AppCompatActivity {
 
         switch (requestCode) {
             case REQUEST_IMAGE_CAPTURE:
-                if (resultCode == Activity.RESULT_OK) {
-                    recipeForm.loadImage(mCurrentPhotoPath);
-                }
-                break;
+//                if (resultCode == Activity.RESULT_OK) {
+//                    recipeForm.loadImage(mCurrentPhotoPath);
+//                }
+//                break;
             case REQUEST_INGREDIENTS:
                 if (resultCode == Activity.RESULT_OK){
 
@@ -190,15 +215,15 @@ public class RecipeRegistration extends AppCompatActivity {
                 Recipe recipe = recipeForm.getRecipe();
                 if (recipeForm.isValidationSuccessful()) {
                     try {
-                        if(registerRecipe(recipe)){
-                            Intent data = new Intent();
+                        recipeDAO.add(recipe);
+                        Intent data = new Intent();
 
-                            data.putExtra("recipe",recipe);
-                            setResult(RESULT_OK,data);
-                            finish();
+                        data.putExtra("recipe",recipe);
+                        setResult(RESULT_OK,data);
+                        finish();
 
 
-                        }
+
                     } catch (Exception e) {
                         Log.e(TAG,"Refatoração em progresso");
                     }
@@ -210,22 +235,36 @@ public class RecipeRegistration extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean registerRecipe(Recipe recipe) throws Exception {
-        if (recipeDAO.findByName(recipe.getName()) == null) {
-            Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
-            recipe.setId(idRecipe);
-            for (ItemRecipe ingredient : ingredients) {
-                ingredient.setRecipe(recipe);
-                throw new Exception("Refatoração em progresso");
-//                itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
+//    private boolean registerRecipe(Recipe recipe) throws Exception {
+//        recipeDAO.add(recipe);
+////        if (recipeDAO.findByName(recipe.getName()) == null) {
+////            Long idRecipe = recipeDAO.add(recipeDAO.getContentValues(recipe));
+////            recipe.setId(idRecipe);
+////            for (ItemRecipe ingredient : ingredients) {
+////                ingredient.setRecipe(recipe);
+////                throw new Exception("Refatoração em progresso");
+//////                itemRecipeDAO.add(itemRecipeDAO.getContentValues(ingredient));
+////            }
+////            return true;
+////        } else {
+////            Toast.makeText(this, R.string.toast_recipe_alreadyRegistered, Toast.LENGTH_LONG).show();
+////            return false;
+////        }
+//    }
+
+    private void searchViewSetup(){
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
             }
-            return true;
-        } else {
-            Toast.makeText(this, R.string.toast_recipe_alreadyRegistered, Toast.LENGTH_LONG).show();
-            return false;
-        }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                ingredientsAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
     }
-
-
 }
 

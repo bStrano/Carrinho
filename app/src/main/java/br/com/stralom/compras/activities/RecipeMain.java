@@ -2,20 +2,21 @@ package br.com.stralom.compras.activities;
 
 
 import android.content.Intent;
-import androidx.databinding.ObservableArrayList;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
-
-import br.com.stralom.compras.adapters.RecipeAdapter;
 import br.com.stralom.compras.R;
-import br.com.stralom.compras.dao.RecipeDAO;
+import br.com.stralom.compras.adapters.RecipeAdapter;
 import br.com.stralom.compras.entities.Recipe;
 import br.com.stralom.compras.helper.BasicViewHelper;
 
@@ -57,9 +58,8 @@ public class RecipeMain extends BasicViewHelper<Recipe>{
 
         initializeSuperAttributes();
 
-        RecipeDAO recipeDAO = new RecipeDAO(getContext());
+        list.addAll(((MainActivity) getActivity()).recipeList);
 
-        list = (ObservableArrayList<Recipe>) recipeDAO.getAll();
         setUpEmptyListView(mainView,list,R.id.recipe_emptyList,R.drawable.ic_cake,R.string.recipe_emptyList_title,R.string.recipe_emptyList_description);
 
         RecipeAdapter adapter = new RecipeAdapter(list, Objects.requireNonNull(getActivity()));
@@ -89,7 +89,24 @@ public class RecipeMain extends BasicViewHelper<Recipe>{
         if( requestCode == REGISTER_RECIPE_REQUEST ){
             if(resultCode == RESULT_OK){
                 Recipe recipe = data.getParcelableExtra("recipe");
-                list.add(recipe);
+                boolean receitaExistente = false;
+                ArrayList<Recipe> recipes = ((MainActivity) getActivity()).recipeList;
+                for(int i = 0 ; i < recipes.size() ; i++){
+                    if(recipe.getName().equals(recipes.get(i).getName())){
+                        recipes.set(i,recipe);
+                        Toast.makeText(getContext(),"Receita Atualizada", Toast.LENGTH_LONG).show();
+                        receitaExistente = true;
+                        break;
+                    }
+                }
+                if(!receitaExistente){
+                    Toast.makeText(getContext(),"Receita adicionada", Toast.LENGTH_LONG).show();
+                    recipes.add(recipe);
+                }
+
+                list.clear();
+               list.addAll( ((MainActivity) getActivity()).recipeList);
+
                 listView.getAdapter().notifyDataSetChanged();
             }
         }

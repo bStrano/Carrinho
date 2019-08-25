@@ -2,7 +2,9 @@ package br.com.stralom.compras.activities;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -70,9 +72,10 @@ public class ItemCartRegistration extends AppCompatActivity {
         // products = (ArrayList<Product>) productDAO.getAll();
 
         products = itemCartMainIntent.getParcelableArrayListExtra("products");
+        recipes = itemCartMainIntent.getParcelableArrayListExtra("recipes");
 
         Log.e("DEBUG", products.toString());
-        recipes = (ArrayList<Recipe>) recipeDAO.getAll();
+
 
 
         searchView = findViewById(R.id.search_itemCartRegistration);

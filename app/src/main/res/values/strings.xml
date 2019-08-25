@@ -80,7 +80,7 @@
     <string name="toast_produc_register">Produto Salvo !</string>
     <string name="swipe_remove">REMOVER</string>
     <string name="check">Confirmar</string>
-    <string name="registration_recipe_selectIngredient">Selecionar Ingrediente</string>
+    <string name="registration_recipe_selectIngredient">Selecionar Ingredientes</string>
     <string name="delete">Deletar</string>
     <string name="edit">Editar</string>
     <string name="imageDescription_productCategory">Icone da Categoria </string>

@@ -27,7 +27,7 @@ public class RecipeForm extends BasicFormValidation {
     @NotEmpty(messageResId = R.string.validation_obrigatoryField)
     private final EditText name;
     //private final double total;
-    private final ImageView image;
+
     private final ArrayList<ItemRecipe> ingredients;
     private Recipe recipe;
     Button addIngredient;
@@ -39,8 +39,8 @@ public class RecipeForm extends BasicFormValidation {
         super(activity);
         this.activity = activity;
         this.name = activity.findViewById(R.id.registration_recipe_name);
-        this.image = activity.findViewById(R.id.registration_recipe_image);
-        this.addIngredient = activity.findViewById(R.id.registration_recipe_btn_addIngredient);
+
+//        this.addIngredient = activity.findViewById(R.id.registration_recipe_btn_addIngredient);
         this.ingredients = ingredients;
         this.validationSuccessful = false;
         recipe = null;
@@ -51,13 +51,13 @@ public class RecipeForm extends BasicFormValidation {
         return recipe;
     }
 
-    public void loadImage(String mCurrentPhotoPath) {
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
-        image.setImageBitmap(bitmap);
-        image.setScaleType(ImageView.ScaleType.FIT_XY);
-        image.setTag(mCurrentPhotoPath);
-    }
+//    public void loadImage(String mCurrentPhotoPath) {
+//        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+//        bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
+//        image.setImageBitmap(bitmap);
+//        image.setScaleType(ImageView.ScaleType.FIT_XY);
+//        image.setTag(mCurrentPhotoPath);
+//    }
 
 
     public boolean validateIngredients() {
@@ -85,7 +85,13 @@ public class RecipeForm extends BasicFormValidation {
     @Override
     public void onValidationSucceeded() {
         if(validateIngredients()){
-            recipe = new Recipe(name.getText().toString(),ingredients,(String) image.getTag());
+            ArrayList<ItemRecipe> ingredients = new ArrayList<>();
+            for(ItemRecipe itemRecipe : this.ingredients){
+                if(itemRecipe.getAmount()> 0){
+                    ingredients.add(itemRecipe);
+                }
+            }
+            recipe = new Recipe(name.getText().toString(),ingredients);
             validationSuccessful = true;
         } else {
             validationSuccessful = false;
