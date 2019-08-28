@@ -25,11 +25,38 @@ public class Recipe implements Parcelable {
     private double total;
     private int ingredientCount;
     private List<ItemRecipe> ingredients;
-   // private String imagePath;
+
+    public int getCartAmount() {
+        return cartAmount;
+    }
+
+    public void setCartAmount(int cartAmount) {
+        this.cartAmount = cartAmount;
+    }
+
+    // private String imagePath;
+    private int cartAmount;
 
     public Recipe(){
     }
 
+    public Recipe(String id, String name, List<ItemRecipe> ingredients) {
+        this.id = id;
+        this.name = name;
+        this.ingredientCount = ingredients.size();
+        this.ingredients = ingredients;
+        this.total =  calculateTotal();
+        this.cartAmount = 0;
+    }
+
+    public Recipe(String name, List<ItemRecipe> ingredients) {
+        this.name = name;
+        this.ingredients = ingredients;
+        this.total = calculateTotal();
+        this.ingredientCount = ingredients.size();
+        //this.imagePath = imagePath;
+        this.cartAmount = 0;
+    }
     protected Recipe(Parcel in) {
         id = in.readString();
         name = in.readString();
@@ -86,21 +113,6 @@ public class Recipe implements Parcelable {
         return recipe;
     }
 
-    public Recipe(String id, String name, List<ItemRecipe> ingredients) {
-        this.id = id;
-        this.name = name;
-        this.ingredientCount = ingredients.size();
-        this.ingredients = ingredients;
-        this.total =  calculateTotal();
-    }
-
-    public Recipe(String name, List<ItemRecipe> ingredients) {
-        this.name = name;
-        this.ingredients = ingredients;
-        this.total = calculateTotal();
-        this.ingredientCount = ingredients.size();
-        //this.imagePath = imagePath;
-    }
 
     private double calculateTotal(){
         double total = 0;

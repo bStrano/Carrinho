@@ -29,6 +29,7 @@ import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.dao.RecipeDAO;
 import br.com.stralom.compras.entities.Cart;
 import br.com.stralom.compras.entities.ItemCart;
+import br.com.stralom.compras.entities.ItemRecipe;
 import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Recipe;
 import br.com.stralom.compras.listerners.FirebasePostDataListener;
@@ -125,18 +126,19 @@ public class ItemCartRegistration extends AppCompatActivity {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                for (Map.Entry<Recipe, Double> entry : recipeAdapter.getSelectedPositions().entrySet()) {
+                    addItemFromRecipe(entry);
+                }
 
                 for (Map.Entry<Product, Double> entry : productAdapter.getSelectedPositions().entrySet()) {
                     addItemFromProduct(entry);
                 }
 
-                for (Map.Entry<Recipe, Double> entry : recipeAdapter.getSelectedPositions().entrySet()) {
-                    addItemFromRecipe(entry);
-                }
+
                 setResult(Activity.RESULT_OK,
                         new Intent().putExtra("products",products));
                 finish();
-                finish();
+
             }
         });
 
@@ -177,35 +179,20 @@ public class ItemCartRegistration extends AppCompatActivity {
 
     private void addItemFromRecipe(Map.Entry<Recipe, Double> entry) {
         //ItemCart itemCart = itemCartDAO.getByProductName(itemRecipe.getProduct().getTag());
-//        Recipe recipe = entry.getKey();
-//        recipe.setIngredients(itemRecipeDAO.getAllByRecipe(recipe.getId()));
-//        for(ItemRecipe itemRecipe : recipe.getIngredients()){
-//            itemRecipe.setAmount(itemRecipe.getAmount() * entry.getValue());
-////            ItemCart itemCartDB = itemCartDAO.getByProductName(itemRecipe.getProduct().getName());
-//
-//            if((itemCartDB == null )){
-//                itemCartDAO.add(itemRecipe.convertToItemCart(cart));
-//
-//            } else {
-//                itemCartDB.setAmount(itemCartDB.getAmount() + itemRecipe.getAmount());
-//                itemCartDAO.update(itemCartDB);
-//            }
-//        }
+        Recipe recipe = entry.getKey();
+        Log.d("Bruno", recipe.toString());
+        for(ItemRecipe itemRecipe : recipe.getIngredients()){
+            itemRecipe.setAmount(itemRecipe.getAmount() * entry.getValue());
+            for(Product product : products){
+                if(product.getName().equals(itemRecipe.getProduct().getName())) {
+                    product.getItemCart().setAmount(product.getItemCart().getAmount() + (itemRecipe.getAmount()*entry.getValue()));
+                    break;
+                }
+            }
+        }
     }
 
     private void addItem(Product product) {
-//        ItemCart itemCartdb =itemCartDAO.getByProductName(newItemCart.getProduct().getName());
-//        if(itemCartdb == null){
-//            productDAO.add(produc);
-//            Long id = itemCartDAO.add(newItemCart);
-//            newItemCart.setId(id);
-//            Toast.makeText(this,R.string.itemCart_toast_productAdded,Toast.LENGTH_LONG).show();
-//            //list.add(newItemCart);
-//            //listView.getAdapter().notifyDataSetChanged();
-//        } else {
-//            Toast.makeText(this,R.string.itemCart_toast_productAlreadyRegistered,Toast.LENGTH_LONG).show();
-//        }
-
         productDAO.add(product, new FirebasePostDataListener() {
             @Override
             public void addOnSuccessListener(Object objects) {

@@ -22,11 +22,11 @@ public class ItemCartRegistrationRecipeAdapter extends ItemCartRegistrationAdapt
 
     @Override
     public double getAmount(Recipe recipe) {
-        return 1;
+        return recipe.getCartAmount();
     }
 
     @Override
-    public void setAmount(Recipe object, double amount) {
-        return;
+    public void setAmount(Recipe recipe, double amount) {
+        recipe.setCartAmount((int) amount);
     }
 }
