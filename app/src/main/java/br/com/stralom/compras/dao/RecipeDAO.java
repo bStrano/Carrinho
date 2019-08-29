@@ -85,8 +85,8 @@ public class RecipeDAO extends GenericDAO {
         Log.d(TAG, "GET ALL ORDER BY NAME");
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
-        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
-
+        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "1");
+        Log.d("BrunoProfile", profileIdentifier);
         dbFirebase.collection("profiles").document(profileIdentifier).collection("recipes")
                 .orderBy("name")
                 .get()

@@ -49,7 +49,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class StockMain extends BasicViewHelper<Product> implements StockUpdateCallback {
     private static final String TAG = "StockMain";
-    private RecipeDAO recipeDAO;
     private ProductDAO productDAO;
 
     private Stock stock;
@@ -75,12 +74,14 @@ public class StockMain extends BasicViewHelper<Product> implements StockUpdateCa
 //        ArrayList<Product> products1 = getArguments().getParcelableArrayList("products");
 
         products = ((MainActivity) getActivity()).productList;
+        recipes = ((MainActivity) getActivity()).recipeList;
+
         for(Product product: products){
             if(product.getItemStock().getAmount() > 0) {
                 this.list.add(product);
             }
         }
-        recipes = getArguments().getParcelableArrayList("recipes");
+//        recipes = getArguments().getParcelableArrayList("recipes");
 
 //        products.addAll(products1);
         listView = mainView.findViewById(R.id.list_itemStock);
@@ -104,8 +105,7 @@ public class StockMain extends BasicViewHelper<Product> implements StockUpdateCa
         viewPager = getActivity().findViewById(R.id.mViewPager);
 
         //DAOS
-        recipeDAO = new RecipeDAO(getContext());
-        productDAO = new ProductDAO(getContext());
+        this.productDAO = new ProductDAO(getContext());
 
 
         initializeSuperAttributes();
@@ -285,14 +285,19 @@ public class StockMain extends BasicViewHelper<Product> implements StockUpdateCa
                 } else {
                     if (adapter instanceof RecipeSpinnerAdapter) {
                         Recipe recipe = (Recipe) spinner.getSelectedItem();
-                       // ArrayList<ItemRecipe> ingredients = (ArrayList<ItemRecipe>) itemRecipeDAO.getAllByRecipe(recipe.getId());
+                        for(Recipe recipeItem : recipes){
+                            if(recipeItem.getId() == recipe.getId()){
+                                recipe = recipeItem;
+                                break;
+                            }
+                        }
 
                         // TODO: Refatoração em progresso , linha temporaria
-                        ArrayList<ItemRecipe> ingredients = new ArrayList<>();
+                      //  ArrayList<ItemRecipe> ingredients = new ArrayList<>();
 
                         Double amountDouble = Double.valueOf(amount.getText().toString());
-                        for (ItemRecipe itemrecipe : ingredients) {
-                            for (Product product : list) {
+                        for (ItemRecipe itemrecipe : recipe.getIngredients()) {
+                            for (Product product : products) {
                                 if (product.getName().equals(itemrecipe.getProduct().getName())) {
                                     double amountToBeAdded = itemrecipe.getAmount() * amountDouble;
                                     consumeItem(product, amountToBeAdded);
@@ -369,6 +374,7 @@ public class StockMain extends BasicViewHelper<Product> implements StockUpdateCa
         super.onResume();
         list.clear();
         ArrayList<Product> products = ((MainActivity) getActivity()).productList;
+        ArrayList<Recipe> recipes = ((MainActivity) getActivity()).recipeList;
         for(Product product: products){
             if(product.getItemStock().getAmount() > 0) {
                 this.list.add(product);
