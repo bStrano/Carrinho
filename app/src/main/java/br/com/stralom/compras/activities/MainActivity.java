@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
-
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -75,14 +75,7 @@ public class MainActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         user = this.mAuth.getCurrentUser();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("profiles", Context.MODE_PRIVATE);
-
-        String result = sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile), "-1");
-        if (Objects.equals(result, "-1")) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("selectedProfile", "1_" + user.getUid());
-            editor.apply();
-        }
+         sharedPreferences = getSharedPreferences("profiles", Context.MODE_PRIVATE);
 
 
 
@@ -109,10 +102,11 @@ public class MainActivity extends AppCompatActivity
         final ProductDAO productDAO = new ProductDAO(this);
         final RecipeDAO recipeDAO = new RecipeDAO(this);
 
-        productDAO.getAllOrderedByName(sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),""),new FirebaseGetDataListener() {
+        productDAO.getAllOrderedByName(sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),"1"),new FirebaseGetDataListener() {
             @Override
             public void handleListData(List objects) {
                productList = (ArrayList<Product>) objects;
+
                 recipeDAO.getAll(new FirebaseGetDataListener() {
                     @Override
                     public void handleListData(List objects) {
@@ -188,9 +182,11 @@ public class MainActivity extends AppCompatActivity
     public synchronized void asyncTaskCompleted(String key, ArrayList value) {
         counter++;
         data.put(key, value);
+        Log.d(TAG,counter + " / " + NUMBER_ASYNCTASK);
         if (counter == NUMBER_ASYNCTASK) {
             mViewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles), data));
             mTabLayout.setupWithViewPager(mViewPager);
+            counter = 0;
         }
 
 
@@ -222,6 +218,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_logout:
 
                 mAuth.signOut();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("selectedProfile", null);
+                editor.apply();
                 for (UserInfo user : user.getProviderData()) {
                     if (user.getProviderId().equals("facebook.com")) {
                         LoginManager.getInstance().logOut();

@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Debug;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -57,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailText;
     private EditText passText;
     private FrameLayout progressBarPanel;
-
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         this.mainLayout = findViewById(R.id.login_mainLayout);
         this.progressBarPanel = findViewById(R.id.progressBar_panel);
 
+        sharedPreferences = getSharedPreferences("profiles", Context.MODE_PRIVATE);
         if(user != null) {
             Log.d(TAG,"User !== null");
 
@@ -164,6 +168,14 @@ public class LoginActivity extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
+
+                                        String profile = sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),null);
+                                        Log.d("Deltar", "Profile: " +  profile);
+                                        if(profile == null) {
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("selectedProfile", "1_" + user.getUid());
+                                            editor.apply();
+                                        }
                                         boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
 
                                         if(user.isEmailVerified()){
