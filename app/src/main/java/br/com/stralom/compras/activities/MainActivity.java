@@ -43,6 +43,7 @@ import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.dao.RecipeDAO;
 import br.com.stralom.compras.entities.Category;
 import br.com.stralom.compras.entities.Product;
+import br.com.stralom.compras.entities.Profile;
 import br.com.stralom.compras.entities.Recipe;
 import br.com.stralom.compras.helper.DataViewModel;
 import br.com.stralom.compras.listerners.FirebaseGetDataListener;
@@ -55,9 +56,11 @@ public class MainActivity extends AppCompatActivity
     private FirebaseFirestore db;
     public ArrayList<Product> productList;
     public ArrayList<Recipe> recipeList;
+    private ArrayList<Profile> profiles;
     private static final int NUMBER_ASYNCTASK = 2;
     private static int counter = 0;
     private HashMap<String, ArrayList> data;
+
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
@@ -77,7 +80,9 @@ public class MainActivity extends AppCompatActivity
 
          sharedPreferences = getSharedPreferences("profiles", Context.MODE_PRIVATE);
 
-
+        productList = new ArrayList<>();
+        recipeList = new ArrayList<>();
+        profiles = new ArrayList<>();
 
         Log.d(TAG,user.getUid());
 
@@ -187,6 +192,9 @@ public class MainActivity extends AppCompatActivity
             mViewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles), data));
             mTabLayout.setupWithViewPager(mViewPager);
             counter = 0;
+            profiles.add(new Profile(productList,recipeList));
+            profiles.add(new Profile(productList,recipeList));
+
         }
 
 
@@ -213,13 +221,16 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_share:
-
+                Intent intent = new Intent(this, ProfileActivity.class);
+                intent.putParcelableArrayListExtra("profiles",profiles);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.nav_logout:
 
                 mAuth.signOut();
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("selectedProfile", null);
+                editor.remove("selectedProfile");
                 editor.apply();
                 for (UserInfo user : user.getProviderData()) {
                     if (user.getProviderId().equals("facebook.com")) {

@@ -6,76 +6,62 @@
 
     <string name="action_settings">Settings</string>
 
-    <string-array name="tab_titles">
-        <item>Carrinho</item>
-        <item>Produtos</item>
-        <item>Receitas</item>
-        <item>Estoque</item>
-    </string-array>
-
-
     <string name="save">Salvar</string>
+
+
     <string name="cancel">Cancelar</string>
+    <string name="cart_dialogTitle_addSimpleProduct">Adicionar Produto Temporario</string>
 
     <!-- Cart -->
     <!-- Dialog -->
-    <string name="cart_dialogTitle_addSimpleProduct">Adicionar Produto Temporario</string>
     <string name="cart_dialogTitle_addProduct">Adicionar Produto</string>
     <string name="cart_dialogTitle_addRecipe">Adicionar Receita</string>
+    <string name="itemCartAmount">Quantidade</string>
 
     <!-- ItemCart -->
-    <string name="itemCartAmount">Quantidade</string>
     <string name="itemcart_itemList_name"> %s </string>
     <string name="itemcart_itemList_amount"> %sx  </string>
-
-    <!-- Stock -->
     <string name="dialog_checkbox_updateStock">Atualizar Estoque</string>
 
-    <!-- ItemStock -->
+    <!-- Stock -->
     <string name="itemStock_actualAmount">Quantidade Atual</string>
+
+    <!-- ItemStock -->
     <string name="itemStock_maxAmount">Quantidade Máxima</string>
     <string name="itemStock_actualAmountShort">Atual</string>
     <string name="itemStock_maxAmountShort">Max</string>
-    <!-- Dialog -->
     <string name="stock_dialogTitle_addProduct">Adicionar ao Estoque</string>
+    <!-- Dialog -->
+    <string name="productCategory">Categoria</string>
 
 
     <!-- Product -->
-    <string name="productCategory">Categoria</string>
     <string name="btnProductRegistration">Cadastro de Produto</string>
-    <!-- Product - ItemList -->
     <string name="product_itemList_price">%.2f R$</string>
-
+    <!-- Product - ItemList -->
     <string name="title_RecipeRegistration">Nova Receita</string>
+
     <string name="dialog_simpleProduct_amount">Quantidade ( Opcional) </string>
-    <!-- Register Form -->
     <string name="productName">Nome</string>
+    <!-- Register Form -->
     <string name="productPrice">Preço</string>
-    <string-array name="categories">
-        <item>Carnes</item>
-        <item>Congelados</item>
-        <item>Doces</item>
-        <item>Frutas</item>
-        <item>Legumes</item>
-        <item>Higiene</item>
-    </string-array>
     <string name="category_Meat">Carnes</string>
     <string name="category_Fruit">Frutas</string>
-
-    <!-- Recipe -->
     <string name="recipeName">Nome</string>
     <string name="recipeAmount">Quantidade</string>
+
+    <!-- Recipe -->
     <string name="form_title_ItemRecipeRegistration">Adicionar Ingrediente</string>
     <string name="imageDescription_form_recipe">Imagem padrão de uma receita</string>
-    <!-- Recipe - ItemList -->
     <string name="recipe_itemList_name"><b>%s</b> </string>
     <string name="recipe_itemList_price">Preço: %.2f R$</string>
+    <!-- Recipe - ItemList -->
     <string name="recipe_itemList_ingredientCount">Numero de Ingredientes: %d</string>
+    <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
+    <string name="itemCart_toast_productAdded">Produto adicionado !</string>
 
 
     <!-- Others -->
-    <string name="info_recipeDialog">INFO: Todos os ingredientes serão adicionados ao carrinho.</string>
-    <string name="itemCart_toast_productAdded">Produto adicionado !</string>
     <string name="toast_product_update">Produto atualizado.</string>
     <string name="toast_produc_register">Produto Salvo !</string>
     <string name="swipe_remove">REMOVER</string>
@@ -103,10 +89,10 @@
     <string name="recipe_validation_ingredients"> %s ( Obrigatório )</string>
     <string name="toast_itemStock_validRegistration">Produto Cadastrado !</string>
     <string name="toast_itemStock_invalidRegistration">O produto já está cadastrado.</string>
-
-    <!-- EmptyList -->
     <string name="itemCart_emptyList_title">Nenhum item cadastrado</string>
     <string name="itemCart_emptyList_description">Os itens adicionados ao carrinho serão exibidos aqui.</string>
+
+    <!-- EmptyList -->
     <string name="product_emptyList_title">Nenhum produto cadastrado</string>
     <string name="product_emptyList_description">Os produtos serão exibidos aqui. </string>
     <string name="recipe_emptyList_title">Nenhuma receita cadastrada.</string>
@@ -174,4 +160,24 @@
     <string name="sharedPreferences_profiles">profiles</string>
     <string name="sharedPreferences_selectedProfile">selectedProfile</string>
     <string name="registration_newitem">Carrinho Atualizado !</string>
+    <string name="profile_itemList_productCount">Produtos: %d</string>
+    <string name="profile_itemList_recipeCount">Receitas: %d</string>
+    <string name="profile_itemList_cartCount">Carrinho: %d</string>
+    <string name="profile_itemList_stockCount">Estoque: %d</string>
+    <string-array name="tab_titles">
+        <item>Carrinho</item>
+        <item>Produtos</item>
+        <item>Receitas</item>
+        <item>Estoque</item>
+    </string-array>
+    <string-array name="categories">
+        <item>Carnes</item>
+        <item>Congelados</item>
+        <item>Doces</item>
+        <item>Frutas</item>
+        <item>Legumes</item>
+        <item>Higiene</item>
+    </string-array>
+
+
 </resources>

@@ -90,12 +90,12 @@ public class LoginActivity extends AppCompatActivity {
             if(user.getProviderData().size() >= 1) {
                 Log.d(TAG,"Provider Size > 1") ;
                 if(user.isEmailVerified()  || user.getProviderData().get(0).equals("facebook.com")){
-                    login();
+                    login(user);
                 }
 
                 if(user.getProviderData().size() > 1){
                     if(user.getProviderData().get(1).equals("facebook.com")){
-                        login();
+                        login(user);
                     }
                 }
 
@@ -169,13 +169,6 @@ public class LoginActivity extends AppCompatActivity {
                                         Log.d(TAG, "signInWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
 
-                                        String profile = sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),null);
-                                        Log.d("Deltar", "Profile: " +  profile);
-                                        if(profile == null) {
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString("selectedProfile", "1_" + user.getUid());
-                                            editor.apply();
-                                        }
                                         boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
 
                                         if(user.isEmailVerified()){
@@ -184,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
                                             } else {
                                                 Log.d(TAG, "UUU!");
                                             }
-                                            login();
+                                            login(user);
                                         } else {
                                             showEmailNotVerifiedSnackBar(user);
                                             Log.d(TAG, "Email não verificado");
@@ -237,7 +230,13 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void login() {
+    private void login(FirebaseUser user) {
+        String profile = sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),null);
+        if(profile == null) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(getString(R.string.sharedPreferences_selectedProfile), "1_" + user.getUid());
+            editor.apply();
+        }
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
 
@@ -317,7 +316,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            login();
+                            login(user);
                         } else {
                             showProgressBar(false);
                             // If sign in fails, display a message to the user.
@@ -365,7 +364,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             user = mAuth.getCurrentUser();
-                            login();
+                            login(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             showProgressBar(false);

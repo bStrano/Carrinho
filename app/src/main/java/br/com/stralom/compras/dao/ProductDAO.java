@@ -41,12 +41,15 @@ public class ProductDAO extends GenericDAO{
     private final DBHelper dbHelper;
     private FirebaseFirestore dbFirebase;
     private Context context;
+    private SharedPreferences sharedPreferences;
 
     public ProductDAO(Context context) {
         super(context,DBHelper.TABLE_PRODUCT);
         dbHelper = new DBHelper(context);
         this.context = context;
         dbFirebase = FirebaseFirestore.getInstance();
+
+        sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
     }
 
 
@@ -55,10 +58,12 @@ public class ProductDAO extends GenericDAO{
         Log.d(TAG, "Add Product");
         Map<String, Object> productTest = product.toJson();
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
-        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
+        Log.d("Deletar","Teste");
+        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), null);
+        Log.d("Deletar",profileIdentifier);
+        Log.d("Deletar", "Profile Identifier: " + profileIdentifier);
         dbFirebase.collection("profiles").document(profileIdentifier).collection("products")
-                .document(product.getName())
+                .document(product.getId())
                 .set(productTest)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -81,7 +86,6 @@ public class ProductDAO extends GenericDAO{
 
 
     public void remove(String productName){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
         String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
         if(profileIdentifier != null){
             dbFirebase.collection("profiles").document(profileIdentifier).collection("products")
@@ -123,7 +127,6 @@ public class ProductDAO extends GenericDAO{
 
 
     public void update(Product product) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
         String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
         if(profileIdentifier != null) {
             this.add(product,null);
