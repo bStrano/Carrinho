@@ -164,6 +164,7 @@
     <string name="profile_itemList_recipeCount">Receitas: %d</string>
     <string name="profile_itemList_cartCount">Carrinho: %d</string>
     <string name="profile_itemList_stockCount">Estoque: %d</string>
+    <string name="sharedPreferences_userUid">userUid</string>
     <string-array name="tab_titles">
         <item>Carrinho</item>
         <item>Produtos</item>

@@ -42,7 +42,6 @@ public class RecipeDAO extends GenericDAO {
         this.dbFirebase = FirebaseFirestore.getInstance();
         //        itemRecipeDAO = new ItemRecipeDAO(context);
     }
-
     public void add(Recipe recipe) {
         Log.d(TAG, "Add Recipe");
 
@@ -68,9 +67,6 @@ public class RecipeDAO extends GenericDAO {
                     }
                 });
         }
-
-
-
     public void remove( String id)  {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
         String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "");
@@ -81,12 +77,12 @@ public class RecipeDAO extends GenericDAO {
         //        itemRecipeDAO.deleteAllFromRecipe(id);
         //super.remove(id);
     }
-    public void getAll(final FirebaseGetDataListener listener, final ArrayList<Product> products){
+    public void getAll(String profileIdentifier,final FirebaseGetDataListener listener, final ArrayList<Product> products){
         Log.d(TAG, "GET ALL ORDER BY NAME");
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
-        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "1");
-        Log.d("BrunoProfile", profileIdentifier);
+//
+//        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.sharedPreferences_profiles), Context.MODE_PRIVATE);
+//        String profileIdentifier = sharedPreferences.getString(context.getString(R.string.sharedPreferences_selectedProfile), "1");
+//        Log.d("BrunoProfile", profileIdentifier);
         dbFirebase.collection("profiles").document(profileIdentifier).collection("recipes")
                 .orderBy("name")
                 .get()

@@ -42,6 +42,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import br.com.stralom.compras.R;
+import br.com.stralom.compras.dao.UserDAO;
 
 public class LoginActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
@@ -235,8 +236,12 @@ public class LoginActivity extends AppCompatActivity {
         if(profile == null) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(getString(R.string.sharedPreferences_selectedProfile), "1_" + user.getUid());
+            editor.putString(getString(R.string.sharedPreferences_userUid), user.getUid());
             editor.apply();
+            UserDAO userDAO = new UserDAO();
+            userDAO.createAditionalInfo(user);
         }
+
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
 

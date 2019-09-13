@@ -187,7 +187,7 @@ public class StockUITest {
             onView(isRoot()).perform(waitFor(400));
             onView(withId(R.id.list_itemStock)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
             onView(isRoot()).perform(waitFor(400));
-            onView(withId(R.id.itemstock_consume_itemTitle))
+            onView(withId(R.id.perfil_dialog_title))
                     .check(matches(isDisplayed()))
                     .check(matches(withText(R.string.updateItem)));
             onView(withId(R.id.dialog_itemstock_productname))

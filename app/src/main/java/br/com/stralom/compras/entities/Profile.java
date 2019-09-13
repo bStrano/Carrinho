@@ -5,14 +5,58 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class Profile implements Parcelable {
+public class Profile implements Parcelable, Comparable {
     private ArrayList<Product> products;
     private ArrayList<Recipe> recipes;
+    private String id;
 
-    public Profile(ArrayList<Product> products, ArrayList<Recipe> recipes) {
+
+    private boolean active;
+    private boolean shared;
+    private String name;
+
+    public Profile(String id, String name, boolean active, boolean shared, ArrayList<Product> products, ArrayList<Recipe> recipes) {
+        this.id = id;
         this.products = products;
         this.recipes = recipes;
+        this.active = active;
+        this.shared = shared;
+        this.name = name;
     }
+
+    protected Profile(Parcel in) {
+        products = in.createTypedArrayList(Product.CREATOR);
+        recipes = in.createTypedArrayList(Recipe.CREATOR);
+        id = in.readString();
+        active = in.readByte() != 0;
+        name = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(products);
+        dest.writeTypedList(recipes);
+        dest.writeString(id);
+        dest.writeByte((byte) (active ? 1 : 0));
+        dest.writeString(name);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Profile> CREATOR = new Creator<Profile>() {
+        @Override
+        public Profile createFromParcel(Parcel in) {
+            return new Profile(in);
+        }
+
+        @Override
+        public Profile[] newArray(int size) {
+            return new Profile[size];
+        }
+    };
 
     public int getProductsNumber(){
         return this.products.size();
@@ -41,22 +85,14 @@ public class Profile implements Parcelable {
         }
         return counter;
     }
-    private Profile(Parcel in) {
-        products = in.createTypedArrayList(Product.CREATOR);
-        recipes = in.createTypedArrayList(Recipe.CREATOR);
+
+    public boolean isShared() {
+        return shared;
     }
 
-    public static final Creator<Profile> CREATOR = new Creator<Profile>() {
-        @Override
-        public Profile createFromParcel(Parcel in) {
-            return new Profile(in);
-        }
-
-        @Override
-        public Profile[] newArray(int size) {
-            return new Profile[size];
-        }
-    };
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
 
     public ArrayList<Product> getProducts() {
         return products;
@@ -73,15 +109,43 @@ public class Profile implements Parcelable {
     public void setRecipes(ArrayList<Recipe> recipes) {
         this.recipes = recipes;
     }
+    public String getId() {
+        return id;
+    }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeTypedList(products);
-        parcel.writeTypedList(recipes);
+    public String toString() {
+        return "Profile{" +
+                ", name='" + name + '\'' +
+                "products=" + products +
+                ", recipes=" + recipes +
+                ", id='" + id + '\'' +
+                ", active=" + active +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.getId().compareTo(((Profile) o).getId());
     }
 }

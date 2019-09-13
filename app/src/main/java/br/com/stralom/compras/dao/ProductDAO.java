@@ -97,7 +97,8 @@ public class ProductDAO extends GenericDAO{
 
     public void getAllOrderedByName( String profileIdentifier, final FirebaseGetDataListener listener){
         Log.d(TAG, "GET ALL ORDER BY NAME");
-
+        Log.d(TAG, "Profile Identifier" + profileIdentifier);
+        if(profileIdentifier == null) return;
         dbFirebase.collection("profiles").document(profileIdentifier).collection("products")
                 .orderBy("name")
                 .get()

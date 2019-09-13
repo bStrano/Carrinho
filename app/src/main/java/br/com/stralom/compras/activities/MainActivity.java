@@ -17,8 +17,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.Color;
 
 
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -30,9 +32,13 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -41,10 +47,12 @@ import br.com.stralom.compras.adapters.TabFragmentPagerAdapter;
 import br.com.stralom.compras.R;
 import br.com.stralom.compras.dao.ProductDAO;
 import br.com.stralom.compras.dao.RecipeDAO;
+import br.com.stralom.compras.dao.UserDAO;
 import br.com.stralom.compras.entities.Category;
 import br.com.stralom.compras.entities.Product;
 import br.com.stralom.compras.entities.Profile;
 import br.com.stralom.compras.entities.Recipe;
+import br.com.stralom.compras.entities.User;
 import br.com.stralom.compras.helper.DataViewModel;
 import br.com.stralom.compras.listerners.FirebaseGetDataListener;
 
@@ -57,10 +65,11 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Product> productList;
     public ArrayList<Recipe> recipeList;
     private ArrayList<Profile> profiles;
+    private User userInfo;
     private static final int NUMBER_ASYNCTASK = 2;
     private static int counter = 0;
     private HashMap<String, ArrayList> data;
-
+    private final int MAX_CART = 3;
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
@@ -106,45 +115,75 @@ public class MainActivity extends AppCompatActivity
 
         final ProductDAO productDAO = new ProductDAO(this);
         final RecipeDAO recipeDAO = new RecipeDAO(this);
+        UserDAO userDAO = new UserDAO();
 
-        productDAO.getAllOrderedByName(sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),"1"),new FirebaseGetDataListener() {
-            @Override
-            public void handleListData(List objects) {
-               productList = (ArrayList<Product>) objects;
 
-                recipeDAO.getAll(new FirebaseGetDataListener() {
-                    @Override
-                    public void handleListData(List objects) {
-                        recipeList = (ArrayList<Recipe>) objects;
+        String selectedProfile =  sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile), null);
 
-                        Log.d(TAG, String.valueOf(recipeList));
-                        asyncTaskCompleted("recipes", (ArrayList) objects);
-                    }
+//        userDAO.getAll(user, new FirebaseGetDataListener() {
+//            @Override
+//            public void handleListData(List objects) {
+//                final ArrayList<User> userInfoObjects = (ArrayList<User>) objects;
+//
+//                userInfo = userInfoObjects.get(0);
+//                Log.d(TAG,userInfo.toString());
+//                asyncTaskCompleted("userInfo", userInfoObjects);
+//            }
+//
+//            @Override
+//            public void onHandleListDataFailed() {
+//
+//            }
+//
+//            @Override
+//            public void getObject() {
+//
+//            }
+//        });
+        for(int i = 0 ; i < MAX_CART ; i++){
+            final String profileIdentifier = (i+1)+"_" +sharedPreferences.getString(getString(R.string.sharedPreferences_userUid), null);
+            final boolean activeProfile = profileIdentifier.equals(selectedProfile);
+            Log.d("TESTE",profileIdentifier + " / " + selectedProfile + " / " + activeProfile);
+            final int finalI = i;
 
-                    @Override
-                    public void onHandleListDataFailed() {
+            productDAO.getAllOrderedByName(profileIdentifier,new FirebaseGetDataListener() {
+                @Override
+                public void handleListData(List objects) {
+                    final ArrayList<Product> products = (ArrayList<Product>) objects;
 
-                    }
+                    recipeDAO.getAll(profileIdentifier,new FirebaseGetDataListener() {
+                        @Override
+                        public void handleListData(List objects) {
+                            recipeList = (ArrayList<Recipe>) objects;
 
-                    @Override
-                    public void getObject() {
+                            profiles.add(new Profile(profileIdentifier,"Perfil "  + (finalI +1), activeProfile,false, products,recipeList));
+                            asyncTaskCompleted("recipes", (ArrayList) objects);
+                        }
 
-                    }
-                }, productList);
+                        @Override
+                        public void onHandleListDataFailed() {
 
-                Log.d(TAG, String.valueOf(productList));
-                asyncTaskCompleted("products", (ArrayList) objects);
-            }
+                        }
 
-            @Override
-            public void onHandleListDataFailed() {
-            }
+                        @Override
+                        public void getObject() {
 
-            @Override
-            public void getObject() {
-            }
-        });
+                        }
+                    }, productList);
 
+                    Log.d(TAG, String.valueOf(productList));
+                    asyncTaskCompleted("products", (ArrayList) objects);
+                }
+
+                @Override
+                public void onHandleListDataFailed() {
+                }
+
+                @Override
+                public void getObject() {
+                }
+            });
+        }
 
 
     }
@@ -189,11 +228,21 @@ public class MainActivity extends AppCompatActivity
         data.put(key, value);
         Log.d(TAG,counter + " / " + NUMBER_ASYNCTASK);
         if (counter == NUMBER_ASYNCTASK) {
+            Collections.sort(profiles);
+            for(Profile profile : profiles){
+                Log.d("TESTE", profile.getId() + " / " + sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),null));
+                Log.d("TESTE", String.valueOf(profile.getId().equals(sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),null))));
+                if( profile.getId().equals(sharedPreferences.getString(getString(R.string.sharedPreferences_selectedProfile),null))){
+                    this.productList = profile.getProducts();
+                    this.recipeList = profile.getRecipes();
+                }
+            }
             mViewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_titles), data));
             mTabLayout.setupWithViewPager(mViewPager);
             counter = 0;
-            profiles.add(new Profile(productList,recipeList));
-            profiles.add(new Profile(productList,recipeList));
+
+//            profiles.add(new Profile(productList,recipeList));
+//            profiles.add(new Profile(productList,recipeList));
 
         }
 
