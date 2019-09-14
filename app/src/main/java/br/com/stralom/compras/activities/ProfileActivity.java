@@ -25,11 +25,15 @@ import br.com.stralom.compras.entities.Profile;
 
 public class ProfileActivity extends AppCompatActivity {
     private RecyclerView profileRecyclerView;
+    private RecyclerView profileSharedView;
+    private TextView emptySharedProfiles;
     private TextView shareCodeView;
     private ProfileItemAdapter profileItemAdapter;
     private FirebaseAuth fb;
     private Toolbar toolbar;
     public ArrayList<Profile> profiles;
+    public ArrayList<Profile> sharedProfiles;
+
 
 
     @Override
@@ -44,8 +48,9 @@ public class ProfileActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
 
         this.profileRecyclerView = findViewById(R.id.list_profiles);
-        this.shareCodeView = findViewById(R.id.profile_sharecode);
         this.toolbar = findViewById(R.id.profile_toolbar);
+        this.profileSharedView = findViewById(R.id.profile_share_list);
+        this.emptySharedProfiles = findViewById(R.id.profile_shareprofile_empty);
 
         toolbar.setTitle("Gerenciar Perfil");
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -60,18 +65,17 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         fb = FirebaseAuth.getInstance();
-        String shareCode = fb.getUid().substring(fb.getUid().length() - 6).toUpperCase();
 
         Intent intent = getIntent();
         profiles = intent.getParcelableArrayListExtra("profiles");
+        sharedProfiles = intent.getParcelableArrayListExtra("sharedProfiles");
 
-        Log.d("Teste", profiles.toString());
+//        Log.d("Teste", profiles.toString());
         this.profileItemAdapter = new ProfileItemAdapter(profiles, this);
         this.profileRecyclerView.setAdapter(profileItemAdapter);
         this.profileRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.profileRecyclerView.setHasFixedSize(true);
 
-        shareCodeView.setText(shareCode);
 
     }
 

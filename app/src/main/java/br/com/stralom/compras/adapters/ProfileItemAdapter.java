@@ -72,6 +72,7 @@ public class ProfileItemAdapter extends RecyclerView.Adapter<ProfileItemAdapter.
         holder.recipeText.setText(activity.getString(R.string.profile_itemList_recipeCount,profile.getRecipesNumber()));
         holder.cartText.setText(activity.getString(R.string.profile_itemList_cartCount,profile.getItemCartNumber()));
         holder.stockText.setText(activity.getString(R.string.profile_itemList_stockCount, profile.getItemStockNumber()));
+        holder.shareCodeText.setText(profile.getShareCode());
         if(profile.isActive()){
             holder.activeText.setVisibility(View.VISIBLE);
         } else {
@@ -103,6 +104,7 @@ public class ProfileItemAdapter extends RecyclerView.Adapter<ProfileItemAdapter.
         public TextView cartText;
         public TextView stockText;
         public TextView activeText;
+        public TextView shareCodeText;
         public ProfileItemAdapterHolder(@NonNull View itemView) {
             super(itemView);
             this.productText = itemView.findViewById(R.id.item_profile_product);
@@ -111,6 +113,7 @@ public class ProfileItemAdapter extends RecyclerView.Adapter<ProfileItemAdapter.
             this.stockText = itemView.findViewById(R.id.item_profile_stock);
             this.profileName = itemView.findViewById(R.id.item_profile_name);
             this.activeText = itemView.findViewById(R.id.item_profile_active);
+            this.shareCodeText = itemView.findViewById(R.id.item_profile_sharecode);
             itemView.setOnClickListener(this);
         }
 

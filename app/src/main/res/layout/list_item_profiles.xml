@@ -78,7 +78,7 @@
         app:layout_constraintTop_toTopOf="@+id/item_profile_recipe" />
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/item_profile_sharecode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

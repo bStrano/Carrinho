@@ -23,7 +23,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/shareInfoLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
@@ -91,15 +90,15 @@
                 android:elevation="12sp">
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/profile_shareprofile_empty"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="#FFFFFF"
-                    android:padding="10"
+                    android:padding="10dp"
                     android:text="Você não possui perfils compartilhados."
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/recyclerView"
-                    app:layout_constraintTop_toTopOf="@+id/recyclerView" />
+                    app:layout_constraintStart_toStartOf="@+id/profile_share_list"
+                    app:layout_constraintTop_toTopOf="@+id/profile_share_list" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -125,7 +124,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+                    android:id="@+id/profile_share_list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="8dp"
@@ -142,60 +141,5 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/shareInfoLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="28dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:background="#00FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_sharecode"
-            app:layout_constraintStart_toEndOf="@+id/profile_sharecode"
-            app:layout_constraintTop_toTopOf="@+id/profile_sharecode"
-            app:srcCompat="?attr/actionModeCopyDrawable" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="sans-serif-condensed"
-            android:text="Código de Compartilhamento:"
-            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
-            android:textSize="18sp"
-            android:textStyle="bold|italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Código de Compartilhamento:" />
-
-        <TextView
-            android:id="@+id/profile_sharecode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="AZ5DG9"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

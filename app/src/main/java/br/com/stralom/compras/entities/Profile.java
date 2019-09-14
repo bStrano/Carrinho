@@ -2,6 +2,7 @@ package br.com.stralom.compras.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,12 @@ public class Profile implements Parcelable, Comparable {
         this.name = name;
     }
 
+    public String getShareCode(){
+        Log.d("AAAA", this.id);
+        String sharecode = String.valueOf(this.id.charAt(0));
+        sharecode = sharecode + this.id.substring(this.id.length() - 6).toUpperCase();
+        return sharecode;
+    }
     protected Profile(Parcel in) {
         products = in.createTypedArrayList(Product.CREATOR);
         recipes = in.createTypedArrayList(Recipe.CREATOR);
